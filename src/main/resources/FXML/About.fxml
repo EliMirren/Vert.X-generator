@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="315.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.AboutController">
+	<children>
+		<Label layoutX="163.0" layoutY="35.0" text="当前版本 :  VertX-generator - 1.0.2">
+			<font>
+				<Font size="20.0" />
+			</font>
+		</Label>
+		<Label layoutX="50.0" layoutY="87.0" text="使用说明 : ">
+			<font>
+				<Font size="20.0" />
+			</font>
+		</Label>
+		<Label layoutX="50.0" layoutY="137.0" text="开源地址 : ">
+			<font>
+				<Font size="20.0" />
+			</font>
+		</Label>
+		<Label layoutX="50.0" layoutY="187.0" text="模板仓库 : ">
+			<font>
+				<Font size="20.0" />
+			</font>
+		</Label>
+		<Label layoutX="50.0" layoutY="237.0" text="QQ交流群: ">
+			<font>
+				<Font size="20.0" />
+			</font>
+		</Label>
+		<TextField layoutX="154.0" layoutY="88.0" prefHeight="29.0" prefWidth="443.0" text="http://szmirren.com/">
+			<font>
+				<Font size="14.0" />
+			</font>
+		</TextField>
+		<TextField layoutX="154.0" layoutY="138.0" prefHeight="29.0" prefWidth="443.0" text="https://github.com/shenzhenMirren/vertx-generator">
+			<font>
+				<Font size="14.0" />
+			</font>
+		</TextField>
+		<TextField layoutX="154.0" layoutY="188.0" prefHeight="29.0" prefWidth="443.0" text="https://github.com/shenzhenMirren/vertx-generator-template">
+			<font>
+				<Font size="14.0" />
+			</font>
+		</TextField>
+		<TextField layoutX="155.0" layoutY="238.0" prefHeight="29.0" prefWidth="443.0" text="99135252">
+			<font>
+				<Font size="14.0" />
+			</font>
+		</TextField>
+	</children>
+</AnchorPane>

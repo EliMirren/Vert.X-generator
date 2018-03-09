@@ -1,0 +1,423 @@
+{*package*}
+
+import java.util.List;
+
+{*import*}
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+
+public class {*routerName*} {
+	private Router router;
+	private {*sqlName*} executeSQL;
+	private JDBCClient jdbcClient;
+	public {*routerName*}(Router router, JDBCClient jdbcClient) {
+		super();
+		this.router = router;
+		this.executeSQL = new {*sqlName*}();
+		this.jdbcClient = jdbcClient;
+	}
+
+	/**
+	 * 启动{*className*}类相关地址服务
+	 */
+	public void initRoute() {
+		router.get("{*bsGetCount*}").handler(this::{*funGetCount*});
+		router.get("{*bsSelectAll*}").handler(this::{*funSelectAll*});
+		router.get("{*bsSelectAllByPage*}").handler(this::{*funSelectAllByPage*});
+		router.get("{*bsSelectObj*}").handler(this::{*funSelectObj*});
+		router.get("{*bsSelectId*}").handler(this::{*funSelectId*});
+		router.post("{*bsInsert*}").handler(this::{*funInsert*});
+		router.put("{*bsUpdate*}").handler(this::{*funUpdate*});
+		router.delete("{*bsDelete*}").handler(this::{*funDelete*});
+		{*//*}router.post("{*bsInsertBatch*}").handler(this::{*funInsertBatch*});
+	}
+
+	/**
+	 * 获得{*className*}总行数
+	 * 
+	 * @param rct
+	 */
+	public void {*funGetCount*}(RoutingContext rct) {
+		MultiMap params = rct.request().params();
+		{*funGetCount*}Service(params, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+	/**
+	 * 获得{*className*}数据总行数服务实现
+	 * 
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funGetCount*}Service(MultiMap params, Handler<AsyncResult<JsonObject>> handler) {
+		jdbcClient.getConnection(conn -> {
+			JsonObject result = new JsonObject();
+			if (conn.succeeded()) {
+				executeSQL.getCount(conn.result(), get -> {
+					if (get.succeeded()) {
+						Long data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("执行获取数据总行数-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("执行获取数据总行数-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("执行获取数据总行数-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 获得所有{*className*}
+	 * 
+	 * @param rct
+	 */
+	public void {*funSelectAll*}(RoutingContext rct) {
+		{*funSelectAll*}Service(result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+
+	/**
+	 * 获取所有{*className*}数据数服务实现
+	 * 
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funSelectAll*}Service(Handler<AsyncResult<JsonObject>> handler) {
+		jdbcClient.getConnection(conn -> {
+			JsonObject result = new JsonObject();
+			if (conn.succeeded()) {
+				executeSQL.selectAll(conn.result(), get -> {
+					if (get.succeeded()) {
+						List<JsonObject> data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("执行获取数据总行数-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("执行获取所有{*className*}数据数服务实现-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("执行获取所有{*className*}数据数服务实现-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 通过分页获得所有{*className*}
+	 * 
+	 * @param rct
+	 */
+	public void {*funSelectAllByPage*}(RoutingContext rct) {
+		String start = rct.request().getParam("");
+		String size = rct.request().getParam("");
+		{*funSelectAllByPage*}Service(start, size, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+
+	/**
+	 * 通过分页获得所有{*className*}服务实现
+	 * 
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funSelectAllByPage*}Service(String startRow, String rowSize, Handler<AsyncResult<JsonObject>> handler) {
+		SqlAssist assist = new SqlAssist();
+		if (startRow != null) {
+			assist.setStartRow(new Integer(startRow));
+		}
+		if (rowSize != null) {
+			assist.setRowSize(new Integer(rowSize));
+		}
+		jdbcClient.getConnection(conn -> {
+			JsonObject result = new JsonObject();
+			if (conn.succeeded()) {
+				executeSQL.selectAllByPage(assist, conn.result(), get -> {
+					if (get.succeeded()) {
+						JsonObject data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("通过分页获得所有{*className*}服务实现-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("通过分页获得所有{*className*}服务实现-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("通过分页获得所有{*className*}服务实现-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 通过{*className*}获取{*className*}
+	 * 
+	 * @param rct
+	 */
+	public void {*funSelectObj*}(RoutingContext rct) {
+		{*funSelectObj*}Service(null, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+	/**
+	 * 通过{*className*}获取{*className*}服务实现
+	 * 
+	 * @param obj
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funSelectObj*}Service({*className*} obj, Handler<AsyncResult<JsonObject>> handler) {
+		JsonObject result = new JsonObject();
+		// TODO 做参数检查后处理
+		if (obj == null) {
+			// LOG.debug("通过{*className*}获取{*className*}服务实现-->失败:对象不能为空");
+			handler.handle(Future.succeededFuture(result));
+			return;
+		}
+		jdbcClient.getConnection(conn -> {
+			if (conn.succeeded()) {
+				executeSQL.selectByObj(obj, conn.result(), get -> {
+					if (get.succeeded()) {
+						List<JsonObject> data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("通过{*className*}获取{*className*}服务实现-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("通过{*className*}获取{*className*}服务实现-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("通过{*className*}获取{*className*}服务实现-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 通过主键获得{*className*}
+	 * 
+	 * @param rct
+	 */
+	public void {*funSelectId*}(RoutingContext rct) {
+		String id = rct.request().getParam("id");
+		{*funSelectId*}Service(id, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+
+	/**
+	 * 通过主键值获取{*className*}服务实现
+	 * 
+	 * @param obj
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funSelectId*}Service(Object id, Handler<AsyncResult<JsonObject>> handler) {
+		JsonObject result = new JsonObject();
+		// TODO 做参数检查后处理
+		if (id == null) {
+			// LOG.debug("通过主键值获取{*className*}-->失败:id不能为空");
+			handler.handle(Future.succeededFuture(result));
+			return;
+		}
+		jdbcClient.getConnection(conn -> {
+			if (conn.succeeded()) {
+				executeSQL.selectById(id, conn.result(), get -> {
+					if (get.succeeded()) {
+						JsonObject data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("通过主键值获取{*className*}-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("通过主键值获取{*className*}-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("通过主键值获取{*className*}-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 将{*className*}添加到数据库
+	 * 
+	 * @param rct
+	 */
+	public void {*funInsert*}(RoutingContext rct) {
+		{*funInsert*}Service(null, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+	/**
+	 * 将{*className*}添加到数据库服务实现
+	 * 
+	 * @param obj
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funInsert*}Service({*className*} obj, Handler<AsyncResult<JsonObject>> handler) {
+		JsonObject result = new JsonObject();
+		// TODO 做参数检查后处理
+		if (obj == null) {
+			// LOG.debug("将{*className*}添加到数据库-->失败:对象不能为空");
+			handler.handle(Future.succeededFuture(result));
+			return;
+		}
+		jdbcClient.getConnection(conn -> {
+			if (conn.succeeded()) {
+				executeSQL.insertNonEmpty(obj, conn.result(), get -> {
+					if (get.succeeded()) {
+						Integer data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("将{*className*}添加到数据库-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("将{*className*}添加到数据库-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("将{*className*}添加到数据库-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 更新{*className*}数据到数据库
+	 * 
+	 * @param rct
+	 */
+	public void {*funUpdate*}(RoutingContext rct) {
+		{*funUpdate*}Service(null, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+
+	/**
+	 * 更新{*className*}数据到数据库服务实现
+	 * 
+	 * @param obj
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funUpdate*}Service({*className*} obj, Handler<AsyncResult<JsonObject>> handler) {
+		JsonObject result = new JsonObject();
+		// TODO 做参数检查后处理
+		if (obj == null) {
+			// LOG.debug("更新{*className*}数据到数据库-->失败:对象不能为空");
+			handler.handle(Future.succeededFuture(result));
+			return;
+		}
+		jdbcClient.getConnection(conn -> {
+			if (conn.succeeded()) {
+				executeSQL.updateNonEmptyById(obj, conn.result(), get -> {
+					if (get.succeeded()) {
+						Integer data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("更新{*className*}数据到数据库-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("更新{*className*}数据到数据库-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("更新{*className*}数据到数据库-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+
+	/**
+	 * 通过主键删除{*className*}
+	 * 
+	 * @param rct
+	 */
+	public void {*funDelete*}(RoutingContext rct) {
+		String id = rct.request().getParam("id");
+		{*funDelete*}Service(id, result -> {
+			JsonObject body = result.result();
+			rct.response().end(body.toBuffer());
+		});
+	}
+
+	/**
+	 * 通过主键删除{*className*}服务实现
+	 * 
+	 * @param obj
+	 * @param handler
+	 */
+	// TODO 可以多规定的参数比如接收一个JsonObject或者request的MultiMap并在方法里面添加一个SqlAssist作为条件查询
+	public void {*funDelete*}Service(Object id, Handler<AsyncResult<JsonObject>> handler) {
+		JsonObject result = new JsonObject();
+		// TODO 做参数检查后处理
+		if (id == null) {
+			// LOG.debug("通过主键删除{*className*}-->失败:对象不能为空");
+			handler.handle(Future.succeededFuture(result));
+			return;
+		}
+		jdbcClient.getConnection(conn -> {
+			if (conn.succeeded()) {
+				executeSQL.deleteById(id, conn.result(), get -> {
+					if (get.succeeded()) {
+						Integer data = get.result();
+						// TODO 返回结果常处理
+						// LOG.debug("通过主键删除{*className*}-->结果:" + data);
+						handler.handle(Future.succeededFuture(result));
+					} else {
+						// TODO 做异与返回结果常处理
+						// LOG.error("通过主键删除{*className*}-->失败:" + get.cause());
+						handler.handle(Future.succeededFuture(result));
+					}
+				});
+			} else {
+				// TODO 做异与返回结果常处理
+				// LOG.error("通过主键删除{*className*}-->失败:" + conn.cause());
+				handler.handle(Future.succeededFuture(result));
+			}
+		});
+	}
+{*routerAdd*}
+}
+

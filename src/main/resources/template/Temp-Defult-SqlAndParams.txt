@@ -1,0 +1,110 @@
+{*package*}
+
+import java.util.List;
+import java.util.ArrayList;
+import io.vertx.core.json.JsonArray;
+
+/**
+ * 用于生成数据库语句时返回SQL语句与参数
+ * 
+ * @author github.shenzhenMirren
+ *
+ */
+public class SqlAndParams {
+	private String sql;// SQL语句
+	private JsonArray params;// 参数
+	private List<String> batchSql;// 批量SQL语句
+	private List<JsonArray> batchParams;// 批量参数
+
+	public SqlAndParams() {
+		super();
+	}
+
+	public SqlAndParams(String sql) {
+		super();
+		this.sql = sql;
+	}
+
+	public SqlAndParams(List<String> batchSql) {
+		super();
+		this.batchSql = batchSql;
+	}
+
+	public SqlAndParams(String sql, JsonArray params) {
+		super();
+		this.sql = sql;
+		this.params = params;
+	}
+	
+	public SqlAndParams(String sql, List<JsonArray> batchParams) {
+		super();
+		this.sql = sql;
+		this.batchParams = batchParams;
+	}
+
+	public SqlAndParams(List<String> batchSql, List<JsonArray> batchParams) {
+		super();
+		this.batchSql = batchSql;
+		this.batchParams = batchParams;
+	}
+
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
+	public JsonArray getParams() {
+		return params;
+	}
+
+	public void setParams(JsonArray params) {
+		this.params = params;
+	}
+
+	public List<String> getBatchSql() {
+		return batchSql;
+	}
+
+	public void setBatchSql(List<String> batchSql) {
+		this.batchSql = batchSql;
+	}
+
+	public List<JsonArray> getBatchParams() {
+		return batchParams;
+	}
+
+	public void setBatchParams(List<JsonArray> batchParams) {
+		this.batchParams = batchParams;
+	}
+
+	/**
+	 * 用于将SqlAndParams添加中的sql与params添加到当前对象的Batch中,既将多个普通SqlAndParams填充成一个Batch
+	 * SqlAndParams
+	 * 
+	 * @param sqlAndParams
+	 * @return
+	 */
+	public SqlAndParams addSqlAndParams(SqlAndParams... sqlp) {
+		if (batchSql == null) {
+			batchSql = new ArrayList<>();
+		}
+		if (batchParams == null) {
+			batchParams = new ArrayList<>();
+		}
+		for (SqlAndParams sp : sqlp) {
+			batchSql.add(sp.getSql());
+			batchParams.add(sp.getParams());
+		}
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "SqlAndParams [sql=" + sql + ", params=" + params + ", batchSql=" + batchSql + ", batchParams="
+				+ batchParams + "]";
+	}
+
+}

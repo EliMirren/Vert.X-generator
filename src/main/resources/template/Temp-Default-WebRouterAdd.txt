@@ -1,0 +1,20 @@
+	/**
+	 * 批量添加{*className*}到数据库
+	 * 
+	 * @param rct
+	 */
+	public void {*funInsertBatch*}(RoutingContext rct) {
+		// TODO 修改生成模板或者做点什么
+		if (rct.getBody() == null || "".equals(rct.getBodyAsString().trim())) {
+			rct.response().end("null");
+		} else {
+			rct.vertx().eventBus().<JsonArray>send("{*bizBsInsertBatch*}", rct.getBodyAsJson(), reply -> {
+				if (reply.succeeded()) {
+					JsonArray body = reply.result().body();
+					rct.response().end(body.toString());
+				} else {
+					rct.response().end(reply.cause().toString());
+				}
+			});
+		}
+	}

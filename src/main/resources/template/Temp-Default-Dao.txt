@@ -1,0 +1,301 @@
+{*package*}
+
+import java.util.List;
+import java.util.ArrayList;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.ext.sql.SQLConnection;
+
+{*import*}
+
+public class {*daoName*} extends AbstractVerticle {
+	/**
+	 * 获得 {*className*} 数据总行数的event地址,接收SqlAssist.toJson(),查询全部可以传入null,reply: Long 数据总行数
+	 */
+	public final static String EVENT_BUS_ADDR_GET_COUNT = "{*bsGetCount*}";
+	/**
+	 * 查询 {*className*} 数据的event地址,接收SqlAssist.toJson(),查询全部可以传入null,reply: JsonArray<JsonObject>
+	 */
+	public final static String EVENT_BUS_ADDR_FIND = "{*bsSelectAll*}";
+	/**
+	 * 获得所有{*className*}通过分页的event地址,接收SqlAssist.toJson(),如果SqlAssist为空或者行大小为空,默认取30行,reply: {count:Long数据总行数,data:JsonArray<JsonObject>数据}
+	 */
+	public final static String EVENT_BUS_ADDR_FIND_BY_PAGE = "{*bsSelectAllByPage*}";
+	/**
+	 * 将对象中属性不为null的作为条件或 {*className*} 数据的event地址,接收{*className*} to JsonObject,如果{*className*}为null:fail(412, "对象不能为空"),reply: JsonArray<JsonObject>;
+	 */
+	public final static String EVENT_BUS_ADDR_GET_BY_OBJ = "{*bsSelectObj*}";
+	/**
+	 * 通过主键获取 {*className*} 数据的event地址,接收主键的值,如果主键为null:fail(412, "对象不能为空"),reply: JsonArray<JsonObject>;
+	 */
+	public final static String EVENT_BUS_ADDR_GET_BY_ID = "{*bsSelectId*}";
+	/**
+	 * 将{*className*} 中属性值不为null的数据添加到数据库的event地址,接收{*className*} to JsonObject,如果对象为null:fail(412, "对象不能为空"),reply: Integer 受影响行数;
+	 */
+	public final static String EVENT_BUS_ADDR_INSERT = "{*bsInsert*}";
+	/**
+	 * 通过{*className*}对象的主键修改{*className*}中属性值不为null的event地址,接收{*className*} to JsonObject,,更新条件为主键对于的值,如果对象为null:fail(412, "对象不能为空"),reply: Integer 受影响行数;
+	 */
+	public final static String EVENT_BUS_ADDR_UPDATE = "{*bsUpdate*}";
+	/**
+	 * 通过主键删除{*className*}数据的event地址,接收主键的值,如果主键值为null:fail(412, "主键不能为空"),reply: Integer 受影响行数;
+	 */
+	public final static String EVENT_BUS_ADDR_DALETE = "{*bsDelete*}";
+	
+	JDBCClient jdbcClient;
+	{*sqlName*}  {*sqlObjName*};
+
+	@Override
+	public void start() throws Exception {
+		jdbcClient = JDBCClient.createShared(vertx, config());
+		{*sqlObjName*} = new {*sqlName*}();
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_GET_COUNT, this::{*funGetCount*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_FIND, this::{*funSelectAll*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_FIND_BY_PAGE, this::{*funSelectAllByPage*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_GET_BY_OBJ, this::{*funSelectObj*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_GET_BY_ID, this::{*funSelectId*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_INSERT, this::{*funInsert*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_UPDATE, this::{*funUpdate*});
+		vertx.eventBus().consumer(EVENT_BUS_ADDR_DALETE, this::{*funDelete*});
+	    {*//*}vertx.eventBus().consumer("{*bsInsertBatch*}", this::{*funInsertBatch*});
+	}
+	
+	/**
+	 * 获得{*className*}数据总行数,reply: Long 数据总行数
+	 * 
+	 * @param msg 接收SqlAssist.toJson(),查询全部可以传入null
+	 */
+ 	public void {*funGetCount*}(Message<JsonObject> msg) {
+		SqlAssist assist = msg.body() == null ? null : SqlAssist.fromJson(msg.body());
+		jdbcClient.getConnection(connection -> {
+			if (connection.succeeded()) {
+				SQLConnection conn = connection.result();
+				{*sqlObjName*}.getCount(assist, conn, result -> {
+					if (result.succeeded()) {
+						msg.reply(result.result());
+					} else {
+						// TODO 做异常处理
+						// LOG.error("执行查询{*className*}数据总行数-->失败:" + res.cause());
+						msg.fail(500, result.cause().toString());
+					}
+				});
+			} else {
+				msg.fail(500, connection.cause().toString());
+			}
+		});
+	}
+	
+	/**
+	 * 获得所有{*className*}通过分页,reply: {count:Long数据总行数,data:JsonArray<JsonObject>数据}
+	 * 
+	 * @param msg 接收SqlAssist.toJson(),如果SqlAssist为空或者行大小为空,默认取30行
+	 */
+ 	public void {*funSelectAllByPage*}(Message<JsonObject> msg) {
+		SqlAssist assist = msg.body() == null ? null : SqlAssist.fromJson(msg.body());
+		jdbcClient.getConnection(connection -> {
+			if (connection.succeeded()) {
+				{*sqlObjName*}.selectAllByPage(assist, connection.result(), result -> {
+					if (result.succeeded()) {
+						msg.reply(result.result());
+					} else {
+						// TODO 做异常处理
+						// LOG.error("执行获得所有{*className*}通过分页-->失败:" +result.cause());
+						msg.fail(500, result.cause().toString());
+					}
+				});
+			} else {
+				// TODO 做异常处理
+				// LOG.error("执行获得所有{*className*}通过分页--获取数据库连接-->失败:" +connection.cause());
+				msg.fail(500, connection.cause().toString());
+			}
+		});
+	}
+	
+	/**
+	 * 获得所有{*className*},reply: JsonArray<JsonObject>
+	 * 
+	 * @param msg 接收SqlAssist.toJson(),查询全部可以传入null
+	 */
+ 	public void {*funSelectAll*}(Message<JsonObject> msg) {
+		SqlAssist assist = msg.body() == null ? null : SqlAssist.fromJson(msg.body());
+		jdbcClient.getConnection(connection -> {
+			if (connection.succeeded()) {
+				{*sqlObjName*}.selectAll(assist, connection.result(), result -> {
+					if (result.succeeded()) {
+						List<JsonObject> rows = result.result();
+						msg.reply(new JsonArray(rows == null ? new ArrayList<>() : rows));
+					} else {
+						// TODO 做异常处理
+						// LOG.error("执行查询所有{*className*}-->失败:" + result.cause());
+						msg.fail(500, result.cause().toString());
+					}
+				});
+			} else {
+				// TODO 做异常处理
+				// LOG.error("执行查询所有{*className*}-->失败:" + connection.cause());
+				msg.fail(500, connection.cause().toString());
+			}
+		});
+	}
+	
+	/**
+	 * 获得通过{*className*}对象属性不为null值作为条件查询{*className*},如果{*className*}为null:fail(412, "对象不能为空"),reply: JsonArray<JsonObject>;
+	 * 
+	 * @param msg 接收{*className*} to JsonObject
+	 */
+	public void {*funSelectObj*}(Message<JsonObject> msg) {
+		if (msg.body() == null) {
+			jdbcClient.getConnection(connection -> {
+				if (connection.succeeded()) {
+					{*sqlObjName*}.selectByObj(msg.body(), connection.result(), result -> {
+						if (result.succeeded()) {
+							List<JsonObject> rows = result.result();
+							msg.reply(new JsonArray(rows == null ? new ArrayList<>() : rows));
+						} else {
+							// TODO 做异常处理
+							// LOG.error("执行通过{*className*}查询{*className*}-->失败:" + result.cause());
+							msg.fail(500, result.cause().toString());
+						}
+					});
+				} else {
+					// TODO 做异常处理
+					// LOG.error("执行通过{*className*}查询{*className*}-->失败:" + connection.cause());
+					msg.fail(500, connection.cause().toString());
+				}
+			});
+		} else {
+			// TODO 做异常处理
+			// LOG.debug("执行通过{*className*}查询{*className*}-->失败:对象不能为空");
+			msg.fail(412, "对象不能为空");
+		}
+	} 
+	 
+	
+	/**
+	 * 通过主键查询出{*className*}如果主键为null:fail(412, "对象不能为空"),reply: JsonArray<JsonObject>;
+	 * 
+	 * @param msg 接收主键的值
+	 */
+	public void {*funSelectId*}(Message<Object> msg) {
+		if (msg.body() != null) {
+			jdbcClient.getConnection(connection -> {
+				if (connection.succeeded()) {
+					{*sqlObjName*}.selectById(msg.body(), connection.result(), result -> {
+						if (result.succeeded()) {
+							msg.reply(result.result());
+						} else {
+							// TODO 做异常处理
+							// LOG.error("执行通过主键查询{*className*}-->失败:" + result.cause());
+							msg.fail(500, result.cause().toString());
+						}
+					});
+				} else {
+					// TODO 做异常处理
+					// LOG.error("执行通过主键查询{*className*}-->失败:" + connection.cause());
+					msg.fail(500, connection.cause().toString());
+				}
+			});
+		} else {
+			// TODO 做异常处理
+			// LOG.debug("执行通过主键查询{*className*}-->失败:id不能为空!");
+			// msg.fail(412, "id不能为空!");
+		}
+	}
+	
+	/**
+	 * 将{*className*}对象中属性不为null的值保存到数据库,如果对象为null:fail(412, "对象不能为空"),reply: Integer 受影响行数;
+	 * 
+	 * @param msg 接收{*className*} to JsonObject
+	 */
+	public void {*funInsert*}(Message<JsonObject> msg) {
+		if (msg.body() != null) {
+			jdbcClient.getConnection(connection -> {
+				if (connection.succeeded()) {
+					{*sqlObjName*}.insertNonEmpty(msg.body(), connection.result(), result -> {
+						if (result.succeeded()) {
+							msg.reply(result.result());
+						} else {
+							// LOG.error("执行将{*className*}保存到数据库-->失败:" + result.cause());
+							msg.fail(500, result.cause().toString());
+						}
+					});
+				} else {
+					// TODO 做异常处理
+					// LOG.error("执行将{*className*}保存到数据库-->失败:" + connection.cause());
+					msg.fail(500, connection.cause().toString());
+				}
+			});
+		} else {
+			// TODO 做异常处理
+			// LOG.debug("执行通过主键查询{*className*}-->失败:id不能为空!");
+			// msg.fail(412, "对象不能为空!");
+		}
+	}
+
+	/**
+	 * 将{*className*}对象中属性不为null的值更新到数据库对于的数据,条件为主键对于的值,如果对象为null:fail(412, "对象不能为空"),reply: Integer 受影响行数;
+	 * 
+	 * @param msg  接收{*className*} to JsonObject
+	 */
+	public void {*funUpdate*}(Message<JsonObject> msg) {
+		if (msg.body() != null) {
+			jdbcClient.getConnection(connection -> {
+				if (connection.succeeded()) {
+					{*sqlObjName*}.updateNonEmptyById(msg.body(), connection.result(), result -> {
+						if (result.succeeded()) {
+							msg.reply(result.result());
+						} else {
+							// LOG.error("执行将{*className*}更新到数据库-->失败:" + result.cause());
+							msg.fail(500, result.cause().toString());
+						}
+					});
+				} else {
+					// TODO 做异常处理
+					// LOG.error("执行通过主键更新{*className*}-->失败:" + connection.cause());
+					msg.fail(500, connection.cause().toString());
+				}
+			});
+		} else {
+			// TODO 做异常处理
+			// LOG.error("执行通过主键更新{*className*}-->失败: 对象不能为空");
+			msg.fail(412, "对象不能为空");
+		}
+	}
+
+	/**
+	 * 通过主键将{*className*}删除,如果主键值为null:fail(412, "主键不能为空"),reply: Integer 受影响行数;
+	 * 
+	 * @param msg 接收主键的值
+	 */
+	public void {*funDelete*}(Message<Object> msg) {
+		if (msg.body() != null) {
+			jdbcClient.getConnection(connection -> {
+				if (connection.succeeded()) {
+					{*sqlObjName*}.deleteById(msg.body(), connection.result(), result -> {
+						if (result.succeeded()) {
+							msg.reply(result.result());
+						} else {
+							// LOG.error("执行通过主键删除{*className*}-->失败:" + result.cause());
+							msg.fail(500, result.cause().toString());
+						}
+					});
+				} else {
+					// TODO 做异常处理
+					// LOG.error("执行通过主键删除{*className*}-->失败:" + connection.cause());
+					msg.fail(500, connection.cause().toString());
+				}
+			});
+		} else {
+			// TODO 做异常处理
+			// LOG.error("执行通过主键删除{*className*}-->失败:主键不能为空");
+			msg.fail(412, "主键不能为空");
+		}
+	}
+	
+{*daoAdd*}
+}
+	

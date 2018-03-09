@@ -1,0 +1,1362 @@
+{*package*}
+
+import java.text.MessageFormat;
+import java.util.List;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.sql.ResultSet;
+import io.vertx.ext.sql.SQLConnection;
+import io.vertx.ext.sql.UpdateResult;
+
+import {*AssistPackage*}.SqlAssist;
+import {*AssistPackage*}.SqlWhereCondition;
+{*import*}
+
+
+/**
+ * MySQL数据库操作语句
+ * 
+ * @author github.shenzhenMirren
+ *
+ */
+public abstract class AbstractSQL<T> {
+
+	// ====================================
+	// =============抽象方法区===============
+	// ====================================
+	/**
+	 * 表的名字
+	 * 
+	 * @return
+	 */
+	protected abstract String tableName();
+
+	/**
+	 * 表的主键
+	 * 
+	 * @return
+	 */
+	protected abstract String primaryId();
+
+	/**
+	 * 表的所有列名
+	 * 
+	 * @return
+	 */
+	protected abstract String columns();
+
+	/**
+	 * 表的所有列名与列名对应的值
+	 * 
+	 * @return
+	 */
+	protected abstract List<SqlPropertyValue<?>> propertyValue(T obj);
+
+	// ====================================
+	// =============通用方法区===============
+	// ====================================
+
+	/**
+	 * 执行查询
+	 * 
+	 * @param qp
+	 *          SQL语句与参数
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果
+	 */
+	private void queryExecute(SqlAndParams qp, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler) {
+		Future<ResultSet> fut = Future.future();
+		fut.setHandler(query -> {
+			if (query.succeeded()) {
+				conn.close(close -> {
+					if (close.failed()) {
+						handler.handle(Future.failedFuture(close.cause()));
+					} else {
+						handler.handle(Future.succeededFuture(query.result()));
+					}
+				});
+			} else {
+				conn.close(close -> {
+					if (close.failed()) {
+						handler.handle(Future.failedFuture(close.cause()));
+					} else {
+						handler.handle(Future.failedFuture(query.cause()));
+					}
+				});
+			}
+		});
+		if (qp.getParams() == null) {
+			conn.query(qp.getSql(), fut);
+		} else {
+			conn.queryWithParams(qp.getSql(), qp.getParams(), fut);
+		}
+	}
+
+	/**
+	 * 执行更新等操作
+	 * 
+	 * @param qp
+	 *          SQL语句与参数
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果
+	 */
+	private void updateExecute(SqlAndParams qp, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler) {
+		Future<UpdateResult> fut = Future.future();
+		fut.setHandler(query -> {
+			if (query.succeeded()) {
+				conn.close(close -> {
+					if (close.failed()) {
+						handler.handle(Future.failedFuture(close.cause()));
+					} else {
+						handler.handle(Future.succeededFuture(query.result()));
+					}
+				});
+			} else {
+				conn.close(close -> {
+					if (close.failed()) {
+						handler.handle(Future.failedFuture(close.cause()));
+					} else {
+						handler.handle(Future.failedFuture(query.cause()));
+					}
+				});
+			}
+		});
+		if (qp.getParams() == null) {
+			conn.update(qp.getSql(), fut);
+		} else {
+			conn.updateWithParams(qp.getSql(), qp.getParams(), fut);
+		}
+	}
+
+	// ====================================
+	// ==============主方法区================
+	// ====================================
+
+	/**
+	 * 获得数据库总行数SQL语句<br>
+	 * 返回:sql
+	 * 
+	 * @return
+	 * @since 1.0.2
+	 */
+	public SqlAndParams getCount() {
+		return getCount(null);
+	}
+	/**
+	 * 获得数据总行数SQL语句<br>
+	 * 
+	 * @param assist
+	 * @return 返回:sql or sql与params
+	 */
+	public SqlAndParams getCount(SqlAssist assist) {
+		String id = primaryId() == null ? "0" : primaryId();
+		StringBuilder sql = new StringBuilder(MessageFormat.format("select count({0}) from {1}", id, tableName()));
+		JsonArray params = null;
+		if (assist != null) {
+			if (assist.getCondition() != null && assist.getCondition().size() > 0) {
+				List<SqlWhereCondition<?>> where = assist.getCondition();
+				params = new JsonArray();
+				sql.append(" where " + where.get(0).getRequire());
+				if (where.get(0).getValue() != null) {
+					params.add(where.get(0).getValue());
+				}
+				if (where.get(0).getValues() != null) {
+					for (Object value : where.get(0).getValues()) {
+						params.add(value);
+					}
+				}
+				for (int i = 1; i < where.size(); i++) {
+					sql.append(where.get(i).getRequire());
+					if (where.get(i).getValue() != null) {
+						params.add(where.get(i).getValue());
+					}
+					if (where.get(i).getValues() != null) {
+						for (Object value : where.get(i).getValues()) {
+							params.add(value);
+						}
+					}
+				}
+			}
+		}
+		return new SqlAndParams(sql.toString(), params);
+	}
+
+	/**
+	 * 
+	 * @param assist
+	 * @param conn
+	 * @param handler
+	 * @since 1.0.2
+	 */
+	public void getCount(SQLConnection conn, Handler<AsyncResult<Long>> handler) {
+		getCount(null, conn, handler);
+	}
+	/**
+	 * 
+	 * @param assist
+	 * @param conn
+	 * @param handler
+	 * @since 1.0.2
+	 */
+	public void getCount(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<Long>> handler) {
+		getCount(assist, conn, set -> {
+			if (set.succeeded()) {
+				List<JsonArray> rows = set.result().getResults();
+				if (rows != null && rows.size() >= 0) {
+					Object value = rows.get(0).getValue(0);
+					if (value instanceof Number) {
+						handler.handle(Future.succeededFuture(((Number) value).longValue()));
+					} else {
+						handler.handle(Future.succeededFuture(0L));
+					}
+				} else {
+					handler.handle(Future.succeededFuture(0L));
+				}
+			} else {
+				handler.handle(Future.failedFuture(set.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 
+	 * @param assist
+	 *          查询工具,如果没有可以为null
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果为{@link AsyncResult<ResultSet>}
+	 * @param nullable
+	 *          用户重载方法没有实际作用传入null便可
+	 * @since 1.0.2
+	 */
+	public void getCount(SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		getCount(null, conn, handler, nullable);
+	}
+	/**
+	 * 
+	 * @param assist
+	 *          查询工具,如果没有可以为null
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果为{@link AsyncResult<ResultSet>}
+	 * @param nullable
+	 *          用户重载方法没有实际作用传入null便可
+	 * @since 1.0.2
+	 */
+	public void getCount(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		SqlAndParams qp = getCount(assist);
+		queryExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 获得查询全部数据SQL语句与参数<br>
+	 * 
+	 * @return 返回:sql
+	 */
+	public SqlAndParams selectAll() {
+		return selectAll(null);
+	}
+
+	/**
+	 * 获得查询全部数据SQL语句与参数<br>
+	 * 
+	 * @param assist
+	 * @return 返回:sql or sql与params
+	 */
+	public SqlAndParams selectAll(SqlAssist assist) {
+		// 如果Assist为空返回默认默认查询语句,反则根据Assist生成语句sql语句
+		if (assist == null) {
+			return new SqlAndParams(MessageFormat.format("select {0} from {1} ", columns(), tableName()));
+		} else {
+			String distinct = assist.getDistinct() == null ? "" : assist.getDistinct();// 去重语句
+			String column = assist.getResultColumn() == null ? columns() : assist.getResultColumn();// 表的列名
+			// 初始化SQL语句
+			StringBuilder sql = new StringBuilder(MessageFormat.format("select {0} {1} from {2}", distinct, column, tableName()));
+			JsonArray params = null;// 参数
+			if ((assist.getRowSize() == null && assist.getStartRow() == null) || primaryId() == null) {
+				if (assist.getCondition() != null && assist.getCondition().size() > 0) {
+					List<SqlWhereCondition<?>> where = assist.getCondition();
+					params = new JsonArray();
+					sql.append(" where " + where.get(0).getRequire());
+					if (where.get(0).getValue() != null) {
+						params.add(where.get(0).getValue());
+					}
+					if (where.get(0).getValues() != null) {
+						for (Object value : where.get(0).getValues()) {
+							params.add(value);
+						}
+					}
+					for (int i = 1; i < where.size(); i++) {
+						sql.append(where.get(i).getRequire());
+						if (where.get(i).getValue() != null) {
+							params.add(where.get(i).getValue());
+						}
+						if (where.get(i).getValues() != null) {
+							for (Object value : where.get(i).getValues()) {
+								params.add(value);
+							}
+						}
+					}
+				}
+				if (assist.getOrder() != null) {
+					sql.append(assist.getOrder());
+				}
+
+				if (primaryId() == null) {
+					if (params == null) {
+						params = new JsonArray();
+					}
+					if (assist.getStartRow() == null) {
+						sql.append("LIMIT ?");
+						params.add(assist.getRowSize());
+					} else {
+						sql.append("LIMIT ?,?");
+						params.add(assist.getStartRow()).add(assist.getRowSize());
+					}
+				}
+
+			} else {
+				// 添加分页语句
+				sql.append(MessageFormat.format(" inner join ( select {0} as tmp_id from {1} ", primaryId(), tableName()));
+				if (assist.getCondition() != null && assist.getCondition().size() > 0) {
+					List<SqlWhereCondition<?>> where = assist.getCondition();
+					params = new JsonArray();
+					sql.append(" where " + where.get(0).getRequire());
+					if (where.get(0).getValue() != null) {
+						params.add(where.get(0).getValue());
+					}
+					if (where.get(0).getValues() != null) {
+						for (Object value : where.get(0).getValues()) {
+							params.add(value);
+						}
+					}
+					for (int i = 1; i < where.size(); i++) {
+						sql.append(where.get(i).getRequire());
+						if (where.get(i).getValue() != null) {
+							params.add(where.get(i).getValue());
+						}
+						if (where.get(i).getValues() != null) {
+							for (Object value : where.get(i).getValues()) {
+								params.add(value);
+							}
+						}
+					}
+				}
+				if (assist.getOrder() != null) {
+					sql.append(assist.getOrder());
+				}
+				if (params == null) {
+					params = new JsonArray();
+				}
+				if (assist.getStartRow() == null) {
+					sql.append("LIMIT ?");
+					params.add(assist.getRowSize());
+				} else {
+					sql.append("LIMIT ?,?");
+					params.add(assist.getStartRow()).add(assist.getRowSize());
+				}
+
+				sql.append(MessageFormat.format(" ) as tmp on tmp.tmp_id={0}.{1} ", tableName(), primaryId()));
+			}
+			return new SqlAndParams(sql.toString(), params);
+		}
+	}
+	/**
+	 * 查询所有数据
+	 * 
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果集
+	 */
+	public void selectAll(SQLConnection conn, Handler<AsyncResult<List<JsonObject>>> handler) {
+		selectAll(null, conn, handler);
+	}
+	/**
+	 * 通过查询工具查询所有数据
+	 * 
+	 * @param assist
+	 *          查询工具帮助类
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          数据库连接
+	 */
+	public void selectAll(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<List<JsonObject>>> handler) {
+		selectAll(assist, conn, set -> {
+			if (set.succeeded()) {
+				List<JsonObject> rows = set.result().getRows();
+				handler.handle(Future.succeededFuture(rows));
+			} else {
+				handler.handle(Future.failedFuture(set.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 查询所有数据
+	 * 
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果集
+	 * @param nullable
+	 *          没有任何作用传null就可以了,用于重载方法而已
+	 */
+	public void selectAll(SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		selectAll(null, conn, handler, nullable);
+	}
+	/**
+	 * 通过查询工具查询所有数据
+	 * 
+	 * @param assist
+	 *          查询工具帮助类
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果集
+	 * @param nullable
+	 *          没有任何作用传null就可以了,用于重载方法而已
+	 */
+	public void selectAll(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		SqlAndParams qp = selectAll(assist);
+		queryExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 获得分页查询的SQL语句与参数<br>
+	 * 
+	 * @param assist
+	 * @return 返回: batchSql or batchSql与batchParams
+	 */
+	public SqlAndParams selectAllByPage(SqlAssist assist) {
+		SqlAndParams count = getCount(assist);// 获得数据总行数
+		SqlAndParams selectAll = selectAll(assist);// 获得数据
+		SqlAndParams result = new SqlAndParams();
+		result.addSqlAndParams(count, selectAll);
+		return result;
+	}
+
+	/**
+	 * 获得分页查询的结果
+	 * 
+	 * @param assist
+	 *          查询工具帮助类,如果assist为空或者分页数据为空 startRow默认值0,rowSize默认30;
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果: {count:Long数据总行数,默认值=0,data:JsonArray<JsonObject>数据默认值=new
+	 *          JsonArray()}
+	 */
+	public void selectAllByPage(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
+		SqlAndParams cqp = getCount(assist);
+		Future.<Long>future(count -> {
+			conn.queryWithParams(cqp.getSql(), cqp.getParams(), set -> {
+				if (set.succeeded()) {
+					List<JsonArray> rows = set.result().getResults();
+					long result = 0;
+					if (rows != null && rows.size() >= 0) {
+						Object value = rows.get(0).getValue(0);
+						if (value instanceof Number) {
+							result = ((Number) value).longValue();
+						}
+					}
+					count.complete(result);
+				} else {
+					count.fail(set.cause());
+				}
+			});
+		}).compose(count -> Future.<JsonObject>future(find -> {
+			JsonObject result = new JsonObject();
+			result.put("count", count);
+			if (count == 0) {
+				result.put("data", new JsonArray());
+				find.complete(result);
+			} else {
+				SqlAndParams allqp;
+				if (assist == null) {
+					allqp = selectAll(new SqlAssist().setRowSize(30));
+				} else if (assist.getRowSize() == null) {
+					assist.setRowSize(30);
+					allqp = selectAll(assist);
+				} else {
+					allqp = selectAll(assist);
+				}
+				conn.queryWithParams(allqp.getSql(), allqp.getParams(), set -> {
+					if (set.succeeded()) {
+						List<JsonObject> rows = set.result().getRows();
+						result.put("data", new JsonArray(rows));
+						conn.close(close -> {
+							if (close.failed()) {
+								find.fail(close.cause());
+							} else {
+								find.complete(result);
+							}
+						});
+					} else {
+						conn.close(close -> {
+							if (close.failed()) {
+								find.fail(close.cause());
+							} else {
+								find.fail(set.cause());
+							}
+						});
+					}
+				});
+			}
+		})).setHandler(handler);
+	}
+	/**
+	 * 通过主键查询一个对象<br>
+	 * 
+	 * @param primaryKey
+	 *          主键的值
+	 * @return 返回:sql or sql与params
+	 */
+	public <S> SqlAndParams selectById(S primaryValue) {
+		return selectById(primaryValue, null);
+	}
+
+	/**
+	 * 通过主键查询一个对象<br>
+	 * 返回:sql or sql与params
+	 * 
+	 * @param primaryKey
+	 *          主键的值
+	 * @param resultColumns
+	 *          指定返回列 格式 [table.]列名 [as 类的属性名字],...
+	 * @return
+	 */
+	public <S> SqlAndParams selectById(S primaryValue, String resultColumns) {
+		String sql = MessageFormat.format("select {0} from {1} where {2} = ? ", resultColumns == null ? columns() : resultColumns, tableName(), primaryId());
+		JsonArray params = new JsonArray();
+		params.add(primaryValue);
+		return new SqlAndParams(sql, params);
+	}
+	/**
+	 * 通过ID查询出数据
+	 * 
+	 * @param primaryValue
+	 *          主键值
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果:如果查询得到返回JsonObject如果查询不到返回null
+	 */
+	public <S> void selectById(S primaryValue, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
+		selectById(primaryValue, null, conn, handler);
+	}
+
+	/**
+	 * 通过ID查询出数据,并自定义返回列
+	 * 
+	 * @param primaryValue
+	 *          主键值
+	 * @param resultColumns
+	 *          自定义返回列
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果:如果查询得到返回JsonObject如果查询不到返回null
+	 */
+	public <S> void selectById(S primaryValue, String resultColumns, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
+		selectById(primaryValue, null, conn, set -> {
+			if (set.succeeded()) {
+				List<JsonObject> rows = set.result().getRows();
+				if (rows != null && rows.size() > 0) {
+					handler.handle(Future.succeededFuture(rows.get(0)));
+				} else {
+					handler.handle(Future.succeededFuture());
+				}
+			} else {
+				handler.handle(Future.failedFuture(set.cause()));
+			}
+		}, null);
+	}
+
+	/**
+	 * 通过ID查询出数据
+	 * 
+	 * @param primaryValue
+	 *          主键值
+	 * @param conn
+	 *          自定义返回列
+	 * @param handler
+	 *          返回结果:ResultSet
+	 * @param nullable
+	 *          没有实际用处只是重载用,可以传null
+	 */
+	public <S> void selectById(S primaryValue, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		selectById(primaryValue, null, conn, handler, nullable);
+	}
+	/**
+	 * 通过ID查询出数据,并自定义返回列
+	 * 
+	 * @param primaryValue
+	 *          主键值
+	 * @param resultColumns
+	 *          自定义返回列
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果:ResultSet
+	 * @param nullable
+	 *          没有实际用处只是重载用,可以传null
+	 */
+	public <S> void selectById(S primaryValue, String resultColumns, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		SqlAndParams qp;
+		if (resultColumns == null) {
+			qp = selectById(primaryValue);
+		} else {
+			qp = selectById(primaryValue, resultColumns);
+		}
+		queryExecute(qp, conn, handler);
+	}
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @return 返回sql 或 sql与params
+	 */
+	public SqlAndParams selectByObj(T obj) {
+		return selectByObj(obj, null);
+	}
+
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param resultColumns
+	 *          自定义返回列
+	 * @return 返回sql 或 sql与params
+	 */
+	public SqlAndParams selectByObj(T obj, String resultColumns) {
+		StringBuilder sql = new StringBuilder(MessageFormat.format("select {0} from {1} ", resultColumns == null ? columns() : resultColumns, tableName()));
+		JsonArray params = null;
+		boolean isFrist = true;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (pv.getValue() != null) {
+				if (isFrist) {
+					params = new JsonArray();
+					sql.append(MessageFormat.format("where {0} = ? ", pv.getName()));
+					params.add(pv.getValue());
+					isFrist = false;
+				} else {
+					sql.append(MessageFormat.format("and {0} = ? ", pv.getName()));
+					params.add(pv.getValue());
+				}
+			}
+		}
+
+		return new SqlAndParams(sql.toString(), params);
+	}
+
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据,只取查询出来的第一条数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果:如果存在返回JsonObject,不存在返回null
+	 */
+	public void selectSingleByObj(T obj, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
+		selectSingleByObj(obj, null, conn, handler);
+	}
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据,只取查询出来的第一条数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param resultColumns
+	 *          自定义返回列
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果:如果存在返回JsonObject,不存在返回null
+	 */
+	public void selectSingleByObj(T obj, String resultColumns, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
+		selectByObj(obj, resultColumns, conn, set -> {
+			if (set.succeeded()) {
+				List<JsonObject> rows = set.result().getRows();
+				JsonObject result = null;
+				if (rows != null && rows.size() > 0) {
+					result = rows.get(0);
+				}
+				handler.handle(Future.succeededFuture(result));
+			} else {
+				handler.handle(Future.failedFuture(set.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果集
+	 */
+	public void selectByObj(T obj, SQLConnection conn, Handler<AsyncResult<List<JsonObject>>> handler) {
+		selectByObj(obj, null, conn, handler);
+	}
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param resultColumns
+	 *          自定义返回列
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果集
+	 */
+	public void selectByObj(T obj, String resultColumns, SQLConnection conn, Handler<AsyncResult<List<JsonObject>>> handler) {
+		selectByObj(obj, resultColumns, conn, set -> {
+			if (set.succeeded()) {
+				List<JsonObject> rows = set.result().getRows();
+				handler.handle(Future.succeededFuture(rows));
+			} else {
+				handler.handle(Future.failedFuture(set.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果集
+	 */
+	public void selectByObj(T obj, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		selectByObj(obj, null, conn, handler, nullable);
+	}
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param resultColumns
+	 *          自定义返回列
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回结果集
+	 */
+	public void selectByObj(T obj, String resultColumns, SQLConnection conn, Handler<AsyncResult<ResultSet>> handler, Boolean nullable) {
+		SqlAndParams qp = selectByObj(obj, resultColumns);
+		queryExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 插入一个对象包括属性值为null的值<br>
+	 * 
+	 * @param obj
+	 * @return 返回:sql 或者 sql与params
+	 */
+	public SqlAndParams insertAll(T obj) {
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		StringBuilder tempValues = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (tempColumn == null) {
+				tempColumn = new StringBuilder(pv.getName());
+				tempValues = new StringBuilder("?");
+				params = new JsonArray();
+			} else {
+				tempColumn.append("," + pv.getName());
+				tempValues.append(",?");
+			}
+			if (pv.getValue() != null) {
+				params.add(pv.getValue());
+			} else {
+				params.addNull();
+			}
+		}
+		String sql = MessageFormat.format("insert into {0} ({1}) values ({2}) ", tableName(), tempColumn, tempValues);
+		return new SqlAndParams(sql.toString(), params);
+	}
+	/**
+	 * 插入一个对象包括属性值为null的值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void insertAll(T obj, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		insertAll(obj, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 插入一个对象包括属性值为null的值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void insertAll(T obj, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = insertAll(obj);
+		updateExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 插入一个对象,指插入对象中值不为null的属性<br>
+	 * 
+	 * @param obj
+	 *          对象
+	 * @return 返回:sql 或 sql与params
+	 */
+	public SqlAndParams insertNonEmpty(T obj) {
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		StringBuilder tempValues = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (pv.getValue() != null) {
+				if (tempColumn == null) {
+					tempColumn = new StringBuilder(pv.getName());
+					tempValues = new StringBuilder("?");
+					params = new JsonArray();
+				} else {
+					tempColumn.append("," + pv.getName());
+					tempValues.append(",?");
+				}
+				params.add(pv.getValue());
+			}
+		}
+		String sql = MessageFormat.format("insert into {0} ({1}) values ({2}) ", tableName(), tempColumn, tempValues);
+		return new SqlAndParams(sql, params);
+	}
+	/**
+	 * 插入一个对象,指插入对象中值不为null的属性
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void insertNonEmpty(T obj, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		insertNonEmpty(obj, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 插入一个对象,指插入对象中值不为null的属性
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void insertNonEmpty(T obj, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = insertNonEmpty(obj);
+		updateExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 更新一个对象中所有的属性包括null值,条件为对象中的主键值
+	 * 
+	 * @param obj
+	 * @return 返回:sql or sql与params, 如果对象中的id为null将会返回SQL:"there is no primary key
+	 *         in your SQL statement"
+	 */
+	public SqlAndParams updateAllById(T obj) {
+		if (primaryId() == null) {
+			return new SqlAndParams("there is no primary key in your SQL statement");
+		}
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		Object tempIdValue = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (pv.getName().equals(primaryId())) {
+				tempIdValue = pv.getValue();
+				continue;
+			}
+			if (tempColumn == null) {
+				params = new JsonArray();
+				tempColumn = new StringBuilder(pv.getName() + " = ? ");
+			} else {
+				tempColumn.append(", " + pv.getName() + " = ? ");
+			}
+			if (pv.getValue() != null) {
+				params.add(pv.getValue());
+			} else {
+				params.addNull();
+			}
+		}
+		if (tempIdValue == null) {
+			return new SqlAndParams("there is no primary key in your SQL statement");
+		}
+		params.add(tempIdValue);
+		String sql = MessageFormat.format("update {0} set {1} where {2} = ? ", tableName(), tempColumn, primaryId(), tempIdValue);
+		return new SqlAndParams(sql, params);
+	}
+	/**
+	 * 更新一个对象中所有的属性包括null值,条件为对象中的主键值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void updateAllById(T obj, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		updateAllById(obj, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 更新一个对象中所有的属性包括null值,条件为对象中的主键值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void updateAllById(T obj, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = updateAllById(obj);
+		updateExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 更新一个对象中所有的属性包括null值,条件为SqlAssist条件集<br>
+	 * 
+	 * @param obj
+	 * @param assist
+	 * @return 返回:sql or
+	 *         sql与params如果SqlAssist对象或者对象的Condition为null将会返回SQL:"SqlAssist or
+	 *         SqlAssist.condition is null"
+	 */
+	public SqlAndParams updateAllByAssist(T obj, SqlAssist assist) {
+		if (assist == null || assist.getCondition() == null || assist.getCondition().size() < 1) {
+			return new SqlAndParams("SqlAssist or SqlAssist.condition is null");
+		}
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (tempColumn == null) {
+				params = new JsonArray();
+				tempColumn = new StringBuilder(pv.getName() + " = ? ");
+			} else {
+				tempColumn.append(", " + pv.getName() + " = ? ");
+			}
+			if (pv.getValue() != null) {
+				params.add(pv.getValue());
+			} else {
+				params.addNull();
+			}
+		}
+		List<SqlWhereCondition<?>> where = assist.getCondition();
+		StringBuilder whereStr = new StringBuilder(" where " + where.get(0).getRequire());
+		if (where.get(0).getValue() != null) {
+			params.add(where.get(0).getValue());
+		}
+		if (where.get(0).getValues() != null) {
+			for (Object value : where.get(0).getValues()) {
+				params.add(value);
+			}
+		}
+		for (int i = 1; i < where.size(); i++) {
+			whereStr.append(where.get(i).getRequire());
+			if (where.get(i).getValue() != null) {
+				params.add(where.get(i).getValue());
+			}
+			if (where.get(i).getValues() != null) {
+				for (Object value : where.get(i).getValues()) {
+					params.add(value);
+				}
+			}
+		}
+		String sql = MessageFormat.format("update {0} set {1} {2}", tableName(), tempColumn, whereStr == null ? "" : whereStr);
+		return new SqlAndParams(sql.toString(), params);
+	}
+	/**
+	 * 更新一个对象中所有的属性包括null值,条件为SqlAssist条件集<br>
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param SqlAssist
+	 *          sql帮助工具
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void updateAllByAssist(T obj, SqlAssist assist, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		updateAllByAssist(obj, assist, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 更新一个对象中所有的属性包括null值,条件为SqlAssist条件集<br>
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param assist
+	 *          sql帮助工具
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void updateAllByAssist(T obj, SqlAssist assist, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = updateAllByAssist(obj, assist);
+		updateExecute(qp, conn, handler);
+	}
+	/**
+	 * 更新一个对象中属性不为null值,条件为对象中的主键值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @return 返回:sql or sql与params , 如果id为null或者没有要更新的数据将返回SQL:"there is no
+	 *         primary key in your SQL statement"
+	 */
+	public SqlAndParams updateNonEmptyById(T obj) {
+		if (primaryId() == null) {
+			return new SqlAndParams("there is no primary key in your SQL statement");
+		}
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		Object tempIdValue = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (pv.getName().equals(primaryId())) {
+				tempIdValue = pv.getValue();
+				continue;
+			}
+			if (pv.getValue() != null) {
+				if (tempColumn == null) {
+					params = new JsonArray();
+					tempColumn = new StringBuilder(pv.getName() + " = ? ");
+				} else {
+					tempColumn.append(", " + pv.getName() + " = ? ");
+				}
+				params.add(pv.getValue());
+			}
+		}
+		if (tempColumn == null || tempIdValue == null) {
+			return new SqlAndParams("there is no set update value or no primary key in your SQL statement");
+		}
+		params.add(tempIdValue);
+		String sql = MessageFormat.format("update {0} set {1} where {2} = ? ", tableName(), tempColumn, primaryId(), tempIdValue);
+		return new SqlAndParams(sql, params);
+	}
+
+	/**
+	 * 更新一个对象中属性不为null值,条件为对象中的主键值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void updateNonEmptyById(T obj, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		updateNonEmptyById(obj, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 更新一个对象中属性不为null值,条件为对象中的主键值
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void updateNonEmptyById(T obj, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = updateNonEmptyById(obj);
+		updateExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 将对象中属性值不为null的进行更新,条件为SqlAssist条件集
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param assist
+	 *          SqlAssist对象条件集
+	 * @return 返回:sql or sql与params , 如果assist为null将会返回sql:"SqlAssist or
+	 *         SqlAssist.condition is null"
+	 */
+	public SqlAndParams updateNonEmptyByAssist(T obj, SqlAssist assist) {
+		if (assist == null || assist.getCondition() == null || assist.getCondition().size() < 1) {
+			return new SqlAndParams("SqlAssist or SqlAssist.condition is null");
+		}
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (pv.getValue() != null) {
+				if (tempColumn == null) {
+					params = new JsonArray();
+					tempColumn = new StringBuilder(pv.getName() + " = ? ");
+				} else {
+					tempColumn.append(", " + pv.getName() + " = ? ");
+				}
+				params.add(pv.getValue());
+			}
+		}
+		if (tempColumn == null) {
+			return new SqlAndParams("The object has no value");
+		}
+
+		List<SqlWhereCondition<?>> where = assist.getCondition();
+		StringBuilder whereStr = new StringBuilder(" where " + where.get(0).getRequire());
+		if (where.get(0).getValue() != null) {
+			params.add(where.get(0).getValue());
+		}
+		if (where.get(0).getValues() != null) {
+			for (Object value : where.get(0).getValues()) {
+				params.add(value);
+			}
+		}
+		for (int i = 1; i < where.size(); i++) {
+			whereStr.append(where.get(i).getRequire());
+			if (where.get(i).getValue() != null) {
+				params.add(where.get(i).getValue());
+			}
+			if (where.get(i).getValues() != null) {
+				for (Object value : where.get(i).getValues()) {
+					params.add(value);
+				}
+			}
+		}
+		String sql = MessageFormat.format("update {0} set {1} {2}", tableName(), tempColumn, whereStr);
+		return new SqlAndParams(sql.toString(), params);
+	}
+	/**
+	 * 更新一个对象中属性不为null值,条件为SqlAssist对象条件集
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param assist
+	 *          数据库连接
+	 * @param conn
+	 *          sql帮助工具
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void updateNonEmptyByAssist(T obj, SqlAssist assist, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		updateNonEmptyByAssist(obj, assist, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 更新一个对象中属性不为null值,条件为SqlAssist对象条件集
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param assist
+	 *          sql帮助工具
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void updateNonEmptyByAssist(T obj, SqlAssist assist, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = updateNonEmptyByAssist(obj, assist);
+		updateExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 通过主键值删除对应的数据行
+	 * 
+	 * @param primaryValue
+	 *          id值
+	 * @return 返回:sql or sql与params , 如果id为null或者没有要更新的数据将返回SQL:"there is no
+	 *         primary key in your SQL statement"
+	 */
+	public <S> SqlAndParams deleteById(S primaryValue) {
+		if (primaryId() == null) {
+			return new SqlAndParams("there is no primary key in your SQL statement");
+		}
+		String sql = MessageFormat.format("delete from {0} where {1} = ? ", tableName(), primaryId());
+		JsonArray params = new JsonArray();
+		params.add(primaryValue);
+		return new SqlAndParams(sql, params);
+	}
+	/**
+	 * 通过主键值删除对应的数据行
+	 * 
+	 * @param obj
+	 *          主键值
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public <S> void deleteById(S primaryValue, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		deleteById(primaryValue, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 通过主键值删除对应的数据行
+	 * 
+	 * @param obj
+	 *          主键值
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public <S> void deleteById(S primaryValue, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = deleteById(primaryValue);
+		updateExecute(qp, conn, handler);
+	}
+
+	/**
+	 * 通过SqlAssist条件集删除对应的数据行
+	 * 
+	 * @param assist
+	 * @return 返回:sql or sql与params , 如果assist为null将会返回sql: "SqlAssist or
+	 *         SqlAssist.condition is null"
+	 */
+	public SqlAndParams deleteByAssist(SqlAssist assist) {
+		if (assist == null || assist.getCondition() == null || assist.getCondition().size() < 1) {
+			return new SqlAndParams("SqlAssist or SqlAssist.condition is null");
+		}
+		List<SqlWhereCondition<?>> where = assist.getCondition();
+		JsonArray params = new JsonArray();
+		StringBuilder whereStr = new StringBuilder(" where " + where.get(0).getRequire());
+		if (where.get(0).getValue() != null) {
+			params.add(where.get(0).getValue());
+		}
+		if (where.get(0).getValues() != null) {
+			for (Object value : where.get(0).getValues()) {
+				params.add(value);
+			}
+		} ;
+		for (int i = 1; i < where.size(); i++) {
+			whereStr.append(where.get(i).getRequire());
+			if (where.get(i).getValue() != null) {
+				params.add(where.get(i).getValue());
+			}
+			if (where.get(i).getValues() != null) {
+				for (Object value : where.get(i).getValues()) {
+					params.add(value);
+				}
+			}
+		}
+		String sql = MessageFormat.format("delete from {0} {1}", tableName(), whereStr);
+		return new SqlAndParams(sql, params);
+	}
+	/**
+	 * 通过SqlAssist条件集删除对应的数据行
+	 * 
+	 * @param assist
+	 *          条件集
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 */
+	public void deleteByAssist(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		deleteByAssist(assist, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+	/**
+	 * 通过SqlAssist条件集删除对应的数据行
+	 * 
+	 * @param assist
+	 *          条件集
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          返回操作结果
+	 * @param nullable
+	 *          没有实际作用,用于做方法重载而已,可以传入null
+	 */
+	public void deleteByAssist(SqlAssist assist, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = deleteByAssist(assist);
+		updateExecute(qp, conn, handler);
+	}
+
+}

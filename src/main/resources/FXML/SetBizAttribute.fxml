@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane prefHeight="599.0" prefWidth="855.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.SetBizAttributeController">
+	<content>
+		<AnchorPane prefHeight="593.0" prefWidth="853.0">
+			<children>
+				<Label layoutX="28.0" layoutY="11.0" text="提示:如果需要实体类名可以使用{c} , 例如:insert{c}  如果类名为User则结果为:insertUser,{C}=User,{c}=user">
+					<font>
+						<Font size="16.0" />
+					</font>
+				</Label>
+				<GridPane layoutX="25.0" layoutY="52.0" prefHeight="430.0" prefWidth="780.0">
+					<columnConstraints>
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="246.0" minWidth="0.0" prefWidth="64.0" />
+						<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="555.0" minWidth="10.0" prefWidth="106.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="628.0" minWidth="10.0" prefWidth="256.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="540.0" minWidth="10.0" prefWidth="328.0" />
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+					</rowConstraints>
+					<children>
+						<CheckBox fx:id="chkSelectAll" mnemonicParsing="false" onAction="#onSelectAll" selected="true" visible="false" GridPane.rowIndex="2">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</CheckBox>
+						<CheckBox fx:id="chkSelectObj" mnemonicParsing="false" onAction="#onSelectObj" selected="true" visible="false" GridPane.rowIndex="4">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</CheckBox>
+						<CheckBox fx:id="chkSelectId" mnemonicParsing="false" onAction="#onSelectId" selected="true" visible="false" GridPane.rowIndex="5">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</CheckBox>
+						<CheckBox fx:id="chkInsert" mnemonicParsing="false" onAction="#onInsert" selected="true" visible="false" GridPane.rowIndex="6">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</CheckBox>
+						<CheckBox fx:id="chkUpdate" mnemonicParsing="false" onAction="#onUpdate" selected="true" visible="false" GridPane.rowIndex="7">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</CheckBox>
+						<CheckBox fx:id="chkDelete" mnemonicParsing="false" onAction="#onDelete" selected="true" visible="false" GridPane.rowIndex="8">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</CheckBox>
+						<Label text="查询全部:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</Label>
+						<Label text="通过对象查询:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</Label>
+						<Label text="通过ID查询:" GridPane.columnIndex="1" GridPane.rowIndex="5">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</Label>
+						<Label text="插入数据:" GridPane.columnIndex="1" GridPane.rowIndex="6">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</Label>
+						<Label text="更新数据:" GridPane.columnIndex="1" GridPane.rowIndex="7">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</Label>
+						<Label text="删除数据:" GridPane.columnIndex="1" GridPane.rowIndex="8">
+							<font>
+								<Font size="16.0" />
+							</font>
+						</Label>
+						<TextField fx:id="txtFunSelectAll" prefHeight="29.0" prefWidth="192.0" text="find{C}" GridPane.columnIndex="2" GridPane.rowIndex="2">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtBsSelectAll" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/find{C}" GridPane.columnIndex="3" GridPane.rowIndex="2">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<Label text="是否创建">
+							<font>
+								<Font size="16.0" />
+							</font>
+							<GridPane.margin>
+								<Insets bottom="-15.0" />
+							</GridPane.margin>
+						</Label>
+						<Label text="方法的名字" GridPane.columnIndex="2">
+							<font>
+								<Font size="16.0" />
+							</font>
+							<GridPane.margin>
+								<Insets bottom="-15.0" />
+							</GridPane.margin>
+						</Label>
+						<Label text="Event Bus 地址" GridPane.columnIndex="3">
+							<font>
+								<Font size="16.0" />
+							</font>
+							<GridPane.margin>
+								<Insets bottom="-15.0" />
+							</GridPane.margin>
+						</Label>
+						<TextField fx:id="txtFunSelectObj" prefHeight="29.0" prefWidth="192.0" text="get{C}ByObj" GridPane.columnIndex="2" GridPane.rowIndex="4">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtFunSelectId" prefHeight="29.0" prefWidth="192.0" text="get{C}ById" GridPane.columnIndex="2" GridPane.rowIndex="5">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtFunInsert" prefHeight="29.0" prefWidth="192.0" text="add{C}" GridPane.columnIndex="2" GridPane.rowIndex="6">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtFunUpdate" prefHeight="29.0" prefWidth="192.0" text="updt{C}" GridPane.columnIndex="2" GridPane.rowIndex="7">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtFunDelete" prefHeight="29.0" prefWidth="192.0" text="del{C}ById" GridPane.columnIndex="2" GridPane.rowIndex="8">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtBsSelectObj" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/get{C}ByObj" GridPane.columnIndex="3" GridPane.rowIndex="4">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtBsSelectId" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/get{C}ById" GridPane.columnIndex="3" GridPane.rowIndex="5">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtBsInsert" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/add{C}" GridPane.columnIndex="3" GridPane.rowIndex="6">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtBsUpdate" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/updt{C}" GridPane.columnIndex="3" GridPane.rowIndex="7">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+						<TextField fx:id="txtBsDelete" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/del{C}" GridPane.columnIndex="3" GridPane.rowIndex="8">
+							<font>
+								<Font size="14.0" />
+							</font>
+							<GridPane.margin>
+								<Insets left="10.0" />
+							</GridPane.margin>
+						</TextField>
+                  <CheckBox fx:id="chkInsertBatch" mnemonicParsing="false" onAction="#onInsertBatch" GridPane.rowIndex="9">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <Label text="查询总行数:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="分页查询全部:" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label text="附加内容:" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtFunGetCount" prefHeight="29.0" prefWidth="192.0" text="get{C}Count" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="txtBsGetCount" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/get{C}Count" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="txtFunSelectByPage" prefHeight="29.0" prefWidth="192.0" text="find{C}ByPage" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="txtBsSelectByPage" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/find{C}ByPage" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="txtFunInsertBatch" prefHeight="29.0" prefWidth="192.0" text="add{C}Batch" GridPane.columnIndex="2" GridPane.rowIndex="9">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="txtBsInsertBatch" prefHeight="29.0" prefWidth="192.0" text="biz://{C}/add{C}Batch" GridPane.columnIndex="3" GridPane.rowIndex="9">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <CheckBox fx:id="chkSelectByPage" mnemonicParsing="false" onAction="#onSelectByPage" selected="true" visible="false" GridPane.rowIndex="3">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chkGetCount" mnemonicParsing="false" onAction="#onGetCount" selected="true" visible="false" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+					</children>
+				</GridPane>
+				<Button fx:id="btnSuccess" layoutX="363.0" layoutY="513.0" mnemonicParsing="false" onAction="#onSuccess" text="确 定">
+					<font>
+						<Font size="20.0" />
+					</font>
+					<styleClass>
+						<String fx:value="btn" />
+						<String fx:value="btn-success" />
+					</styleClass>
+				</Button>
+				<Button fx:id="btnSaveConfig" layoutX="480.0" layoutY="514.0" mnemonicParsing="false" onAction="#onSaveConfig" text="保存配置">
+					<styleClass>
+						<String fx:value="btn-executable" />
+						<String fx:value="btn" />
+					</styleClass>
+					<font>
+						<Font size="20.0" />
+					</font>
+				</Button>
+            <CheckBox fx:id="chkFailNull" layoutX="46.0" layoutY="490.0" mnemonicParsing="false" selected="true" text="没有默认值的属性非空判断">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="chkFailLen" layoutX="46.0" layoutY="525.0" mnemonicParsing="false" selected="true" text="字符串属性长度判断">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="chkDelOldFile" layoutX="46.0" layoutY="558.0" mnemonicParsing="false" selected="true" text="重新生成时删除原文件">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <tooltip>
+                  <Tooltip text="重新生成时,如果已经存在该文件则将其删除后再重新生成,没有删除的话可能导致文件重复" />
+               </tooltip>
+            </CheckBox>
+			</children>
+		</AnchorPane>
+	</content>
+</ScrollPane>

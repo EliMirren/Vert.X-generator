@@ -1,0 +1,33 @@
+	/**
+	 * 批量插入{*className*}到数据库
+	 * 
+	 * @param msg
+	 */
+	public void {*funInsertBatch*}(Message<JsonArray> msg) {
+		if (msg.body() != null) {
+			jdbcClient.getConnection(connection -> {
+				if (connection.succeeded()) {
+					SQLConnection conn = connection.result();
+					SqlAndParams sp = {*sqlObjName*}.{*addSQLFunName*}(msg.body());
+					conn.batchWithParams(sp.getSql(), sp.getBatchParams(), res -> {
+						if (res.succeeded()) {
+							List<Integer> result = res.result();
+							msg.reply(new JsonArray(result));
+						} else {
+							// TODO 做异常处理
+							// LOG.error("执行批量插入数据-->失败:" +
+							// res.cause());
+							msg.fail(500, res.cause().toString());
+						}
+					});
+				} else {
+					// TODO 做异常处理
+					// LOG.error("执行批量插入数据-->获取数据库连接-->失败:" +
+					// connection.cause());
+					msg.fail(500, connection.cause().toString());
+				}
+			});
+		} else {
+			msg.fail(412, "对象不能为空");
+		}
+	}

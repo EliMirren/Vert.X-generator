@@ -1,0 +1,22 @@
+	/**
+	 * 批量插入{*className*}
+	 * 
+	 * @param msg
+	 */
+	public void {*funInsertBatch*}(Message<JsonObject> msg) {
+		// TODO 在这里做点什么
+		JsonObject body = msg.body();
+		if (body == null) {
+			// TODO 做点事情
+		} else {
+			vertx.eventBus().<JsonArray>send("{*daoBsInsertBatch*}", msg.body(), res -> {
+				if (res.succeeded()) {
+					JsonArray result = res.result().body();
+					msg.reply(result);
+				} else {
+					// TODO 在这里做点什么事情,比如日志记录,你可以直接修改模板做相应的异常处理
+					msg.fail(500, "操作失败!");
+				}
+			});
+		}
+	}

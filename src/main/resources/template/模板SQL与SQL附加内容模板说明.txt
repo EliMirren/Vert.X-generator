@@ -1,0 +1,32 @@
+可以识别占位符
+
+通用
+表的名字  = {*tableName*}
+实体类名字  = {*className*}
+JsonObject名字 = {*JsonObject*}
+实体类名字首字母小写  = {*classNameFL*}
+
+
+包声明  = {*package*}
+引入其他包  = {*import*}
+帮助类Assist包名 = {*AssistPackage*}
+抽象AbstractSQL包名  = {*AbstractSQLPackage*}  //SqlPropertyValue与他同包名
+SQL语句与参数包名   = {*SqlAndParamsPackage*}
+实体类名字  = {*className*}
+表的列名带AS别名  = {*columns*}
+主键的名字  = {*primaryId*}
+SQL类的名字  = {*sqlName*}
+SQL类中列名与属性  = {*SqlPropertyValue*} 以json的方式
+SQL类中列名与属性  = {*SqlPropertyValueByClz*} 以实体类的方式
+SQL附加代码块  = {*AddSQL*}
+
+
+SQL附加内容占位符
+批量插入方法名  = {*addSQLFunName*}
+SQL插入参数?号  = {*column?*}
+SQL插入参数值  = {*param*}
+表的列名不带AS别名  = {*column*}
+获得参数值带null判断  = {*forIfNull*} //默认如果不需要可以改成{*forAll*}两者可以并处
+获得参数值不带null判断  = {*forAll*}
+
+

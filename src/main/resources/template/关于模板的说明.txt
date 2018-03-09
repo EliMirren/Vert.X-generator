@@ -1,0 +1,27 @@
+系统只识别带Temp文字的文件,如果不带Temp系统自动将其过滤,
+Temp-Defult为系统自带默认模板,自定义模板建议以Temp-Custom开头;
+
+默认模板对应:
+dao = Temp-Default-Dao.txt
+dao的附加内容 = Temp-Default-DaoAdd.txt
+biz = Temp-Default-Biz.txt
+biz的附加内容 = Temp-Default-BizAdd.txt
+WebRouter = Temp-Default-WebRouter.txt
+WebRouter的附加内容 = Temp-Default-WebRouterAdd.txt
+
+拥有主键的SQL类  = Temp-Defult-SqlSubClass.txt
+没有主键的SQL类  = Temp-Defult-SqlSubClassNonId.txt
+SQL类的附加内容  = Temp-Defult-AddSQL.txt 
+
+AbstractSQL-MySQL = Temp-Defult-AbstractMySQL.txt
+AbstractSQL-Oracle = Temp-Defult-AbstractOracle.txt
+AbstractSQL-PostgreSQL = Temp-Defult-AbstractPostgreSQL.txt
+AbstractSQL-SqlServer = Temp-Defult-AbstractSqlServer.txt
+
+SQL语句与参数  = Temp-Defult-SqlAndParams.txt
+帮助类Assist = Temp-Defult-SqlAssist.txt 
+帮助类Assist的条件类 = Temp-Defult-SqlWhereCondition.txt 
+列名与属性  = Temp-Defult-SqlPropertyValue.txt
+
+没有默认实体类附加内容模板,实体类模板只支持嵌套{*className*}既得到类名
+

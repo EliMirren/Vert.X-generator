@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="678.0" prefWidth="590.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.SetTemplateController">
+	<center>
+
+	</center>
+   <center>
+      <ScrollPane prefHeight="679.0" prefWidth="599.0" BorderPane.alignment="CENTER">
+         <content>
+      		<AnchorPane prefHeight="661.0" prefWidth="579.0" styleClass="pane-padding">
+               <children>
+                  <Button fx:id="btnSaveConfig" layoutX="295.0" layoutY="623.0" mnemonicParsing="false" onAction="#onSaveConfig" text="保存配置">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-executable" />
+                     </styleClass>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <GridPane layoutX="13.0" layoutY="15.0" prefHeight="596.0" prefWidth="546.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="235.0" minWidth="10.0" prefWidth="175.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="375.0" minWidth="10.0" prefWidth="371.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="实体类附加内容模板 : ">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="dao模板 : " GridPane.rowIndex="1">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="Biz模板 : " GridPane.rowIndex="3">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="Biz附加内容模板 : " GridPane.rowIndex="4">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="Router模板 : " GridPane.rowIndex="5">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="SQL模板有主键 : " GridPane.rowIndex="7">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="SqlAssist模板 : " GridPane.rowIndex="10">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="AbstractSQL模板 : " GridPane.rowIndex="12">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="SQLAndParams模板 : " GridPane.rowIndex="13">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="SQL附加内容模板 : " GridPane.rowIndex="9">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cboEntityAdd" prefHeight="30.0" prefWidth="374.0" promptText="实体类中如果内容不够,可以在实体类属性打钩添加附加内容" GridPane.columnIndex="1" />
+                        <ComboBox fx:id="cboDao" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cboBiz" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cboBizAdd" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="cboWebRouter" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="cboSQL" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <ComboBox fx:id="cboAddSQL" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <ComboBox fx:id="cboAssist" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <ComboBox fx:id="cboAbstractSQL" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                        <ComboBox fx:id="cboSqlAndParams" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                        <Label text="SQL模板没有主键 : " GridPane.rowIndex="8">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <ComboBox fx:id="cboSQLNonId" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label text="PropertyValue模板 : " GridPane.rowIndex="14">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <ComboBox fx:id="cboPropertyValue" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                        <Label text="SqlAssist条件类模板 : " GridPane.rowIndex="11">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <padding>
+                              <Insets right="10.0" />
+                           </padding>
+                        </Label>
+                        <Label text="dao附加内容模板 : " GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <padding>
+                              <Insets right="10.0" />
+                           </padding>
+                        </Label>
+                        <ComboBox fx:id="cboAssistCondition" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                        <ComboBox fx:id="cboDaoAdd" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Router附加内容模板 : " GridPane.rowIndex="6">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <ComboBox fx:id="cboWebRouterAdd" prefHeight="30.0" prefWidth="374.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                     </children>
+                  </GridPane>
+                  <Button fx:id="btnSuccess" layoutX="197.0" layoutY="623.0" mnemonicParsing="false" onAction="#onSuccess" text="确 定">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="btn-success" />
+                     </styleClass>
+                  </Button>
+               </children>
+      		</AnchorPane>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>

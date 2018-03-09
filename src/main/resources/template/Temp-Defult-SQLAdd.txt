@@ -1,0 +1,13 @@
+	/**
+	 * 批量插入数据到表中 <br>
+	 * 返回:sql or sql与batchParams
+	 * 
+	 * @param batch
+	 * @return
+	 */
+	public SqlAndParams {*addSQLFunName*}(JsonArray batch) {
+		List<JsonArray> batchParams = new ArrayList<>();// 批量参数
+		{*forIfNull*}
+		String sql = "insert into " + tableName() + " ({*column*}) values ({*column?*})";
+		return new SqlAndParams(sql, batchParams);
+	}
