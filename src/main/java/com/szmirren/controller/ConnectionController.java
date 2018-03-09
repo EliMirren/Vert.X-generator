@@ -49,6 +49,7 @@ public class ConnectionController extends BaseController {
 		// 初始化下拉列表
 		cboDBType.getItems().addAll(DBTypeName.MYSQL.getValue(), DBTypeName.POSTGRE_SQL.getValue(),
 				DBTypeName.ORACLE.getValue(), DBTypeName.SQL_SERVER.getValue());
+		cboDBCoding.setEditable(true);
 		cboDBCoding.getItems().addAll("utf8", "utf16", "utf32", "utf8mb4", "gb2312", "gbk", "ascii");
 		cboDBCoding.setValue("utf8");
 		LOG.debug("初始化数据库连接成功!");

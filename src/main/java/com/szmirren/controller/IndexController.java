@@ -218,7 +218,7 @@ public class IndexController extends BaseController {
 			AboutController controller = (AboutController) loadFXMLPage("使用说明", FXMLPage.ABOUT, false);
 			controller.showDialogStage();
 		});
-
+		cboCodeFormat.setEditable(true);
 		cboCodeFormat.getItems().addAll("UTF-8", "GBK", "UTF-16", "UTF-32", "GB2312", "GB18030", "ISO-8859-1");
 		cboCodeFormat.setValue("UTF-8");
 		LOG.debug("初始化首页成功!");

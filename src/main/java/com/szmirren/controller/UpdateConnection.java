@@ -52,10 +52,11 @@ public class UpdateConnection extends BaseController {
 		LOG.debug("初始化修改数据库连接窗口...");
 		DatabaseConfig config = indexController.getUpdateOfDatabaseConfig();
 		// 初始化下拉列表
-		cboDBType.getItems().addAll(DBTypeName.MYSQL.getValue(), DBTypeName.POSTGRE_SQL.getValue(),
-				DBTypeName.ORACLE.getValue(), DBTypeName.SQL_SERVER.getValue());
+		cboDBType.getItems().addAll(DBTypeName.MYSQL.getValue(), DBTypeName.POSTGRE_SQL.getValue(), DBTypeName.ORACLE.getValue(),
+				DBTypeName.SQL_SERVER.getValue());
 		cboDBType.setValue(config.getDbType());
-		cboDBCoding.getItems().addAll("utf8", "gb2312", "gbk");
+		cboDBCoding.setEditable(true);
+		cboDBCoding.getItems().addAll("utf8", "utf16", "utf32", "utf8mb4", "gb2312", "gbk", "ascii");
 		cboDBCoding.setValue(config.getEncoding());
 		txtConnName.setText(config.getConnName());
 		txtConnURL.setText(config.getConnURL());
@@ -137,8 +138,7 @@ public class UpdateConnection extends BaseController {
 		String encoding = cboDBCoding.getValue();
 		boolean isEmpty = validata(connName, connURL, listenPort, dbName, userName, dbType, encoding);
 		if (isEmpty) {
-			DatabaseConfig config = new DatabaseConfig(connName, connURL, listenPort, dbName, userName, userPwd, dbType,
-					encoding);
+			DatabaseConfig config = new DatabaseConfig(connName, connURL, listenPort, dbName, userName, userPwd, dbType, encoding);
 			return config;
 		} else {
 			AlertUtil.showWarnAlert("除了密码以外所有属性都为必需填与选择");
