@@ -19,7 +19,7 @@ mvn jfx:jar
 [vertx-generator的模板仓库](https://github.com/shenzhenMirren/vertx-generator-template)<br/>
 
 # 工具主页<br/>
-![index](https://raw.githubusercontent.com/shenzhenMirren/vertx-generator-doc/master/resource/images/index.png)
+![index](https://raw.githubusercontent.com/shenzhenMirren/MyGithubResources/master/image/vert.x-generator-index.png)
 
 # 基本常用功能：<br/>
 <ol>
