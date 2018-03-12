@@ -294,19 +294,19 @@ public class ClassUtil {
 		for (AttributeCVF attr : attrcvf) {
 			String patn;
 			if (JavaType.isInteger(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}StringUtil.getInteger(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getInteger(params.get(\"{1}\")));\r\n";
 			} else if (JavaType.isDouble(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}StringUtil.getDouble(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getDouble(params.get(\"{1}\")));\r\n";
 			} else if (JavaType.isLong(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}StringUtil.getLong(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getLong(params.get(\"{1}\")));\r\n";
 			} else if (JavaType.isDate(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}StringUtil.getDate(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getDate(params.get(\"{1}\")));\r\n";
 			} else if (attr.getJavaTypeValue().indexOf("Instant") >= 0) {
-				patn = "    obj.set{0}({2}StringUtil.getInstant(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getInstant(params.get(\"{1}\")));\r\n";
 			} else if (attr.getJavaTypeValue().indexOf("JsonObject") >= 0) {
-				patn = "    obj.set{0}({2}StringUtil.getJsonObject(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getJsonObject(params.get(\"{1}\")));\r\n";
 			} else if (attr.getJavaTypeValue().indexOf("JsonArray") >= 0) {
-				patn = "    obj.set{0}({2}StringUtil.getJsonArray(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}({2}.StringUtil.getJsonArray(params.get(\"{1}\")));\r\n";
 			} else {
 				patn = "    obj.set{0}(params.get(\"{1}\"));\r\n";
 			}
