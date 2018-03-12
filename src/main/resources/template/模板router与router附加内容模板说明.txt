@@ -7,6 +7,7 @@ JsonObject名字 = {*JsonObject*}
 
 包声明  = {*package*}
 引入其他包  = {*import*}
+SqlAssist所在包名 = {*SqlAssistPackage*}
 router的名字 = {*routerName*}
 附加内容  = {*routerAdd*}
 dao的名字 = {*daoName*}

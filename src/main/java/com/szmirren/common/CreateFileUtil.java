@@ -461,11 +461,13 @@ public class CreateFileUtil {
 		rep.add(StrUtil.asStrArray("{*bizName*}", bizName));
 		rep.add(StrUtil.asStrArray("{*sqlName*}", sqlName));
 		rep.add(StrUtil.asStrArray("{*className*}", className));
+		rep.add(StrUtil.asStrArray("{*SqlAssistPackage*}", config.getAssistPackage()));
 		rep.add(StrUtil.asStrArray("{*JsonObject*}", "JsonObject"));
 		rep.add(StrUtil.asStrArray("{*classNameFL*}", classNameFL));
 		rep.add(StrUtil.asStrArray("{*//*}", notes));
 		rep.add(StrUtil.asStrArray("{c}", StrUtil.fristToLoCase(className)));
 		rep.add(StrUtil.asStrArray("{C}", className));
+
 		// 添加dao的包名
 		if (router.indexOf("{*daoName*}") >= 0) {
 			impt += getImportStr(config.getDaoPackage(), config.getDaoName());
