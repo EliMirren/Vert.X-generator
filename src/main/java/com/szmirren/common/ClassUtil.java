@@ -23,12 +23,7 @@ public class ClassUtil {
 	 * @return
 	 */
 	public static String getEntityStr(EntityAttribute attr) {
-		String packageName = attr.getEntityPackage();
-		List<String> importPackages = attr.getImportPackages();
-		String entityName = attr.getEntityName();
-		List<AttributeCVF> attrcvf = attr.getAttrs();
-		ClassConfig config = attr.getConfig();
-		return makeEntityToString(packageName, importPackages, entityName, attrcvf, config);
+		return makeEntityToString(attr);
 	}
 
 	/**
@@ -39,14 +34,19 @@ public class ClassUtil {
 	 * @param property
 	 * @return
 	 */
-	private static String makeEntityToString(String packageName, List<String> importPackages, String entityName,
-			List<AttributeCVF> attrcvf, ClassConfig config) {
+	private static String makeEntityToString(EntityAttribute attr) {
+		String packageName = attr.getEntityPackage();
+		List<String> importPackages = attr.getImportPackages();
+		String entityName = attr.getEntityName();
+		List<AttributeCVF> attrcvf = attr.getAttrs();
+		ClassConfig config = attr.getConfig();
+
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + packageName + ";\r\n\r\n");
 		buffer.append(getImport(importPackages));
 		if (config.isSeriz()) {
-			buffer.append("public class " + entityName
-					+ " implements java.io.Serializable {\r\n    private static final long serialVersionUID = 1L;\r\n");
+			buffer.append(
+					"public class " + entityName + " implements java.io.Serializable {\r\n    private static final long serialVersionUID = 1L;\r\n");
 		} else {
 			buffer.append("public class " + entityName + " {\r\n");
 		}
@@ -69,6 +69,9 @@ public class ClassUtil {
 		}
 		if (config.isFormJson()) {
 			buffer.append(getFromJson(entityName));
+		}
+		if (config.isFormMultiMap()) {
+			buffer.append(getFromMultiMap(attr.getHistoryConfig().getAssistPackage(), entityName, attrcvf));
 		}
 
 		buffer.append("{*addEntity*}\r\n}\r\n");
@@ -96,9 +99,9 @@ public class ClassUtil {
 	 * 得到属性,
 	 * 
 	 * @param attrcvf
-	 *            表格参数
+	 *          表格参数
 	 * @param createComment
-	 *            是否创建注释
+	 *          是否创建注释
 	 * @return
 	 */
 	private static String getProperty(List<AttributeCVF> attrcvf, boolean createComment) {
@@ -140,8 +143,7 @@ public class ClassUtil {
 		if (attrcvf == null || attrcvf.size() == 0) {
 			return "";
 		}
-		StringBuffer result = new StringBuffer(
-				String.format("    public %s(JsonObject obj) {\r\n        super();\r\n", entityName));
+		StringBuffer result = new StringBuffer(String.format("    public %s(JsonObject obj) {\r\n        super();\r\n", entityName));
 		for (AttributeCVF attr : attrcvf) {
 			if (!attr.getCheck()) {
 				continue;
@@ -223,11 +225,10 @@ public class ClassUtil {
 			if (!attr.getCheck()) {
 				continue;
 			}
-			result.append(MessageFormat.format(
-					"    public {0} get{1}() '{'\r\n        return this.{2};\r\n    }\r\n\r\n", attr.getJavaTypeValue(),
-					StrUtil.fristToUpCase(attr.getPropertyName()), attr.getPropertyName()));
-			result.append(MessageFormat.format("    public void set{0}({1} {2}) '{'\r\n",
-					StrUtil.fristToUpCase(attr.getPropertyName()), attr.getJavaTypeValue(), attr.getPropertyName()));
+			result.append(MessageFormat.format("    public {0} get{1}() '{'\r\n        return this.{2};\r\n    }\r\n\r\n",
+					attr.getJavaTypeValue(), StrUtil.fristToUpCase(attr.getPropertyName()), attr.getPropertyName()));
+			result.append(MessageFormat.format("    public void set{0}({1} {2}) '{'\r\n", StrUtil.fristToUpCase(attr.getPropertyName()),
+					attr.getJavaTypeValue(), attr.getPropertyName()));
 			result.append(MessageFormat.format("        this.{0} = {0};\r\n    }\r\n\r\n", attr.getPropertyName()));
 		}
 		return result.toString();
@@ -278,6 +279,42 @@ public class ClassUtil {
 		return MessageFormat.format(
 				"    /**\r\n     * 通过json字符串创建一个类 \r\n     * @return\r\n     */\r\n    public static {0} fromJson(String jsonStr)'{'\r\n         return Json.decodeValue(jsonStr, {0}.class);\r\n    }\r\n\r\n",
 				entityName);
+	}
+
+	/**
+	 * 获得fromMultiMap方法
+	 * 
+	 * @param attr
+	 * @return
+	 */
+	private static String getFromMultiMap(String commomPackage, String entityName, List<AttributeCVF> attrcvf) {
+		StringBuffer result = new StringBuffer("    /**\r\n    * 通过MultiMap初始化一个对象\r\n    * @param params\r\n    * @return\r\n    */\r\n");
+		result.append("    public static " + entityName + " fromMultiMap(io.vertx.core.MultiMap params) {\r\n");
+		result.append(MessageFormat.format("    {0} obj = new {0}();\r\n", entityName));
+		for (AttributeCVF attr : attrcvf) {
+			String patn;
+			if (JavaType.isInteger(attr.getJavaTypeValue())) {
+				patn = "    obj.set{0}({2}StringUtil.getInteger(params.get(\"{1}\")));\r\n";
+			} else if (JavaType.isDouble(attr.getJavaTypeValue())) {
+				patn = "    obj.set{0}({2}StringUtil.getDouble(params.get(\"{1}\")));\r\n";
+			} else if (JavaType.isLong(attr.getJavaTypeValue())) {
+				patn = "    obj.set{0}({2}StringUtil.getLong(params.get(\"{1}\")));\r\n";
+			} else if (JavaType.isDate(attr.getJavaTypeValue())) {
+				patn = "    obj.set{0}({2}StringUtil.getDate(params.get(\"{1}\")));\r\n";
+			} else if (attr.getJavaTypeValue().indexOf("Instant") >= 0) {
+				patn = "    obj.set{0}({2}StringUtil.getInstant(params.get(\"{1}\")));\r\n";
+			} else if (attr.getJavaTypeValue().indexOf("JsonObject") >= 0) {
+				patn = "    obj.set{0}({2}StringUtil.getJsonObject(params.get(\"{1}\")));\r\n";
+			} else if (attr.getJavaTypeValue().indexOf("JsonArray") >= 0) {
+				patn = "    obj.set{0}({2}StringUtil.getJsonArray(params.get(\"{1}\")));\r\n";
+			} else {
+				patn = "    obj.set{0}(params.get(\"{1}\"));\r\n";
+			}
+			result.append(MessageFormat.format(patn, StrUtil.fristToUpCase(attr.getPropertyName()), attr.getPropertyName(), commomPackage));
+		}
+		result.append("    return obj;\r\n");
+		result.append("    }\r\n");
+		return result.toString();
 	}
 
 }

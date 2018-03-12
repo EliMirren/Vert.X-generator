@@ -18,13 +18,14 @@ public class EntityAttribute {
 	private List<String> importPackages;// 需要引入的包名
 	private String entityPackage;// 实体类存放的包名
 	private String entityName;// 实体类名字
+	private HistoryConfig historyConfig;
 
 	public EntityAttribute() {
 		super();
 	}
 
-	public EntityAttribute(String tableName, String tableAlias, String primaryKey, List<AttributeCVF> attrs,
-			ClassConfig config, List<String> importPackages, String entityPackage, String entityName) {
+	public EntityAttribute(String tableName, String tableAlias, String primaryKey, List<AttributeCVF> attrs, ClassConfig config,
+			List<String> importPackages, String entityPackage, String entityName, HistoryConfig historyConfig) {
 		super();
 		this.tableName = tableName;
 		this.tableAlias = tableAlias;
@@ -34,6 +35,7 @@ public class EntityAttribute {
 		this.importPackages = importPackages;
 		this.entityPackage = entityPackage;
 		this.entityName = entityName;
+		this.historyConfig = historyConfig;
 	}
 
 	public String getTableName() {
@@ -106,6 +108,14 @@ public class EntityAttribute {
 
 	public void setEntityName(String entityName) {
 		this.entityName = entityName;
+	}
+
+	public HistoryConfig getHistoryConfig() {
+		return historyConfig;
+	}
+
+	public void setHistoryConfig(HistoryConfig historyConfig) {
+		this.historyConfig = historyConfig;
 	}
 
 }

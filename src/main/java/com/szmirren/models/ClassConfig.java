@@ -15,6 +15,7 @@ public class ClassConfig {
 	private boolean constructJson = true;
 	private boolean tojson = true;
 	private boolean formJson = true;
+	private boolean formMultiMap = true;
 	private boolean comment = true;
 	private boolean entityAdd = false;
 	private boolean delOldFile = true;
@@ -23,9 +24,8 @@ public class ClassConfig {
 		super();
 	}
 
-	public ClassConfig(boolean seriz, boolean unlineCamel, boolean getAndSet, boolean construct, boolean constructAll,
-			boolean constructJson, boolean tojson, boolean formJson, boolean comment, boolean entityAdd,
-			boolean delOldFile) {
+	public ClassConfig(boolean seriz, boolean unlineCamel, boolean getAndSet, boolean construct, boolean constructAll, boolean constructJson,
+			boolean tojson, boolean formJson, boolean formMultiMap, boolean comment, boolean entityAdd, boolean delOldFile) {
 		super();
 		this.seriz = seriz;
 		this.unlineCamel = unlineCamel;
@@ -35,6 +35,7 @@ public class ClassConfig {
 		this.constructJson = constructJson;
 		this.tojson = tojson;
 		this.formJson = formJson;
+		this.formMultiMap = formMultiMap;
 		this.comment = comment;
 		this.entityAdd = entityAdd;
 		this.delOldFile = delOldFile;
@@ -112,6 +113,14 @@ public class ClassConfig {
 		this.formJson = formJson;
 	}
 
+	public boolean isFormMultiMap() {
+		return formMultiMap;
+	}
+
+	public void setFormMultiMap(boolean formMultiMap) {
+		this.formMultiMap = formMultiMap;
+	}
+
 	public boolean isComment() {
 		return comment;
 	}
@@ -130,9 +139,9 @@ public class ClassConfig {
 
 	@Override
 	public String toString() {
-		return "ClassConfig [seriz=" + seriz + ", unlineCamel=" + unlineCamel + ", getAndSet=" + getAndSet
-				+ ", construct=" + construct + ", constructAll=" + constructAll + ", constructJson=" + constructJson
-				+ ", tojson=" + tojson + ", formJson=" + formJson + ", comment=" + comment + "]";
+		return "ClassConfig [seriz=" + seriz + ", unlineCamel=" + unlineCamel + ", getAndSet=" + getAndSet + ", construct=" + construct
+				+ ", constructAll=" + constructAll + ", constructJson=" + constructJson + ", tojson=" + tojson + ", formJson=" + formJson
+				+ ", comment=" + comment + "]";
 	}
 
 }

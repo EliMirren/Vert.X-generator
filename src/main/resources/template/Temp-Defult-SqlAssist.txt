@@ -112,9 +112,25 @@ public class SqlAssist {
 		}
 		return assist;
 	}
-
+	
 	/**
-	 * 添加查询条件,参数为{@ SqlWhereCondition},推荐使用Assist的静态条件方法添加条件;
+	 * 添加单个查询条件,参数为{@ SqlWhereCondition},推荐使用Assist的静态条件方法添加条件;
+	 * 
+	 * @param require
+	 *          示例:查询小于使用 SqlAssist.andLt("A.ID",10)
+	 *          {@link #andLt(String, Object)}
+	 */
+	public SqlAssist setConditions(SqlWhereCondition<?> require) {
+		if (this.condition == null) {
+			this.condition = new ArrayList<SqlWhereCondition<?>>();
+			require.setRequire(require.getRequire().substring(require.getRequire().indexOf(" ") + 1));
+		}
+		this.condition.add(require);
+		return this;
+	}
+	
+	/**
+	 * 添加多个查询条件,参数为{@ SqlWhereCondition},推荐使用Assist的静态条件方法添加条件;
 	 * 
 	 * @param require
 	 *          示例:查询小于使用  SqlAssist.andLt("A.ID",10)... {@link #andLt(String, Object)}

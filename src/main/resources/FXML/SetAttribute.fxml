@@ -52,7 +52,7 @@
    		<right>
    			<AnchorPane prefHeight="700.0" prefWidth="386.0" BorderPane.alignment="CENTER">
    				<children>
-   					<CheckBox fx:id="chkUnlineCamel" layoutX="2.0" layoutY="53.0" mnemonicParsing="false" onAction="#unlineCamel" selected="true" text="去除下划线并以驼峰命名">
+   					<CheckBox fx:id="chkUnlineCamel" layoutX="2.0" layoutY="45.0" mnemonicParsing="false" onAction="#unlineCamel" selected="true" text="去除下划线并以驼峰命名">
    						<font>
    							<Font size="16.0" />
    						</font>
@@ -63,7 +63,7 @@
    							<Cursor fx:constant="HAND" />
    						</cursor>
    					</CheckBox>
-   					<CheckBox fx:id="chkSerializable" layoutX="2.0" layoutY="23.0" mnemonicParsing="false" text="对象序列化: implements Serializable">
+   					<CheckBox fx:id="chkSerializable" layoutX="2.0" layoutY="18.0" mnemonicParsing="false" text="对象序列化: implements Serializable">
    						<font>
    							<Font size="16.0" />
    						</font>
@@ -74,7 +74,7 @@
    							<Cursor fx:constant="HAND" />
    						</cursor>
    					</CheckBox>
-   					<CheckBox fx:id="chkGetAndSet" layoutX="2.0" layoutY="83.0" mnemonicParsing="false" selected="true" text="创建get与set方法">
+   					<CheckBox fx:id="chkGetAndSet" layoutX="2.0" layoutY="72.0" mnemonicParsing="false" selected="true" text="创建get与set方法">
    						<font>
    							<Font size="16.0" />
    						</font>
@@ -82,7 +82,7 @@
    							<Cursor fx:constant="HAND" />
    						</cursor>
    					</CheckBox>
-   					<CheckBox fx:id="chkConstruct" layoutX="2.0" layoutY="114.0" mnemonicParsing="false" selected="true" text="创建无参构造方法">
+   					<CheckBox fx:id="chkConstruct" layoutX="2.0" layoutY="98.0" mnemonicParsing="false" selected="true" text="创建无参构造方法">
    						<font>
    							<Font size="16.0" />
    						</font>
@@ -90,7 +90,7 @@
    							<Cursor fx:constant="HAND" />
    						</cursor>
    					</CheckBox>
-   					<CheckBox fx:id="chkConstructAll" layoutX="2.0" layoutY="145.0" mnemonicParsing="false" selected="true" text="创建带参构造方法">
+   					<CheckBox fx:id="chkConstructAll" layoutX="2.0" layoutY="124.0" mnemonicParsing="false" selected="true" text="创建带参构造方法">
    						<font>
    							<Font size="16.0" />
    						</font>
@@ -195,7 +195,7 @@
                         </Tooltip>
                      </tooltip>
    					</TextField>
-                  <Button fx:id="btnSaveConfig" layoutX="129.0" layoutY="365.0" mnemonicParsing="false" onAction="#onSaveConfig" text="保存配置">
+                  <Button fx:id="btnSaveConfig" layoutX="129.0" layoutY="361.0" mnemonicParsing="false" onAction="#onSaveConfig" text="保存配置">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -204,7 +204,7 @@
                         <String fx:value="btn-executable" />
                      </styleClass>
                   </Button>
-                  <CheckBox fx:id="chkConstructJson" layoutX="2.0" layoutY="176.0" mnemonicParsing="false" selected="true" text="创建JSON构造方法">
+                  <CheckBox fx:id="chkConstructJson" layoutX="2.0" layoutY="150.0" mnemonicParsing="false" selected="true" text="创建JSON构造方法">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -212,17 +212,17 @@
                         <Tooltip text="构造方法接收一个参数为JsonObject类型" />
                      </tooltip>
                   </CheckBox>
-                  <CheckBox fx:id="chkToJson" layoutX="2.0" layoutY="207.0" mnemonicParsing="false" selected="true" text="创建toJson方法">
+                  <CheckBox fx:id="chkToJson" layoutX="2.0" layoutY="178.0" mnemonicParsing="false" selected="true" text="创建toJson方法">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="chkFromJson" layoutX="2.0" layoutY="237.0" mnemonicParsing="false" selected="true" text="创建formJson方法" wrapText="true">
+                  <CheckBox fx:id="chkFromJson" layoutX="2.0" layoutY="206.0" mnemonicParsing="false" selected="true" text="创建formJson方法" wrapText="true">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="chkComment" layoutX="2.0" layoutY="267.0" mnemonicParsing="false" selected="true" text="创建表中列的注解">
+                  <CheckBox fx:id="chkComment" layoutX="2.0" layoutY="262.0" mnemonicParsing="false" selected="true" text="创建表中列的注解">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -230,18 +230,23 @@
                         <Tooltip text="示例: //这是一个注解" />
                      </tooltip>
                   </CheckBox>
-                  <CheckBox fx:id="chkEntityAdd" layoutX="2.0" layoutY="298.0" mnemonicParsing="false" text="添加附加内容">
+                  <CheckBox fx:id="chkEntityAdd" layoutX="2.0" layoutY="291.0" mnemonicParsing="false" text="添加附加内容">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="chkDelOldFile" layoutX="2.0" layoutY="330.0" mnemonicParsing="false" selected="true" text="重新生成时删除原文件">
+                  <CheckBox fx:id="chkDelOldFile" layoutX="2.0" layoutY="319.0" mnemonicParsing="false" selected="true" text="重新生成时删除原文件">
                      <font>
                         <Font size="16.0" />
                      </font>
                      <tooltip>
                         <Tooltip text="重新生成时,如果已经存在该文件则将其删除后再重新生成,没有删除的话可能导致文件重复" />
                      </tooltip>
+                  </CheckBox>
+                  <CheckBox fx:id="chkformMultiMap" layoutX="2.0" layoutY="235.0" mnemonicParsing="false" text="创建formMultiMap">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
                   </CheckBox>
    				</children>
    			</AnchorPane>

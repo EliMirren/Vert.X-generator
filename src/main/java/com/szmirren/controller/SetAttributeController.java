@@ -54,6 +54,8 @@ public class SetAttributeController extends BaseController {
 	@FXML
 	private CheckBox chkFromJson;// formJson方法
 	@FXML
+	private CheckBox chkformMultiMap;// formJson方法
+	@FXML
 	private CheckBox chkComment;// 属性注解
 	@FXML
 	private CheckBox chkEntityAdd;// 属性注解
@@ -287,8 +289,7 @@ public class SetAttributeController extends BaseController {
 	private ClassConfig getClassConfig(String configName) {
 		try {
 			LOG.debug("执行获得配置文件...");
-			ClassConfig result = Optional.ofNullable(ConfigUtil.getClassConfig(configName)).map(conf -> conf)
-					.orElse(new ClassConfig());
+			ClassConfig result = Optional.ofNullable(ConfigUtil.getClassConfig(configName)).map(conf -> conf).orElse(new ClassConfig());
 			LOG.debug("执行获得配置文件-->成功!");
 			return result;
 		} catch (Exception e) {
@@ -312,11 +313,12 @@ public class SetAttributeController extends BaseController {
 		boolean constructJson = chkConstructJson.isSelected();
 		boolean tojson = chkToJson.isSelected();
 		boolean formJson = chkFromJson.isSelected();
+		boolean formMultimap = chkformMultiMap.isSelected();
 		boolean comment = chkComment.isSelected();
 		boolean entityAdd = chkEntityAdd.isSelected();
 		boolean delOldFile = chkDelOldFile.isSelected();
-		ClassConfig config = new ClassConfig(seriz, unlineCamel, getAndSet, construct, constructAll, constructJson,
-				tojson, formJson, comment, entityAdd, delOldFile);
+		ClassConfig config = new ClassConfig(seriz, unlineCamel, getAndSet, construct, constructAll, constructJson, tojson, formJson,
+				formMultimap, comment, entityAdd, delOldFile);
 		return config;
 	}
 
@@ -334,6 +336,7 @@ public class SetAttributeController extends BaseController {
 		chkConstructJson.setSelected(classConfig.isConstructJson());
 		chkToJson.setSelected(classConfig.isTojson());
 		chkFromJson.setSelected(classConfig.isFormJson());
+		chkformMultiMap.setSelected(classConfig.isFormMultiMap());
 		chkComment.setSelected(classConfig.isComment());
 		chkEntityAdd.setSelected(classConfig.isEntityAdd());
 		chkDelOldFile.setSelected(classConfig.isDelOldFile());

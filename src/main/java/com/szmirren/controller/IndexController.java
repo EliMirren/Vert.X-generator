@@ -691,6 +691,7 @@ public class IndexController extends BaseController {
 	public void runCreateAll(DatabaseConfig dbConfig, String tableName) throws Exception {
 		String primaryKey = null;
 		EntityAttribute entityAttribute = new EntityAttribute();
+		entityAttribute.setHistoryConfig(getHistoryConfig());
 		entityAttribute.setTableName(tableName);
 		entityAttribute.setEntityPackage(txtEntityPackage.getText());
 		entityAttribute.setEntityName(entityNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)));
@@ -875,6 +876,7 @@ public class IndexController extends BaseController {
 			try {
 				String primaryKey = null;
 				ctEntityAttribute = new EntityAttribute();
+				ctEntityAttribute.setHistoryConfig(getHistoryConfig());
 				ctEntityAttribute.setTableName(txtTableName.getText());
 				ctEntityAttribute.setEntityPackage(txtEntityPackage.getText());
 				ctEntityAttribute.setEntityName(txtEntityName.getText());
