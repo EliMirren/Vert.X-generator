@@ -613,6 +613,17 @@ public abstract class AbstractSQL<T> {
 	 *          对象
 	 * @return 返回sql 或 sql与params
 	 */
+	public SqlAndParams selectByObj(T obj, String resultColumns) {
+		return selectByObj(obj, null);
+	}
+	
+	/**
+	 * 将对象属性不为null的属性作为条件查询出数据
+	 * 
+	 * @param obj
+	 *          对象
+	 * @return 返回sql 或 sql与params
+	 */
 	public SqlAndParams selectByObj(T obj) {
 		return selectByObj(obj, null);
 	}
@@ -624,10 +635,16 @@ public abstract class AbstractSQL<T> {
 	 *          对象
 	 * @param resultColumns
 	 *          自定义返回列
+	 * @param single
+	 *          是否只返回一条数据,true只返回一条数据,false返回全部
 	 * @return 返回sql 或 sql与params
 	 */
-	public SqlAndParams selectByObj(T obj, String resultColumns) {
-		StringBuilder sql = new StringBuilder(MessageFormat.format("select {0} from {1} ", resultColumns == null ? columns() : resultColumns, tableName()));
+	public SqlAndParams selectByObj(T obj, String resultColumns, boolean single) {
+		String topOne=""; 
+		if (single) {
+			topOne=" top 1 ";
+		}
+		StringBuilder sql = new StringBuilder(MessageFormat.format("select {0} {1} from {2} ", topOne, resultColumns == null ? columns() : resultColumns, tableName()));
 		JsonArray params = null;
 		boolean isFrist = true;
 		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
@@ -672,7 +689,8 @@ public abstract class AbstractSQL<T> {
 	 *          结果:如果存在返回JsonObject,不存在返回null
 	 */
 	public void selectSingleByObj(T obj, String resultColumns, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
-		selectByObj(obj, resultColumns, conn, set -> {
+		SqlAndParams qp = selectByObj(obj, resultColumns,true);
+		queryExecute(qp, conn,set -> {
 			if (set.succeeded()) {
 				List<JsonObject> rows = set.result().getRows();
 				JsonObject result = null;
