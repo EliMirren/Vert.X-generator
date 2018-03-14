@@ -912,6 +912,71 @@ public abstract class AbstractSQL<T> {
 		SqlAndParams qp = insertNonEmpty(obj);
 		updateExecute(qp, conn, handler);
 	}
+	
+	/**
+	 * 插入一个对象,如果该对象不存在就新建如果该对象已经存在就更新
+	 * 
+	 * @param obj
+	 *          对象
+	 * @return 返回:sql 或 sql与params
+	 */
+	public SqlAndParams replace(T obj) {
+		JsonArray params = null;
+		StringBuilder tempColumn = null;
+		StringBuilder tempValues = null;
+		for (SqlPropertyValue<?> pv : propertyValue(obj)) {
+			if (pv.getValue() != null) {
+				if (tempColumn == null) {
+					tempColumn = new StringBuilder(pv.getName());
+					tempValues = new StringBuilder("?");
+					params = new JsonArray();
+				} else {
+					tempColumn.append("," + pv.getName());
+					tempValues.append(",?");
+				}
+				params.add(pv.getValue());
+			}
+		}
+		String sql = MessageFormat.format("replace into {0} ({1}) values ({2}) ", tableName(), tempColumn, tempValues);
+		return new SqlAndParams(sql, params);
+	}
+	/**
+	 * 插入一个对象,如果该对象不存在就新建如果该对象已经存在就更新
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果集受影响的行数
+	 */
+	public void replace(T obj, SQLConnection conn, Handler<AsyncResult<Integer>> handler) {
+		replace(obj, conn, result -> {
+			if (result.succeeded()) {
+				int updated = result.result().getUpdated();
+				handler.handle(Future.succeededFuture(updated));
+			} else {
+				handler.handle(Future.failedFuture(result.cause()));
+			}
+		}, null);
+	}
+
+	/**
+	 * 插入一个对象,如果该对象不存在就新建如果该对象已经存在就更新
+	 * 
+	 * @param obj
+	 *          对象
+	 * @param conn
+	 *          数据库连接
+	 * @param handler
+	 *          结果集
+	 * @param nullable
+	 *          没有什么作用,只是用于重载
+	 */
+	public void replace(T obj, SQLConnection conn, Handler<AsyncResult<UpdateResult>> handler, Boolean nullable) {
+		SqlAndParams qp = replace(obj);
+		updateExecute(qp, conn, handler);
+	}
 
 	/**
 	 * 更新一个对象中所有的属性包括null值,条件为对象中的主键值
