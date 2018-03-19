@@ -43,7 +43,12 @@ public class ClassUtil {
 
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("package " + packageName + ";\r\n\r\n");
+		// 引入默认以为SpringUtil跟Assist同包名
+		if (config.isFormMultiMap()) {
+			buffer.append("import " + attr.getHistoryConfig().getAssistPackage() + ".StringUtil;\r\n");
+		}
 		buffer.append(getImport(importPackages));
+
 		if (config.isSeriz()) {
 			buffer.append(
 					"public class " + entityName + " implements java.io.Serializable {\r\n    private static final long serialVersionUID = 1L;\r\n");
@@ -294,23 +299,23 @@ public class ClassUtil {
 		for (AttributeCVF attr : attrcvf) {
 			String patn;
 			if (JavaType.isInteger(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}.StringUtil.getInteger(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getInteger(params.get(\"{1}\")));\r\n";
 			} else if (JavaType.isDouble(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}.StringUtil.getDouble(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getDouble(params.get(\"{1}\")));\r\n";
 			} else if (JavaType.isLong(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}.StringUtil.getLong(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getLong(params.get(\"{1}\")));\r\n";
 			} else if (JavaType.isDate(attr.getJavaTypeValue())) {
-				patn = "    obj.set{0}({2}.StringUtil.getDate(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getDate(params.get(\"{1}\")));\r\n";
 			} else if (attr.getJavaTypeValue().indexOf("Instant") >= 0) {
-				patn = "    obj.set{0}({2}.StringUtil.getInstant(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getInstant(params.get(\"{1}\")));\r\n";
 			} else if (attr.getJavaTypeValue().indexOf("JsonObject") >= 0) {
-				patn = "    obj.set{0}({2}.StringUtil.getJsonObject(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getJsonObject(params.get(\"{1}\")));\r\n";
 			} else if (attr.getJavaTypeValue().indexOf("JsonArray") >= 0) {
-				patn = "    obj.set{0}({2}.StringUtil.getJsonArray(params.get(\"{1}\")));\r\n";
+				patn = "    obj.set{0}(StringUtil.getJsonArray(params.get(\"{1}\")));\r\n";
 			} else {
 				patn = "    obj.set{0}(params.get(\"{1}\"));\r\n";
 			}
-			result.append(MessageFormat.format(patn, StrUtil.fristToUpCase(attr.getPropertyName()), attr.getPropertyName(), commomPackage));
+			result.append(MessageFormat.format(patn, StrUtil.fristToUpCase(attr.getPropertyName()), attr.getPropertyName()));
 		}
 		result.append("    return obj;\r\n");
 		result.append("    }\r\n");
