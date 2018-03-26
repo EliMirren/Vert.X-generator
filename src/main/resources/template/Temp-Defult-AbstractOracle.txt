@@ -559,7 +559,7 @@ public abstract class AbstractSQL<T> {
 	 *          返回结果:如果查询得到返回JsonObject如果查询不到返回null
 	 */
 	public <S> void selectById(S primaryValue, String resultColumns, SQLConnection conn, Handler<AsyncResult<JsonObject>> handler) {
-		selectById(primaryValue, null, conn, set -> {
+		selectById(primaryValue, resultColumns, conn, set -> {
 			if (set.succeeded()) {
 				List<JsonObject> rows = set.result().getRows();
 				if (rows != null && rows.size() > 0) {
