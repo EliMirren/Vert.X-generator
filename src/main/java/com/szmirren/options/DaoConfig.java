@@ -1,68 +1,63 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
- * Biz的配置信息
+ * dao的配置信息
  * 
  * @author duhua
  *
  */
-public class BizConfig {
+public class DaoConfig {
 
 	private boolean isGetCount = true;
 	private boolean isSelectAll = true;
-	private boolean isSelectByPage = true;
+	private boolean isSelectAllByPage = true;
 	private boolean isSelectObj = true;
 	private boolean isSelectId = true;
 	private boolean isInsert = true;
 	private boolean isUpdate = true;
 	private boolean isDelete = true;
-	private boolean isFailLen = true;
-	private boolean isFailNull = true;
 	private boolean isInsertBatch = false;
 	private boolean isDelOldFile = true;
 
 	private String funGetCount = "get{C}Count";
-	private String funSelectAll = "find{C}";
-	private String funSelectAllByPage = "find{C}ByPage";
-	private String funSelectObj = "get{C}ByObj";
-	private String funSelectId = "get{C}ById";
-	private String funInsert = "add{C}";
-	private String funUpdate = "updt{C}";
-	private String funDelete = "del{C}ById";
-	private String funInsertBatch = "add{C}Batch";
+	private String funSelectAll = "select{C}";
+	private String funSelectAllByPage = "select{C}ByPage";
+	private String funSelectObj = "select{C}ByObj";
+	private String funSelectId = "select{C}ById";
+	private String funInsert = "insertNonEmpty{C}";
+	private String funUpdate = "updateNonEmpty{C}";
+	private String funDelete = "delete{C}ById";
+	private String funInsertBatch = "insert{C}Batch";
 
-	private String bsGetCount = "biz://{C}/get{C}Count";
-	private String bsSelectAll = "biz://{C}/find{C}";
-	private String bsSelectAllByPage = "biz://{C}/find{C}ByPage";
-	private String bsSelectObj = "biz://{C}/get{C}ByObj";
-	private String bsSelectId = "biz://{C}/get{C}ById";
-	private String bsInsert = "biz://{C}/add{C}";
-	private String bsUpdate = "biz://{C}/updt{C}";
-	private String bsDelete = "biz://{C}/del{C}";
-	private String bsInsertBatch = "biz://{C}/add{C}Batch";
+	private String bsGetCount = "dao://{C}/get{C}Count";
+	private String bsSelectAll = "dao://{C}/find{C}";
+	private String bsSelectAllByPage = "dao://{C}/find{C}ByPage";
+	private String bsSelectObj = "dao://{C}/get{C}ByObj";
+	private String bsSelectId = "dao://{C}/get{C}ById";
+	private String bsInsert = "dao://{C}/add{C}";
+	private String bsUpdate = "dao://{C}/updt{C}";
+	private String bsDelete = "dao://{C}/del{C}";
+	private String bsInsertBatch = "dao://{C}/insert{C}Batch";
 
-	public BizConfig() {
+	public DaoConfig() {
 		super();
 	}
 
-	public BizConfig(boolean isGetCount, boolean isSelectAll, boolean isSelectByPage, boolean isSelectObj,
-			boolean isSelectId, boolean isInsert, boolean isUpdate, boolean isDelete, boolean isFailLen,
-			boolean isFailNull, boolean isInsertBatch, boolean isDelOldFile, String funGetCount, String funSelectAll,
-			String funSelectAllByPage, String funSelectObj, String funSelectId, String funInsert, String funUpdate,
-			String funDelete, String funInsertBatch, String bsGetCount, String bsSelectAll, String bsSelectAllByPage,
-			String bsSelectObj, String bsSelectId, String bsInsert, String bsUpdate, String bsDelete,
-			String bsInsertBatch) {
+	public DaoConfig(boolean isGetCount, boolean isSelectAll, boolean isSelectAllByPage, boolean isSelectObj,
+			boolean isSelectId, boolean isInsert, boolean isUpdate, boolean isDelete, boolean isInsertBatch,
+			boolean isDelOldFile, String funGetCount, String funSelectAll, String funSelectAllByPage,
+			String funSelectObj, String funSelectId, String funInsert, String funUpdate, String funDelete,
+			String funInsertBatch, String bsGetCount, String bsSelectAll, String bsSelectAllByPage, String bsSelectObj,
+			String bsSelectId, String bsInsert, String bsUpdate, String bsDelete, String bsInsertBatch) {
 		super();
 		this.isGetCount = isGetCount;
 		this.isSelectAll = isSelectAll;
-		this.isSelectByPage = isSelectByPage;
+		this.isSelectAllByPage = isSelectAllByPage;
 		this.isSelectObj = isSelectObj;
 		this.isSelectId = isSelectId;
 		this.isInsert = isInsert;
 		this.isUpdate = isUpdate;
 		this.isDelete = isDelete;
-		this.isFailLen = isFailLen;
-		this.isFailNull = isFailNull;
 		this.isInsertBatch = isInsertBatch;
 		this.isDelOldFile = isDelOldFile;
 		this.funGetCount = funGetCount;
@@ -109,12 +104,12 @@ public class BizConfig {
 		this.isSelectAll = isSelectAll;
 	}
 
-	public boolean isSelectByPage() {
-		return isSelectByPage;
+	public boolean isSelectAllByPage() {
+		return isSelectAllByPage;
 	}
 
-	public void setSelectByPage(boolean isSelectByPage) {
-		this.isSelectByPage = isSelectByPage;
+	public void setSelectAllByPage(boolean isSelectAllByPage) {
+		this.isSelectAllByPage = isSelectAllByPage;
 	}
 
 	public boolean isSelectObj() {
@@ -155,22 +150,6 @@ public class BizConfig {
 
 	public void setDelete(boolean isDelete) {
 		this.isDelete = isDelete;
-	}
-
-	public boolean isFailLen() {
-		return isFailLen;
-	}
-
-	public void setFailLen(boolean isFailLen) {
-		this.isFailLen = isFailLen;
-	}
-
-	public boolean isFailNull() {
-		return isFailNull;
-	}
-
-	public void setFailNull(boolean isFailNull) {
-		this.isFailNull = isFailNull;
 	}
 
 	public boolean isInsertBatch() {

@@ -10,12 +10,12 @@ import org.apache.log4j.Logger;
 
 import com.szmirren.models.AttributeCVF;
 import com.szmirren.models.BizCondition;
-import com.szmirren.models.BizConfig;
 import com.szmirren.models.CommonName;
-import com.szmirren.models.DaoConfig;
 import com.szmirren.models.EntityAttribute;
-import com.szmirren.models.HistoryConfig;
-import com.szmirren.models.RouterConfig;
+import com.szmirren.options.BizConfig;
+import com.szmirren.options.DaoConfig;
+import com.szmirren.options.HistoryConfig;
+import com.szmirren.options.RouterConfig;
 
 /**
  * 创建文件的 的工具

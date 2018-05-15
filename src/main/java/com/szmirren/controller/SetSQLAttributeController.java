@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 import com.szmirren.common.ConfigUtil;
-import com.szmirren.models.SQLConfig;
+import com.szmirren.options.SqlConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.event.ActionEvent;
@@ -42,7 +42,7 @@ public class SetSQLAttributeController extends BaseController {
 	 * 初始化
 	 */
 	public void init() {
-		SQLConfig config;
+		SqlConfig config;
 		if (indexController.getSqlConfig() != null) {
 			config = indexController.getSqlConfig();
 		} else {
@@ -68,7 +68,7 @@ public class SetSQLAttributeController extends BaseController {
 	/**
 	 * 加载设置信息
 	 */
-	private void loadConfig(SQLConfig config) {
+	private void loadConfig(SqlConfig config) {
 		if (config == null) {
 			return;
 		}
@@ -83,11 +83,11 @@ public class SetSQLAttributeController extends BaseController {
 	 * 
 	 * @return
 	 */
-	private SQLConfig getThisConfig() {
+	private SqlConfig getThisConfig() {
 		boolean isInsertBatch = chkInsertBatch.isSelected();
 		String funInsertBatch = txtInsertBatch.getText();
 		boolean isDelOldFile = chkDelOldFile.isSelected();
-		SQLConfig result = new SQLConfig(isInsertBatch, isDelOldFile, funInsertBatch);
+		SqlConfig result = new SqlConfig(isInsertBatch, isDelOldFile, funInsertBatch);
 		return result;
 	}
 
@@ -96,18 +96,18 @@ public class SetSQLAttributeController extends BaseController {
 	 * 
 	 * @return
 	 */
-	private SQLConfig getConfig(String configName) {
-		SQLConfig result;
+	private SqlConfig getConfig(String configName) {
+		SqlConfig result;
 		try {
 			LOG.debug("执行获取配置文件...");
-			result = Optional.ofNullable(ConfigUtil.getSQLConfig(configName)).map(conf -> conf).orElse(new SQLConfig());
+			result = Optional.ofNullable(ConfigUtil.getSQLConfig(configName)).map(conf -> conf).orElse(new SqlConfig());
 			LOG.debug("执行获取配置文件-->成功!");
 			return result;
 		} catch (Exception e) {
 			LOG.error("获取配置文件-->失败:" + e);
 			AlertUtil.showErrorAlert("获取配置文件-->失败:" + e);
 		}
-		return new SQLConfig();
+		return new SqlConfig();
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class SetSQLAttributeController extends BaseController {
 	 * @param event
 	 */
 	public void onSaveConfig(ActionEvent event) {
-		SQLConfig config = getThisConfig();
+		SqlConfig config = getThisConfig();
 		try {
 			LOG.debug("执行保存配置文件...");
 			ConfigUtil.saveSQLConfig(config, "default");

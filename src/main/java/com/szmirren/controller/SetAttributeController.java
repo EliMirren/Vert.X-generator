@@ -11,9 +11,9 @@ import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.DBUtil;
 import com.szmirren.common.StrUtil;
 import com.szmirren.models.AttributeCVF;
-import com.szmirren.models.ClassConfig;
-import com.szmirren.models.DatabaseConfig;
 import com.szmirren.models.EntityAttribute;
+import com.szmirren.options.ClassConfig;
+import com.szmirren.options.DatabaseConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.collections.FXCollections;

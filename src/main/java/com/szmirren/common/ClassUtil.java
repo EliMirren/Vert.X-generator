@@ -4,8 +4,8 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import com.szmirren.models.AttributeCVF;
-import com.szmirren.models.ClassConfig;
 import com.szmirren.models.EntityAttribute;
+import com.szmirren.options.ClassConfig;
 
 /**
  * 生成工具

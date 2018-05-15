@@ -12,14 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
-import com.szmirren.models.BizConfig;
-import com.szmirren.models.ClassConfig;
-import com.szmirren.models.DaoConfig;
-import com.szmirren.models.DatabaseConfig;
-import com.szmirren.models.HistoryConfig;
-import com.szmirren.models.RouterConfig;
-import com.szmirren.models.SQLConfig;
-import com.szmirren.models.TemplateConfig;
+import com.szmirren.options.BizConfig;
+import com.szmirren.options.ClassConfig;
+import com.szmirren.options.DaoConfig;
+import com.szmirren.options.DatabaseConfig;
+import com.szmirren.options.HistoryConfig;
+import com.szmirren.options.RouterConfig;
+import com.szmirren.options.SqlConfig;
+import com.szmirren.options.SqlAssistConfig;
+import com.szmirren.options.TemplateConfig;
 
 /**
  * 配置文件工具
@@ -238,8 +239,7 @@ public class ConfigUtil {
 			conn = getConnection();
 			stat = conn.createStatement();
 			String jsonStr = JSON.toJSONString(config);
-			String sql = String.format("replace into HistoryConfig values('%s', '%s')", config.getHistoryConfigName(),
-					jsonStr);
+			String sql = String.format("replace into HistoryConfig values('%s', '%s')", config.getHistoryConfigName(), jsonStr);
 			stat.executeUpdate(sql);
 		} finally {
 			if (rs != null)
@@ -571,7 +571,7 @@ public class ConfigUtil {
 	 * @param Config
 	 * @throws Exception
 	 */
-	public static int saveSQLConfig(SQLConfig config, String name) throws Exception {
+	public static int saveSQLConfig(SqlConfig config, String name) throws Exception {
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
@@ -598,7 +598,7 @@ public class ConfigUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static SQLConfig getSQLConfig(String name) throws Exception {
+	public static SqlConfig getSQLConfig(String name) throws Exception {
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
@@ -608,7 +608,64 @@ public class ConfigUtil {
 			String sql = String.format("select * from SQLConfig where name='%s'", name);
 			ResultSet resultSet = stat.executeQuery(sql);
 			while (resultSet.next()) {
-				SQLConfig result = JSON.parseObject(resultSet.getString("value"), SQLConfig.class);
+				SqlConfig result = JSON.parseObject(resultSet.getString("value"), SqlConfig.class);
+				return result;
+			}
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (stat != null)
+				stat.close();
+			if (conn != null)
+				conn.close();
+		}
+		return null;
+	}
+
+	/**
+	 * 保存SqlAssist配置文件信息
+	 * 
+	 * @param Config
+	 * @throws Exception
+	 */
+	public static int saveSqlAssistConfig(SqlAssistConfig config, String name) throws Exception {
+		Connection conn = null;
+		Statement stat = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			stat = conn.createStatement();
+			String jsonStr = JSON.toJSONString(config);
+			String sql = String.format("replace into SqlAssistConfig (name,value) values('%s', '%s')", name, jsonStr);
+			int result = stat.executeUpdate(sql);
+			return result;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (stat != null)
+				stat.close();
+			if (conn != null)
+				conn.close();
+		}
+	}
+
+	/**
+	 * 获得SqlAssist配置文件信息
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public static SqlAssistConfig getSqlAssistConfig(String name) throws Exception {
+		Connection conn = null;
+		Statement stat = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			stat = conn.createStatement();
+			String sql = String.format("select * from SqlAssistConfig where name='%s'", name);
+			ResultSet resultSet = stat.executeQuery(sql);
+			while (resultSet.next()) {
+				SqlAssistConfig result = JSON.parseObject(resultSet.getString("value"), SqlAssistConfig.class);
 				return result;
 			}
 		} finally {

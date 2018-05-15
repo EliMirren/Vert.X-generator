@@ -1,12 +1,12 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
- * Router的配置信息
+ * Biz的配置信息
  * 
  * @author duhua
  *
  */
-public class RouterConfig {
+public class BizConfig {
 
 	private boolean isGetCount = true;
 	private boolean isSelectAll = true;
@@ -16,39 +16,42 @@ public class RouterConfig {
 	private boolean isInsert = true;
 	private boolean isUpdate = true;
 	private boolean isDelete = true;
+	private boolean isFailLen = true;
+	private boolean isFailNull = true;
 	private boolean isInsertBatch = false;
 	private boolean isDelOldFile = true;
 
 	private String funGetCount = "get{C}Count";
 	private String funSelectAll = "find{C}";
-	private String funSelectByPage = "find{C}ByPage";
+	private String funSelectAllByPage = "find{C}ByPage";
 	private String funSelectObj = "get{C}ByObj";
 	private String funSelectId = "get{C}ById";
 	private String funInsert = "add{C}";
 	private String funUpdate = "updt{C}";
 	private String funDelete = "del{C}ById";
-	private String funInsertBatch = "addBatch{C}";
+	private String funInsertBatch = "add{C}Batch";
 
-	private String bsGetCount = "/{c}/{c}Count";
-	private String bsSelectAll = "/{c}/find{C}";
-	private String bsSelectByPage = "/{c}/find{C}ByPage";
-	private String bsSelectObj = "/{c}/get{C}ByObj";
-	private String bsSelectId = "/{c}/get{C}ById/:id";
-	private String bsInsert = "/{c}/add{C}";
-	private String bsUpdate = "/{c}/updt{C}";
-	private String bsDelete = "/{c}/del{C}/:id";
-	private String bsInsertBatch = "/{c}/addBatch{C}";
+	private String bsGetCount = "biz://{C}/get{C}Count";
+	private String bsSelectAll = "biz://{C}/find{C}";
+	private String bsSelectAllByPage = "biz://{C}/find{C}ByPage";
+	private String bsSelectObj = "biz://{C}/get{C}ByObj";
+	private String bsSelectId = "biz://{C}/get{C}ById";
+	private String bsInsert = "biz://{C}/add{C}";
+	private String bsUpdate = "biz://{C}/updt{C}";
+	private String bsDelete = "biz://{C}/del{C}";
+	private String bsInsertBatch = "biz://{C}/add{C}Batch";
 
-	public RouterConfig() {
+	public BizConfig() {
 		super();
 	}
 
-	public RouterConfig(boolean isGetCount, boolean isSelectAll, boolean isSelectByPage, boolean isSelectObj,
-			boolean isSelectId, boolean isInsert, boolean isUpdate, boolean isDelete, boolean isInsertBatch,
-			boolean isDelOldFile, String funGetCount, String funSelectAll, String funSelectByPage, String funSelectObj,
-			String funSelectId, String funInsert, String funUpdate, String funDelete, String funInsertBatch,
-			String bsGetCount, String bsSelectAll, String bsSelectByPage, String bsSelectObj, String bsSelectId,
-			String bsInsert, String bsUpdate, String bsDelete, String bsInsertBatch) {
+	public BizConfig(boolean isGetCount, boolean isSelectAll, boolean isSelectByPage, boolean isSelectObj,
+			boolean isSelectId, boolean isInsert, boolean isUpdate, boolean isDelete, boolean isFailLen,
+			boolean isFailNull, boolean isInsertBatch, boolean isDelOldFile, String funGetCount, String funSelectAll,
+			String funSelectAllByPage, String funSelectObj, String funSelectId, String funInsert, String funUpdate,
+			String funDelete, String funInsertBatch, String bsGetCount, String bsSelectAll, String bsSelectAllByPage,
+			String bsSelectObj, String bsSelectId, String bsInsert, String bsUpdate, String bsDelete,
+			String bsInsertBatch) {
 		super();
 		this.isGetCount = isGetCount;
 		this.isSelectAll = isSelectAll;
@@ -58,11 +61,13 @@ public class RouterConfig {
 		this.isInsert = isInsert;
 		this.isUpdate = isUpdate;
 		this.isDelete = isDelete;
+		this.isFailLen = isFailLen;
+		this.isFailNull = isFailNull;
 		this.isInsertBatch = isInsertBatch;
 		this.isDelOldFile = isDelOldFile;
 		this.funGetCount = funGetCount;
 		this.funSelectAll = funSelectAll;
-		this.funSelectByPage = funSelectByPage;
+		this.funSelectAllByPage = funSelectAllByPage;
 		this.funSelectObj = funSelectObj;
 		this.funSelectId = funSelectId;
 		this.funInsert = funInsert;
@@ -71,7 +76,7 @@ public class RouterConfig {
 		this.funInsertBatch = funInsertBatch;
 		this.bsGetCount = bsGetCount;
 		this.bsSelectAll = bsSelectAll;
-		this.bsSelectByPage = bsSelectByPage;
+		this.bsSelectAllByPage = bsSelectAllByPage;
 		this.bsSelectObj = bsSelectObj;
 		this.bsSelectId = bsSelectId;
 		this.bsInsert = bsInsert;
@@ -152,6 +157,22 @@ public class RouterConfig {
 		this.isDelete = isDelete;
 	}
 
+	public boolean isFailLen() {
+		return isFailLen;
+	}
+
+	public void setFailLen(boolean isFailLen) {
+		this.isFailLen = isFailLen;
+	}
+
+	public boolean isFailNull() {
+		return isFailNull;
+	}
+
+	public void setFailNull(boolean isFailNull) {
+		this.isFailNull = isFailNull;
+	}
+
 	public boolean isInsertBatch() {
 		return isInsertBatch;
 	}
@@ -176,12 +197,12 @@ public class RouterConfig {
 		this.funSelectAll = funSelectAll;
 	}
 
-	public String getFunSelectByPage() {
-		return funSelectByPage;
+	public String getFunSelectAllByPage() {
+		return funSelectAllByPage;
 	}
 
-	public void setFunSelectByPage(String funSelectByPage) {
-		this.funSelectByPage = funSelectByPage;
+	public void setFunSelectAllByPage(String funSelectAllByPage) {
+		this.funSelectAllByPage = funSelectAllByPage;
 	}
 
 	public String getFunSelectObj() {
@@ -248,12 +269,12 @@ public class RouterConfig {
 		this.bsSelectAll = bsSelectAll;
 	}
 
-	public String getBsSelectByPage() {
-		return bsSelectByPage;
+	public String getBsSelectAllByPage() {
+		return bsSelectAllByPage;
 	}
 
-	public void setBsSelectByPage(String bsSelectByPage) {
-		this.bsSelectByPage = bsSelectByPage;
+	public void setBsSelectAllByPage(String bsSelectAllByPage) {
+		this.bsSelectAllByPage = bsSelectAllByPage;
 	}
 
 	public String getBsSelectObj() {

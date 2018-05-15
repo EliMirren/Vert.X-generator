@@ -29,7 +29,7 @@
 				</Button>
 				<Button fx:id="btnSave" layoutX="375.0" layoutY="26.0" mnemonicParsing="false" onAction="#saveConnection" text="保存连接" textFill="WHITE">
 					<font>
-						<Font name="System Bold" size="20.0" />
+						<Font size="20.0" />
 					</font>
 					<cursor>
 						<Cursor fx:constant="HAND" />
@@ -44,7 +44,7 @@
 		</AnchorPane>
 	</bottom>
 	<center>
-		<AnchorPane prefHeight="466.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+		<AnchorPane BorderPane.alignment="CENTER">
 			<children>
 				<GridPane layoutX="118.0" layoutY="45.0" prefHeight="391.0" prefWidth="421.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="30.0">
 					<columnConstraints>
@@ -62,42 +62,42 @@
 						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
-						<Label text="连接名称:">
+						<Label fx:id="lblConnName" text="连接名称:">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="主机名/IP地址:" textAlignment="JUSTIFY" GridPane.rowIndex="1">
+						<Label fx:id="lblConnURL" text="主机名/IP地址:" textAlignment="JUSTIFY" GridPane.rowIndex="1">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="端口号:" GridPane.rowIndex="2">
+						<Label fx:id="lblListenPort" text="端口号:" GridPane.rowIndex="2">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="数据库类型:" GridPane.rowIndex="3">
+						<Label fx:id="lblDBType" text="数据库类型:" GridPane.rowIndex="3">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="数据库:" GridPane.rowIndex="4">
+						<Label fx:id="lblDBName" text="数据库:" GridPane.rowIndex="4">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="用户:" GridPane.rowIndex="5">
+						<Label fx:id="lblUserName" text="用户:" GridPane.rowIndex="5">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="密码:" GridPane.rowIndex="6">
+						<Label fx:id="lblUserPwd" text="密码:" GridPane.rowIndex="6">
 							<font>
 								<Font size="20.0" />
 							</font>
 						</Label>
-						<Label text="编码格式:" GridPane.rowIndex="7">
+						<Label fx:id="lblDBCoding" text="编码格式:" GridPane.rowIndex="7">
 							<font>
 								<Font size="20.0" />
 							</font>
@@ -116,7 +116,7 @@
 						</ComboBox>
 					</children>
 				</GridPane>
-				<Button fx:id="btnTestConn" contentDisplay="CENTER" layoutX="238.0" layoutY="471.0" mnemonicParsing="false" onAction="#testConnection" prefHeight="39.0" prefWidth="124.0" text="连接测试">
+				<Button fx:id="btnTestConn" contentDisplay="CENTER" layoutX="238.0" layoutY="471.0" mnemonicParsing="false" onAction="#testConnection" text="连接测试" AnchorPane.bottomAnchor="0.0">
 					<font>
 						<Font size="20.0" />
 					</font>

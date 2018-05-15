@@ -1,4 +1,4 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
  * 用于保存配置文件模板

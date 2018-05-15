@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 import com.szmirren.common.ConfigUtil;
-import com.szmirren.models.BizConfig;
+import com.szmirren.options.BizConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.event.ActionEvent;

@@ -1,4 +1,4 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
  * 数据库连接配置文件

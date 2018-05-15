@@ -1,4 +1,4 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
  * 实体类的配置文件

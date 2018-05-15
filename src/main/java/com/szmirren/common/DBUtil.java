@@ -13,7 +13,7 @@ import java.util.Map;
 import com.szmirren.models.AttributeCVF;
 import com.szmirren.models.DBType;
 import com.szmirren.models.DBTypeName;
-import com.szmirren.models.DatabaseConfig;
+import com.szmirren.options.DatabaseConfig;
 
 /**
  * 数据库工具

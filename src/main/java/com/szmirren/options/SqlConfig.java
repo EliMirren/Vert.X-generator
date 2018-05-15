@@ -1,4 +1,4 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
  * SQL的配置信息
@@ -6,17 +6,17 @@ package com.szmirren.models;
  * @author duhua
  *
  */
-public class SQLConfig {
+public class SqlConfig {
 
 	private boolean isInsertBatch = false;
 	private boolean isDelOldFile = true;
 	private String funInsertBatch = "insert{C}Batch";
 
-	public SQLConfig() {
+	public SqlConfig() {
 		super();
 	}
 
-	public SQLConfig(boolean isInsertBatch, boolean isDelOldFile, String funInsertBatch) {
+	public SqlConfig(boolean isInsertBatch, boolean isDelOldFile, String funInsertBatch) {
 		super();
 		this.isInsertBatch = isInsertBatch;
 		this.isDelOldFile = isDelOldFile;

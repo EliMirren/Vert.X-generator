@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 import com.szmirren.common.ConfigUtil;
-import com.szmirren.models.RouterConfig;
+import com.szmirren.options.RouterConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.event.ActionEvent;

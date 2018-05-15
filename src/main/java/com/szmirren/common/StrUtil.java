@@ -123,9 +123,9 @@ public class StrUtil {
 	 * 检查字符串里面是否包含指定字符,包含返回true
 	 * 
 	 * @param regex
-	 *            指定字符
+	 *          指定字符
 	 * @param str
-	 *            字符串
+	 *          字符串
 	 * @return
 	 */
 	public static boolean indexOf(String regex, String... str) {
@@ -186,6 +186,19 @@ public class StrUtil {
 	 */
 	public static String[] asStrArray(String... str) {
 		return str;
+	}
+
+	/**
+	 * 判断字符串是否为null或者空,如果是返回true
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNullOrEmpty(String str) {
+		if (str == null || "".equals(str.trim())) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

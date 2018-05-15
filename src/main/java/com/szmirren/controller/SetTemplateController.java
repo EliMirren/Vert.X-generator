@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.models.CommonName;
-import com.szmirren.models.TemplateConfig;
+import com.szmirren.options.TemplateConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.event.ActionEvent;

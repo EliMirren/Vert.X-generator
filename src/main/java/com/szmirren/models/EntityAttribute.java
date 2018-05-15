@@ -2,6 +2,9 @@ package com.szmirren.models;
 
 import java.util.List;
 
+import com.szmirren.options.ClassConfig;
+import com.szmirren.options.HistoryConfig;
+
 /**
  * 表的属性与实体类的配置
  * 

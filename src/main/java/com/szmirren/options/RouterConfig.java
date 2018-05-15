@@ -1,16 +1,16 @@
-package com.szmirren.models;
+package com.szmirren.options;
 
 /**
- * dao的配置信息
+ * Router的配置信息
  * 
  * @author duhua
  *
  */
-public class DaoConfig {
+public class RouterConfig {
 
 	private boolean isGetCount = true;
 	private boolean isSelectAll = true;
-	private boolean isSelectAllByPage = true;
+	private boolean isSelectByPage = true;
 	private boolean isSelectObj = true;
 	private boolean isSelectId = true;
 	private boolean isInsert = true;
@@ -20,39 +20,39 @@ public class DaoConfig {
 	private boolean isDelOldFile = true;
 
 	private String funGetCount = "get{C}Count";
-	private String funSelectAll = "select{C}";
-	private String funSelectAllByPage = "select{C}ByPage";
-	private String funSelectObj = "select{C}ByObj";
-	private String funSelectId = "select{C}ById";
-	private String funInsert = "insertNonEmpty{C}";
-	private String funUpdate = "updateNonEmpty{C}";
-	private String funDelete = "delete{C}ById";
-	private String funInsertBatch = "insert{C}Batch";
+	private String funSelectAll = "find{C}";
+	private String funSelectByPage = "find{C}ByPage";
+	private String funSelectObj = "get{C}ByObj";
+	private String funSelectId = "get{C}ById";
+	private String funInsert = "add{C}";
+	private String funUpdate = "updt{C}";
+	private String funDelete = "del{C}ById";
+	private String funInsertBatch = "addBatch{C}";
 
-	private String bsGetCount = "dao://{C}/get{C}Count";
-	private String bsSelectAll = "dao://{C}/find{C}";
-	private String bsSelectAllByPage = "dao://{C}/find{C}ByPage";
-	private String bsSelectObj = "dao://{C}/get{C}ByObj";
-	private String bsSelectId = "dao://{C}/get{C}ById";
-	private String bsInsert = "dao://{C}/add{C}";
-	private String bsUpdate = "dao://{C}/updt{C}";
-	private String bsDelete = "dao://{C}/del{C}";
-	private String bsInsertBatch = "dao://{C}/insert{C}Batch";
+	private String bsGetCount = "/{c}/{c}Count";
+	private String bsSelectAll = "/{c}/find{C}";
+	private String bsSelectByPage = "/{c}/find{C}ByPage";
+	private String bsSelectObj = "/{c}/get{C}ByObj";
+	private String bsSelectId = "/{c}/get{C}ById/:id";
+	private String bsInsert = "/{c}/add{C}";
+	private String bsUpdate = "/{c}/updt{C}";
+	private String bsDelete = "/{c}/del{C}/:id";
+	private String bsInsertBatch = "/{c}/addBatch{C}";
 
-	public DaoConfig() {
+	public RouterConfig() {
 		super();
 	}
 
-	public DaoConfig(boolean isGetCount, boolean isSelectAll, boolean isSelectAllByPage, boolean isSelectObj,
+	public RouterConfig(boolean isGetCount, boolean isSelectAll, boolean isSelectByPage, boolean isSelectObj,
 			boolean isSelectId, boolean isInsert, boolean isUpdate, boolean isDelete, boolean isInsertBatch,
-			boolean isDelOldFile, String funGetCount, String funSelectAll, String funSelectAllByPage,
-			String funSelectObj, String funSelectId, String funInsert, String funUpdate, String funDelete,
-			String funInsertBatch, String bsGetCount, String bsSelectAll, String bsSelectAllByPage, String bsSelectObj,
-			String bsSelectId, String bsInsert, String bsUpdate, String bsDelete, String bsInsertBatch) {
+			boolean isDelOldFile, String funGetCount, String funSelectAll, String funSelectByPage, String funSelectObj,
+			String funSelectId, String funInsert, String funUpdate, String funDelete, String funInsertBatch,
+			String bsGetCount, String bsSelectAll, String bsSelectByPage, String bsSelectObj, String bsSelectId,
+			String bsInsert, String bsUpdate, String bsDelete, String bsInsertBatch) {
 		super();
 		this.isGetCount = isGetCount;
 		this.isSelectAll = isSelectAll;
-		this.isSelectAllByPage = isSelectAllByPage;
+		this.isSelectByPage = isSelectByPage;
 		this.isSelectObj = isSelectObj;
 		this.isSelectId = isSelectId;
 		this.isInsert = isInsert;
@@ -62,7 +62,7 @@ public class DaoConfig {
 		this.isDelOldFile = isDelOldFile;
 		this.funGetCount = funGetCount;
 		this.funSelectAll = funSelectAll;
-		this.funSelectAllByPage = funSelectAllByPage;
+		this.funSelectByPage = funSelectByPage;
 		this.funSelectObj = funSelectObj;
 		this.funSelectId = funSelectId;
 		this.funInsert = funInsert;
@@ -71,7 +71,7 @@ public class DaoConfig {
 		this.funInsertBatch = funInsertBatch;
 		this.bsGetCount = bsGetCount;
 		this.bsSelectAll = bsSelectAll;
-		this.bsSelectAllByPage = bsSelectAllByPage;
+		this.bsSelectByPage = bsSelectByPage;
 		this.bsSelectObj = bsSelectObj;
 		this.bsSelectId = bsSelectId;
 		this.bsInsert = bsInsert;
@@ -104,12 +104,12 @@ public class DaoConfig {
 		this.isSelectAll = isSelectAll;
 	}
 
-	public boolean isSelectAllByPage() {
-		return isSelectAllByPage;
+	public boolean isSelectByPage() {
+		return isSelectByPage;
 	}
 
-	public void setSelectAllByPage(boolean isSelectAllByPage) {
-		this.isSelectAllByPage = isSelectAllByPage;
+	public void setSelectByPage(boolean isSelectByPage) {
+		this.isSelectByPage = isSelectByPage;
 	}
 
 	public boolean isSelectObj() {
@@ -176,12 +176,12 @@ public class DaoConfig {
 		this.funSelectAll = funSelectAll;
 	}
 
-	public String getFunSelectAllByPage() {
-		return funSelectAllByPage;
+	public String getFunSelectByPage() {
+		return funSelectByPage;
 	}
 
-	public void setFunSelectAllByPage(String funSelectAllByPage) {
-		this.funSelectAllByPage = funSelectAllByPage;
+	public void setFunSelectByPage(String funSelectByPage) {
+		this.funSelectByPage = funSelectByPage;
 	}
 
 	public String getFunSelectObj() {
@@ -248,12 +248,12 @@ public class DaoConfig {
 		this.bsSelectAll = bsSelectAll;
 	}
 
-	public String getBsSelectAllByPage() {
-		return bsSelectAllByPage;
+	public String getBsSelectByPage() {
+		return bsSelectByPage;
 	}
 
-	public void setBsSelectAllByPage(String bsSelectAllByPage) {
-		this.bsSelectAllByPage = bsSelectAllByPage;
+	public void setBsSelectByPage(String bsSelectByPage) {
+		this.bsSelectByPage = bsSelectByPage;
 	}
 
 	public String getBsSelectObj() {

@@ -15,7 +15,6 @@ import java.util.jar.JarFile;
 
 import org.apache.log4j.Logger;
 
-import com.szmirren.models.CommonName;
 import com.szmirren.view.AlertUtil;
 
 /**
@@ -26,8 +25,12 @@ import com.szmirren.view.AlertUtil;
  */
 public class TemplateUtil {
 	private static Logger LOG = Logger.getLogger(TemplateUtil.class);
-	private static final String TEMPLATE_DIR = CommonName.TEMPLATE_DIR_NAME.getValue();// 模板文件夹名称
+	/** 模板文件夹名称 */
+	private static final String TEMPLATE_DIR = Constant.TEMPLATE_DIR_NAME;
 
+	/**
+	 * 查看是否存在模板文件夹,如果不存在则创建
+	 */
 	public static void existsTemplate() {
 		if (Files.notExists(Paths.get(TEMPLATE_DIR))) {
 			LOG.debug("执行创建模板...");
@@ -73,8 +76,7 @@ public class TemplateUtil {
 				JarEntry entry = entrys.nextElement();
 				if (entry.getName().startsWith(jarConn.getEntryName()) && !entry.getName().endsWith("/")) {
 					String fileName = entry.getName().replace(TEMPLATE_DIR + "/", "");
-					InputStream inpt = Thread.currentThread().getContextClassLoader()
-							.getResourceAsStream(entry.getName());
+					InputStream inpt = Thread.currentThread().getContextClassLoader().getResourceAsStream(entry.getName());
 					Files.copy(inpt, Paths.get(TEMPLATE_DIR, fileName));
 				}
 			}
