@@ -15,12 +15,22 @@ public enum FXMLPage {
 	HISTORY_CONFIG("FXML/HistoryConfig.fxml"),
 	/** 实体类属性设置页面 */
 	SET_ATTRIBUTE("FXML/SetAttribute.fxml"),
+	/** Service设置页面 */
+	SET_ROUTER_SERVICE("FXML/SetService.fxml"),
+	/** ServiceImpl设置页面 */
+	SET_ROUTER_SERVICE_IMPL("FXML/SetServiceImpl.fxml"),
 	/** Router设置页面 */
-	SET_ROUTER_ATTRIBUTE("FXML/SetRouterAttribute.fxml"),
+	SET_ROUTER("FXML/SetRouter.fxml"),
 	/** SQL设置页面 */
-	SET_SQL_ATTRIBUTE("FXML/SetSQLAttribute.fxml"),
+	SET_SQL("FXML/SetSql.fxml"),
 	/** SQLAssist设置页面 */
-	SET_ASSIST_ATTRIBUTE("FXML/SetAssist.fxml"),
+	SET_ASSIST("FXML/SetAssist.fxml"),
+	/** AbstractSQL设置页面 */
+	SET_ABSTRACT_SQL("FXML/SetAbstractSQL.fxml"),
+	/** SQLAssist设置页面 */
+	SET_SQL_AND_PARAMS("FXML/SetSqlAndParams.fxml"),
+	/** SetCustomProperty设置页面 */
+	SET_CUSTOM_PROPERTY("FXML/SetCustomProperty.fxml"),
 	/** 使用说明页面 */
 	ABOUT("FXML/About.fxml"),
 	/** 设置页面 */

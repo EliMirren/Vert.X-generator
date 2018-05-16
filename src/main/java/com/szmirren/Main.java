@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.szmirren.common.ConfigUtil;
-import com.szmirren.common.LanguageUtil;
 import com.szmirren.common.TemplateUtil;
 import com.szmirren.controller.IndexController;
 

@@ -760,12 +760,96 @@ public class IndexController extends BaseController {
 	}
 
 	/**
+	 * 打开设置Service
+	 * 
+	 * @param event
+	 */
+	public void onSetService(ActionEvent event) {
+		SetServiceController controller = (SetServiceController) loadFXMLPage("Service Setting", FXMLPage.SET_ROUTER_SERVICE, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置Service
+	 * 
+	 * @param event
+	 */
+	public void onSetServiceImpl(ActionEvent event) {
+		SetServiceImplController controller = (SetServiceImplController) loadFXMLPage("Service implement Setting", FXMLPage.SET_ROUTER_SERVICE_IMPL, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置Router
+	 * 
+	 * @param event
+	 */
+	public void onSetRouter(ActionEvent event) {
+		SetRouterController controller = (SetRouterController) loadFXMLPage("Router Setting", FXMLPage.SET_ROUTER, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置SQL
+	 * 
+	 * @param event
+	 */
+	public void onSetSQL(ActionEvent event) {
+		SetSqlController controller = (SetSqlController) loadFXMLPage("SQL Setting", FXMLPage.SET_SQL, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
 	 * 打开设置SqlAssist
 	 * 
 	 * @param event
 	 */
 	public void onSetSqlAssist(ActionEvent event) {
-		SetSqlAssistController controller = (SetSqlAssistController) loadFXMLPage("SqlAssist设置", FXMLPage.SET_ASSIST_ATTRIBUTE, false);
+		SetSqlAssistController controller = (SetSqlAssistController) loadFXMLPage("SqlAssist Setting", FXMLPage.SET_ASSIST, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置SqlAssist
+	 * 
+	 * @param event
+	 */
+	public void onSetAbstractSQL(ActionEvent event) {
+		SetAbstractSqlController controller = (SetAbstractSqlController) loadFXMLPage("AbstartSQL Setting", FXMLPage.SET_ABSTRACT_SQL, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置SqlAssist
+	 * 
+	 * @param event
+	 */
+	public void onSetSqlAndParams(ActionEvent event) {
+		SetSqlAndParamsController controller = (SetSqlAndParamsController) loadFXMLPage("SqlAndParams Setting", FXMLPage.SET_SQL_AND_PARAMS, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置SqlAssist
+	 * 
+	 * @param event
+	 */
+	public void onSetCustomProperty(ActionEvent event) {
+		SetCustomPropertyController controller = (SetCustomPropertyController) loadFXMLPage("SetCustomProperty Setting", FXMLPage.SET_CUSTOM_PROPERTY, false);
 		controller.setIndexController(this);
 		controller.showDialogStage();
 		controller.init();
@@ -805,6 +889,15 @@ public class IndexController extends BaseController {
 				LOG.error("保存配置失败!!!" + e);
 			}
 		}
+	}
+
+	/**
+	 * 执行创建
+	 * 
+	 * @param event
+	 */
+	public void onCreate(ActionEvent event) {
+		System.err.println(getThisHistoryConfig());
 	}
 
 	// ======================get/set============================

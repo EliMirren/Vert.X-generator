@@ -85,8 +85,7 @@ public class DatabaseConfig {
 		super();
 	}
 
-	public DatabaseConfig(String connName, String connURL, String listenPort, String dbName, String userName,
-			String userPwd, String dbType, String encoding) {
+	public DatabaseConfig(String connName, String connURL, String listenPort, String dbName, String userName, String userPwd, String dbType, String encoding) {
 		super();
 		this.connName = connName;
 		this.connURL = connURL;
@@ -96,6 +95,12 @@ public class DatabaseConfig {
 		this.userPwd = userPwd;
 		this.dbType = dbType;
 		this.encoding = encoding;
+	}
+
+	@Override
+	public String toString() {
+		return "DatabaseConfig [connName=" + connName + ", connURL=" + connURL + ", listenPort=" + listenPort + ", dbName=" + dbName + ", userName=" + userName + ", userPwd=" + userPwd + ", dbType="
+				+ dbType + ", encoding=" + encoding + "]";
 	}
 
 }

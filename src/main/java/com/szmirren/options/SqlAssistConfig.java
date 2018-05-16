@@ -3,6 +3,7 @@ package com.szmirren.options;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.szmirren.common.Constant;
 import com.szmirren.models.TableAttributeKeyValue;
 
 import javafx.collections.ObservableList;
@@ -17,7 +18,9 @@ public class SqlAssistConfig {
 	/** SqlAssist设置的tableItem */
 	private List<TableAttributeKeyValue> tableItem = new ArrayList<>();
 	/** 生成模板的名字 */
-	private String templateName;
+	private String templateName = Constant.TEMPLATE_NAME_SQL_ASSIST;
+	/** 是否覆盖原文件 */
+	private boolean overrideFile;
 
 	/**
 	 * 初始化
@@ -43,12 +46,13 @@ public class SqlAssistConfig {
 	 * 
 	 * @param tableItem
 	 */
-	public SqlAssistConfig(ObservableList<TableAttributeKeyValue> item, String templateName) {
+	public SqlAssistConfig(ObservableList<TableAttributeKeyValue> item, String templateName, boolean overrideFile) {
 		super();
 		if (item != null && !item.isEmpty()) {
 			tableItem.addAll(item);
 		}
 		this.templateName = templateName;
+		this.overrideFile = overrideFile;
 	}
 
 	/**
@@ -86,5 +90,30 @@ public class SqlAssistConfig {
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
 	}
+
+	/**
+	 * 获取是否覆盖原文件
+	 * 
+	 * @return
+	 */
+	public boolean isOverrideFile() {
+		return overrideFile;
+	}
+
+	/**
+	 * 设置是否覆盖原文件
+	 * 
+	 * @param overrideFile
+	 */
+	public void setOverrideFile(boolean overrideFile) {
+		this.overrideFile = overrideFile;
+	}
+
+	@Override
+	public String toString() {
+		return "SqlAssistConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
+	}
+	
+	
 
 }

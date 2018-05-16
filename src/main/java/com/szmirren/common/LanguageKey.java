@@ -193,5 +193,9 @@ public interface LanguageKey {
 	static final String SET_BTN_CONFIRM = "set.btnConfirm";
 	/** 设置-取消 */
 	static final String SET_BTN_CANCEL = "set.btnCancel";
+	/** 设置-覆盖存在的文件 */
+	static final String SET_CHK_OVERRIDE_FILE = "set.chkOverrideFile";
+	/** 设置-根据数据库类型自动选择 */
+	static final String SET_ABSTRACT_AUTOMATIC = "set.abstractAutomatic";
 
 }

@@ -24,7 +24,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="700.0" prefWidth="1180.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.SetSqlAssistController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="700.0" prefWidth="1180.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.SetCustomPropertyController">
 	<content>
 		<SplitPane dividerPositions="0.7202380952380952" layoutX="276.0" layoutY="132.0" prefHeight="160.0" prefWidth="888.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<items>
@@ -99,13 +99,6 @@
 								<Font size="14.0" />
 							</font>
 						</Button>
-						<Separator layoutY="244.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="244.0" />
-						<Label fx:id="lblTemplate" layoutX="8.0" layoutY="302.0" text="使用模板 :" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="302.0">
-							<font>
-								<Font size="16.0" />
-							</font>
-						</Label>
-						<ComboBox fx:id="cboTemplate" editable="true" layoutX="8.0" layoutY="331.0" prefHeight="30.0" prefWidth="250.0" promptText="请选择或输入模板的名称" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="331.0" />
 						<Button fx:id="btnConfirm" layoutX="77.0" layoutY="596.0" mnemonicParsing="false" onAction="#onConfirm" text="确 定" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="77.0">
 							<styleClass>
 								<String fx:value="btn" />
@@ -130,12 +123,6 @@
 								<Insets bottom="8.0" left="20.0" right="20.0" top="8.0" />
 							</padding>
 						</Button>
-                  <CheckBox fx:id="chkOverrideFile" layoutX="8.0" layoutY="257.0" mnemonicParsing="false" text="如果文件存在则覆盖" AnchorPane.leftAnchor="8.0">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </CheckBox>
-                  <Separator layoutX="17.0" layoutY="291.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
 					</children>
 				</AnchorPane>
 			</items>

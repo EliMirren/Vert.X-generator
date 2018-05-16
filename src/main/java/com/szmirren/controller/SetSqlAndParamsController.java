@@ -12,7 +12,7 @@ import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
 import com.szmirren.models.TableAttributeKeyValue;
 import com.szmirren.models.TableAttributeKeyValueEditingCell;
-import com.szmirren.options.SqlAssistConfig;
+import com.szmirren.options.SqlAndParamsConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.beans.property.StringProperty;
@@ -38,7 +38,7 @@ import javafx.util.Callback;
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
-public class SetSqlAssistController extends BaseController {
+public class SetSqlAndParamsController extends BaseController {
 	private Logger LOG = Logger.getLogger(this.getClass());
 	/** 首页的控制器 */
 	private IndexController indexController;
@@ -122,8 +122,8 @@ public class SetSqlAssistController extends BaseController {
 	 * 初始化
 	 */
 	public void init() {
-		LOG.debug("初始化SetSqlAssistController...");
-		LOG.debug("初始化SetSqlAssistController->初始化属性...");
+		LOG.debug("初始化SetSqlAndParamsController...");
+		LOG.debug("初始化SetSqlAndParamsController->初始化属性...");
 		Callback<TableColumn<TableAttributeKeyValue, String>, TableCell<TableAttributeKeyValue, String>> cellFactory = (
 				TableColumn<TableAttributeKeyValue, String> p) -> new TableAttributeKeyValueEditingCell();
 		tdKey.setCellValueFactory(new PropertyValueFactory<>("key"));
@@ -144,17 +144,17 @@ public class SetSqlAssistController extends BaseController {
 			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDescribe(t.getNewValue());
 		});
 		tblProperty.setItems(tblPropertyValues);
-		LOG.debug("初始化SetSqlAssistController->初始化模板文件名选择...");
+		LOG.debug("初始化SetSqlAndParamsController->初始化模板文件名选择...");
 		cboTemplate.getItems().addAll(indexController.getTemplateNameItems());
-		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_SQL_ASSIST)) {
-			cboTemplate.setValue(Constant.TEMPLATE_NAME_SQL_ASSIST);
+		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_SQL_AND_PARAMS)) {
+			cboTemplate.setValue(Constant.TEMPLATE_NAME_SQL_AND_PARAMS);
 		}
-		LOG.debug("初始化SetSqlAssistController->初始化配置信息...");
+		LOG.debug("初始化SetSqlAndParamsController->初始化配置信息...");
 		if (indexController.getHistoryConfig() != null) {
-			if (indexController.getHistoryConfig().getAssistConfig() == null) {
+			if (indexController.getHistoryConfig().getSqlAndParamsConfig() == null) {
 				loadConfig(getConfig());
 			} else {
-				loadConfig(indexController.getHistoryConfig().getAssistConfig());
+				loadConfig(indexController.getHistoryConfig().getSqlAndParamsConfig());
 			}
 		} else {
 			String configName = indexController.getHistoryConfigName();
@@ -164,7 +164,7 @@ public class SetSqlAssistController extends BaseController {
 			loadConfig(getConfig(configName));
 		}
 		initLanguage();
-		LOG.debug("初始化SetSqlAssistController-->成功!");
+		LOG.debug("初始化SetSqlAndParamsController-->成功!");
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class SetSqlAssistController extends BaseController {
 	 * 
 	 * @return
 	 */
-	public SqlAssistConfig getConfig() {
+	public SqlAndParamsConfig getConfig() {
 		return getConfig(Constant.DEFAULT);
 	}
 
@@ -201,10 +201,10 @@ public class SetSqlAssistController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public SqlAssistConfig getConfig(String name) {
+	public SqlAndParamsConfig getConfig(String name) {
 		LOG.debug("执行从数据库中获取配置文件...");
 		try {
-			SqlAssistConfig config = ConfigUtil.getSqlAssistConfig(name);
+			SqlAndParamsConfig config = ConfigUtil.getSqlAndParamsConfig(name);
 			LOG.debug("执行获取配置文件-->成功!");
 			if (config != null) {
 				return config;
@@ -213,7 +213,7 @@ public class SetSqlAssistController extends BaseController {
 			LOG.error("执行从数据库中获取配置文件-->失败:", e);
 			AlertUtil.showErrorAlert("执行获得配置文件-->失败:" + e);
 		}
-		return new SqlAssistConfig();
+		return new SqlAndParamsConfig();
 	}
 
 	/**
@@ -222,9 +222,9 @@ public class SetSqlAssistController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public SqlAssistConfig getThisConfig() {
+	public SqlAndParamsConfig getThisConfig() {
 		LOG.debug("执行获取当前页面配置文件...");
-		SqlAssistConfig config = new SqlAssistConfig(tblPropertyValues, cboTemplate.getValue(), chkOverrideFile.isSelected());
+		SqlAndParamsConfig config = new SqlAndParamsConfig(tblPropertyValues, cboTemplate.getValue(), chkOverrideFile.isSelected());
 		LOG.debug("执行获取当前页面配置文件-->成功!");
 		return config;
 	}
@@ -234,7 +234,7 @@ public class SetSqlAssistController extends BaseController {
 	 * 
 	 * @param config
 	 */
-	public void loadConfig(SqlAssistConfig config) {
+	public void loadConfig(SqlAndParamsConfig config) {
 		LOG.debug("执行加载配置文件到当前页面...");
 		tblPropertyValues.clear();
 		if (config != null && config.getTableItem() != null) {
@@ -266,7 +266,7 @@ public class SetSqlAssistController extends BaseController {
 			if (StrUtil.isNullOrEmpty(configName)) {
 				configName = Constant.DEFAULT;
 			}
-			ConfigUtil.saveSqlAssistConfig(getThisConfig(), configName);
+			ConfigUtil.saveSqlAndParamsConfig(getThisConfig(), configName);
 			LOG.debug("执行将配置文件保存到数据库-->成功!");
 			AlertUtil.showInfoAlert("保存配置信息成功!");
 		} catch (Exception e) {
@@ -305,7 +305,7 @@ public class SetSqlAssistController extends BaseController {
 	 * @param event
 	 */
 	public void onConfirm(ActionEvent event) {
-		indexController.getHistoryConfig().setAssistConfig(getThisConfig());
+		indexController.getHistoryConfig().setSqlAndParamsConfig(getThisConfig());
 		getDialogStage().close();
 	}
 

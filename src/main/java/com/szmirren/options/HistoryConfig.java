@@ -390,4 +390,14 @@ public class HistoryConfig {
 		this.customPropertyConfig = customPropertyConfig;
 	}
 
+	@Override
+	public String toString() {
+		return "HistoryConfig [historyConfigName=" + historyConfigName + ", projectPath=" + projectPath + ", entityPackage=" + entityPackage + ", entityName=" + entityName + ", servicePackage="
+				+ servicePackage + ", serviceName=" + serviceName + ", serviceImplPackage=" + serviceImplPackage + ", serviceImplName=" + serviceImplName + ", routerPackage=" + routerPackage + ", routerName="
+				+ routerName + ", sqlPackage=" + sqlPackage + ", sqlName=" + sqlName + ", sqlAssistPackage=" + sqlAssistPackage + ", abstractSqlPackage=" + abstractSqlPackage + ", sqlAndParamsPackage="
+				+ sqlAndParamsPackage + ", codeFormat=" + codeFormat + ", dbConfig=" + dbConfig + ", entityConfig=" + entityConfig + ", serviceConfig=" + serviceConfig + ", serviceImplConfig="
+				+ serviceImplConfig + ", routerConfig=" + routerConfig + ", sqlConfig=" + sqlConfig + ", assistConfig=" + assistConfig + ", abstractSqlConfig=" + abstractSqlConfig + ", sqlAndParamsConfig="
+				+ sqlAndParamsConfig + ", customConfig=" + customConfig + ", customPropertyConfig=" + customPropertyConfig + "]";
+	}
+
 }

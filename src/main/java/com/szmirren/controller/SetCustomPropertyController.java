@@ -12,7 +12,7 @@ import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
 import com.szmirren.models.TableAttributeKeyValue;
 import com.szmirren.models.TableAttributeKeyValueEditingCell;
-import com.szmirren.options.SqlAssistConfig;
+import com.szmirren.options.CustomPropertyConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.beans.property.StringProperty;
@@ -21,8 +21,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -38,7 +36,7 @@ import javafx.util.Callback;
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
-public class SetSqlAssistController extends BaseController {
+public class SetCustomPropertyController extends BaseController {
 	private Logger LOG = Logger.getLogger(this.getClass());
 	/** 首页的控制器 */
 	private IndexController indexController;
@@ -55,9 +53,7 @@ public class SetSqlAssistController extends BaseController {
 	/** 描述 */
 	@FXML
 	private Label lblDescribe;
-	/** 使用模板 */
-	@FXML
-	private Label lblTemplate;
+	/** 属性表 */
 	@FXML
 	private TableView<TableAttributeKeyValue> tblProperty;
 	/** 属性表的key列 */
@@ -91,14 +87,6 @@ public class SetSqlAssistController extends BaseController {
 	@FXML
 	private Button btnCancel;
 
-	/** 如果文件存在就将其覆盖 */
-	@FXML
-	private CheckBox chkOverrideFile;
-
-	/** 使用指定模板 */
-	@FXML
-	private ComboBox<String> cboTemplate;
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tblProperty.setEditable(true);
@@ -115,15 +103,14 @@ public class SetSqlAssistController extends BaseController {
 			tdDescribe.setPrefWidth(width / 3);
 			return true;
 		});
-		chkOverrideFile.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_OVERRIDE_FILE));
 	}
 
 	/**
 	 * 初始化
 	 */
 	public void init() {
-		LOG.debug("初始化SetSqlAssistController...");
-		LOG.debug("初始化SetSqlAssistController->初始化属性...");
+		LOG.debug("初始化SetCustomPropertyController...");
+		LOG.debug("初始化SetCustomPropertyController->初始化属性...");
 		Callback<TableColumn<TableAttributeKeyValue, String>, TableCell<TableAttributeKeyValue, String>> cellFactory = (
 				TableColumn<TableAttributeKeyValue, String> p) -> new TableAttributeKeyValueEditingCell();
 		tdKey.setCellValueFactory(new PropertyValueFactory<>("key"));
@@ -144,17 +131,12 @@ public class SetSqlAssistController extends BaseController {
 			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDescribe(t.getNewValue());
 		});
 		tblProperty.setItems(tblPropertyValues);
-		LOG.debug("初始化SetSqlAssistController->初始化模板文件名选择...");
-		cboTemplate.getItems().addAll(indexController.getTemplateNameItems());
-		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_SQL_ASSIST)) {
-			cboTemplate.setValue(Constant.TEMPLATE_NAME_SQL_ASSIST);
-		}
-		LOG.debug("初始化SetSqlAssistController->初始化配置信息...");
+		LOG.debug("初始化SetCustomPropertyController->初始化配置信息...");
 		if (indexController.getHistoryConfig() != null) {
-			if (indexController.getHistoryConfig().getAssistConfig() == null) {
+			if (indexController.getHistoryConfig().getCustomPropertyConfig() == null) {
 				loadConfig(getConfig());
 			} else {
-				loadConfig(indexController.getHistoryConfig().getAssistConfig());
+				loadConfig(indexController.getHistoryConfig().getCustomPropertyConfig());
 			}
 		} else {
 			String configName = indexController.getHistoryConfigName();
@@ -164,7 +146,7 @@ public class SetSqlAssistController extends BaseController {
 			loadConfig(getConfig(configName));
 		}
 		initLanguage();
-		LOG.debug("初始化SetSqlAssistController-->成功!");
+		LOG.debug("初始化SetCustomPropertyController-->成功!");
 	}
 
 	/**
@@ -175,10 +157,8 @@ public class SetSqlAssistController extends BaseController {
 		tdDescribe.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TD_DESCRIBE));
 		lblAddCustomProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_ADD_CUSTOM_PROPERTY));
 		lblDescribe.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_DESCRIBE));
-		lblTemplate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_TEMPLATE));
 		btnSaveConfig.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_SAVE_CONFIG));
 		btnAddProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_ADD_PROPERTY));
-		cboTemplate.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
 		btnConfirm.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CONFIRM));
 		btnCancel.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL));
 		txtKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_KEY));
@@ -191,7 +171,7 @@ public class SetSqlAssistController extends BaseController {
 	 * 
 	 * @return
 	 */
-	public SqlAssistConfig getConfig() {
+	public CustomPropertyConfig getConfig() {
 		return getConfig(Constant.DEFAULT);
 	}
 
@@ -201,10 +181,10 @@ public class SetSqlAssistController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public SqlAssistConfig getConfig(String name) {
+	public CustomPropertyConfig getConfig(String name) {
 		LOG.debug("执行从数据库中获取配置文件...");
 		try {
-			SqlAssistConfig config = ConfigUtil.getSqlAssistConfig(name);
+			CustomPropertyConfig config = ConfigUtil.getCustomPropertyConfig(name);
 			LOG.debug("执行获取配置文件-->成功!");
 			if (config != null) {
 				return config;
@@ -213,7 +193,7 @@ public class SetSqlAssistController extends BaseController {
 			LOG.error("执行从数据库中获取配置文件-->失败:", e);
 			AlertUtil.showErrorAlert("执行获得配置文件-->失败:" + e);
 		}
-		return new SqlAssistConfig();
+		return new CustomPropertyConfig();
 	}
 
 	/**
@@ -222,9 +202,9 @@ public class SetSqlAssistController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public SqlAssistConfig getThisConfig() {
+	public CustomPropertyConfig getThisConfig() {
 		LOG.debug("执行获取当前页面配置文件...");
-		SqlAssistConfig config = new SqlAssistConfig(tblPropertyValues, cboTemplate.getValue(), chkOverrideFile.isSelected());
+		CustomPropertyConfig config = new CustomPropertyConfig(tblPropertyValues);
 		LOG.debug("执行获取当前页面配置文件-->成功!");
 		return config;
 	}
@@ -234,7 +214,7 @@ public class SetSqlAssistController extends BaseController {
 	 * 
 	 * @param config
 	 */
-	public void loadConfig(SqlAssistConfig config) {
+	public void loadConfig(CustomPropertyConfig config) {
 		LOG.debug("执行加载配置文件到当前页面...");
 		tblPropertyValues.clear();
 		if (config != null && config.getTableItem() != null) {
@@ -242,14 +222,6 @@ public class SetSqlAssistController extends BaseController {
 				tblPropertyValues.add(new TableAttributeKeyValue(v.getKey(), v.getValue(), v.getDescribe()));
 			});
 		}
-		if (config.getTemplateName() != null) {
-			String templateName = config.getTemplateName();
-			if (!indexController.getTemplateNameItems().contains(templateName)) {
-				AlertUtil.showWarnAlert("在模板文件夹中没有发现名字为" + templateName + "的模板,系统已经为你加载配置,如果已经不存在该模板请重新选择");
-			}
-			cboTemplate.setValue(templateName);
-		}
-		chkOverrideFile.setSelected(config.isOverrideFile());
 		LOG.debug("执行加载配置文件到当前页面->成功!");
 	}
 
@@ -266,7 +238,7 @@ public class SetSqlAssistController extends BaseController {
 			if (StrUtil.isNullOrEmpty(configName)) {
 				configName = Constant.DEFAULT;
 			}
-			ConfigUtil.saveSqlAssistConfig(getThisConfig(), configName);
+			ConfigUtil.saveCustomPropertyConfig(getThisConfig(), configName);
 			LOG.debug("执行将配置文件保存到数据库-->成功!");
 			AlertUtil.showInfoAlert("保存配置信息成功!");
 		} catch (Exception e) {
@@ -305,7 +277,7 @@ public class SetSqlAssistController extends BaseController {
 	 * @param event
 	 */
 	public void onConfirm(ActionEvent event) {
-		indexController.getHistoryConfig().setAssistConfig(getThisConfig());
+		indexController.getHistoryConfig().setCustomPropertyConfig(getThisConfig());
 		getDialogStage().close();
 	}
 
