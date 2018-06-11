@@ -15,16 +15,21 @@ import com.szmirren.models.TableAttributeKeyValueEditingCell;
 import com.szmirren.options.CustomPropertyConfig;
 import com.szmirren.view.AlertUtil;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -103,6 +108,10 @@ public class SetCustomPropertyController extends BaseController {
 			tdDescribe.setPrefWidth(width / 3);
 			return true;
 		});
+		btnConfirm.widthProperty().addListener(w -> {
+			double x = btnConfirm.getLayoutX() + btnConfirm.getWidth() + 10;
+			btnCancel.setLayoutX(x);
+		});
 	}
 
 	/**
@@ -111,6 +120,23 @@ public class SetCustomPropertyController extends BaseController {
 	public void init() {
 		LOG.debug("初始化SetCustomPropertyController...");
 		LOG.debug("初始化SetCustomPropertyController->初始化属性...");
+		// 添加右键删除属性
+		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE);
+		String delMenu = property.get() == null ? "删除该属性" : property.get();
+		MenuItem item = new MenuItem(delMenu);
+		item.setOnAction(event -> {
+			TableViewSelectionModel<TableAttributeKeyValue> model = tblProperty.selectionModelProperty().get();
+			StringProperty delConfirmP = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE_CONFIRM);
+			String delConfirm = delConfirmP.get() == null ? "确定删除该属性吗" : delConfirmP.get();
+			boolean isDel = AlertUtil.showConfirmAlert(delConfirm);
+			if (isDel) {
+				tblPropertyValues.remove(model.getSelectedItem());
+			}
+		});
+		ContextMenu menu = new ContextMenu(item);
+		Property<ContextMenu> tblCM = new SimpleObjectProperty<ContextMenu>(menu);
+		tblProperty.contextMenuProperty().bind(tblCM);
+		// 添加列
 		Callback<TableColumn<TableAttributeKeyValue, String>, TableCell<TableAttributeKeyValue, String>> cellFactory = (
 				TableColumn<TableAttributeKeyValue, String> p) -> new TableAttributeKeyValueEditingCell();
 		tdKey.setCellValueFactory(new PropertyValueFactory<>("key"));

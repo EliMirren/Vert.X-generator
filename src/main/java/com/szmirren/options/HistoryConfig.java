@@ -37,6 +37,10 @@ public class HistoryConfig {
 	private String abstractSqlPackage;
 	/** sqlAndParams包名 */
 	private String sqlAndParamsPackage;
+	/** 单元测试包名 */
+	private String unitTestPackage;
+	/** 单元测试类名 */
+	private String unitTestName;
 	/** 字符编码格式 */
 	private String codeFormat;
 
@@ -58,6 +62,8 @@ public class HistoryConfig {
 	private AbstractSqlConfig abstractSqlConfig;
 	/** SqlAndParamsConfig配置文件 */
 	private SqlAndParamsConfig sqlAndParamsConfig;
+	/** 单元测试配置文件 */
+	private UnitTestConfig unitTestConfig;
 	/** 自定义包类的配置文件 */
 	private CustomConfig customConfig;
 	/** 自定义属性的配置文件 */
@@ -90,7 +96,8 @@ public class HistoryConfig {
 	 * @param codeFormat
 	 */
 	public HistoryConfig(String projectPath, String entityPackage, String entityName, String servicePackage, String serviceName, String serviceImplPackage, String serviceImplName, String routerPackage,
-			String routerName, String sqlPackage, String sqlName, String sqlAssistPackage, String abstractSqlPackage, String sqlAndParamsPackage, String codeFormat) {
+			String routerName, String sqlPackage, String sqlName, String sqlAssistPackage, String abstractSqlPackage, String sqlAndParamsPackage, String unitTestPackage, String unitTestName,
+			String codeFormat) {
 		super();
 		this.projectPath = projectPath;
 		this.entityPackage = entityPackage;
@@ -106,6 +113,8 @@ public class HistoryConfig {
 		this.sqlAssistPackage = sqlAssistPackage;
 		this.abstractSqlPackage = abstractSqlPackage;
 		this.sqlAndParamsPackage = sqlAndParamsPackage;
+		this.unitTestPackage = unitTestPackage;
+		this.unitTestName = unitTestName;
 		this.codeFormat = codeFormat;
 	}
 
@@ -142,8 +151,9 @@ public class HistoryConfig {
 	 */
 	public HistoryConfig(String historyConfigName, String projectPath, String entityPackage, String entityName, String servicePackage, String serviceName, String serviceImplPackage,
 			String serviceImplName, String routerPackage, String routerName, String sqlPackage, String sqlName, String sqlAssistPackage, String abstractSqlPackage, String sqlAndParamsPackage,
-			String codeFormat, DatabaseConfig dbConfig, EntityConfig entityConfig, ServiceConfig serviceConfig, ServiceImplConfig serviceImplConfig, RouterConfig routerConfig, SqlConfig sqlConfig,
-			SqlAssistConfig assistConfig, AbstractSqlConfig abstractSqlConfig, SqlAndParamsConfig sqlAndParamsConfig, CustomConfig customConfig, CustomPropertyConfig customPropertyConfig) {
+			String unitTestPackage, String unitTestName, String codeFormat, DatabaseConfig dbConfig, EntityConfig entityConfig, ServiceConfig serviceConfig, ServiceImplConfig serviceImplConfig,
+			RouterConfig routerConfig, SqlConfig sqlConfig, SqlAssistConfig assistConfig, AbstractSqlConfig abstractSqlConfig, SqlAndParamsConfig sqlAndParamsConfig, UnitTestConfig unitTestConfig,
+			CustomConfig customConfig, CustomPropertyConfig customPropertyConfig) {
 		super();
 		this.historyConfigName = historyConfigName;
 		this.projectPath = projectPath;
@@ -160,6 +170,8 @@ public class HistoryConfig {
 		this.sqlAssistPackage = sqlAssistPackage;
 		this.abstractSqlPackage = abstractSqlPackage;
 		this.sqlAndParamsPackage = sqlAndParamsPackage;
+		this.unitTestPackage = unitTestPackage;
+		this.unitTestName = unitTestName;
 		this.codeFormat = codeFormat;
 		this.dbConfig = dbConfig;
 		this.entityConfig = entityConfig;
@@ -170,6 +182,7 @@ public class HistoryConfig {
 		this.assistConfig = assistConfig;
 		this.abstractSqlConfig = abstractSqlConfig;
 		this.sqlAndParamsConfig = sqlAndParamsConfig;
+		this.unitTestConfig = unitTestConfig;
 		this.customConfig = customConfig;
 		this.customPropertyConfig = customPropertyConfig;
 	}
@@ -390,14 +403,39 @@ public class HistoryConfig {
 		this.customPropertyConfig = customPropertyConfig;
 	}
 
+	public String getUnitTestPackage() {
+		return unitTestPackage;
+	}
+
+	public void setUnitTestPackage(String unitTestPackage) {
+		this.unitTestPackage = unitTestPackage;
+	}
+
+	public String getUnitTestName() {
+		return unitTestName;
+	}
+
+	public void setUnitTestName(String unitTestName) {
+		this.unitTestName = unitTestName;
+	}
+
+	public UnitTestConfig getUnitTestConfig() {
+		return unitTestConfig;
+	}
+
+	public void setUnitTestConfig(UnitTestConfig unitTestConfig) {
+		this.unitTestConfig = unitTestConfig;
+	}
+
 	@Override
 	public String toString() {
 		return "HistoryConfig [historyConfigName=" + historyConfigName + ", projectPath=" + projectPath + ", entityPackage=" + entityPackage + ", entityName=" + entityName + ", servicePackage="
 				+ servicePackage + ", serviceName=" + serviceName + ", serviceImplPackage=" + serviceImplPackage + ", serviceImplName=" + serviceImplName + ", routerPackage=" + routerPackage + ", routerName="
 				+ routerName + ", sqlPackage=" + sqlPackage + ", sqlName=" + sqlName + ", sqlAssistPackage=" + sqlAssistPackage + ", abstractSqlPackage=" + abstractSqlPackage + ", sqlAndParamsPackage="
-				+ sqlAndParamsPackage + ", codeFormat=" + codeFormat + ", dbConfig=" + dbConfig + ", entityConfig=" + entityConfig + ", serviceConfig=" + serviceConfig + ", serviceImplConfig="
-				+ serviceImplConfig + ", routerConfig=" + routerConfig + ", sqlConfig=" + sqlConfig + ", assistConfig=" + assistConfig + ", abstractSqlConfig=" + abstractSqlConfig + ", sqlAndParamsConfig="
-				+ sqlAndParamsConfig + ", customConfig=" + customConfig + ", customPropertyConfig=" + customPropertyConfig + "]";
+				+ sqlAndParamsPackage + ", unitTestPackage=" + unitTestPackage + ", unitTestName=" + unitTestName + ", codeFormat=" + codeFormat + ", dbConfig=" + dbConfig + ", entityConfig=" + entityConfig
+				+ ", serviceConfig=" + serviceConfig + ", serviceImplConfig=" + serviceImplConfig + ", routerConfig=" + routerConfig + ", sqlConfig=" + sqlConfig + ", assistConfig=" + assistConfig
+				+ ", abstractSqlConfig=" + abstractSqlConfig + ", sqlAndParamsConfig=" + sqlAndParamsConfig + ", unitTestConfig=" + unitTestConfig + ", customConfig=" + customConfig
+				+ ", customPropertyConfig=" + customPropertyConfig + "]";
 	}
 
 }

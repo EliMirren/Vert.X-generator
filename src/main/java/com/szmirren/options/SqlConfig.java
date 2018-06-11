@@ -9,18 +9,18 @@ import com.szmirren.models.TableAttributeKeyValue;
 import javafx.collections.ObservableList;
 
 /**
- * SqlAssist属性的配置文件
+ * Sql属性的配置文件
  * 
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
 public class SqlConfig {
-	/** SqlAssist设置的tableItem */
+	/** 设置的tableItem */
 	private List<TableAttributeKeyValue> tableItem = new ArrayList<>();
 	/** 生成模板的名字 */
 	private String templateName = Constant.TEMPLATE_NAME_SQL;
 	/** 是否覆盖原文件 */
-	private boolean overrideFile;
+	private boolean overrideFile = true;
 
 	/**
 	 * 初始化
@@ -53,6 +53,15 @@ public class SqlConfig {
 		}
 		this.templateName = templateName;
 		this.overrideFile = overrideFile;
+	}
+
+	/**
+	 * 初始化默认参数
+	 * 
+	 * @return
+	 */
+	public SqlConfig initDefaultValue() {
+		return this;
 	}
 
 	/**
@@ -111,7 +120,7 @@ public class SqlConfig {
 
 	@Override
 	public String toString() {
-		return "SqlAssistConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
+		return "SqlConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
 	}
 
 }

@@ -15,6 +15,8 @@ import com.szmirren.models.TableAttributeKeyValueEditingCell;
 import com.szmirren.options.ServiceConfig;
 import com.szmirren.view.AlertUtil;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,10 +25,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -115,15 +120,35 @@ public class SetServiceController extends BaseController {
 			tdDescribe.setPrefWidth(width / 3);
 			return true;
 		});
-		chkOverrideFile.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_OVERRIDE_FILE));
+		btnConfirm.widthProperty().addListener(w -> {
+			double x = btnConfirm.getLayoutX() + btnConfirm.getWidth() + 10;
+			btnCancel.setLayoutX(x);
+		});
 	}
 
 	/**
 	 * 初始化
 	 */
 	public void init() {
-		LOG.debug("初始化SetServoceConterller...");
-		LOG.debug("初始化SetServoceConterller->初始化属性...");
+		LOG.debug("初始化SetServiceConterller...");
+		LOG.debug("初始化SetServiceConterller->初始化属性...");
+		// 添加右键删除属性
+		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE);
+		String delMenu = property.get() == null ? "删除该属性" : property.get();
+		MenuItem item = new MenuItem(delMenu);
+		item.setOnAction(event -> {
+			TableViewSelectionModel<TableAttributeKeyValue> model = tblProperty.selectionModelProperty().get();
+			StringProperty delConfirmP = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE_CONFIRM);
+			String delConfirm = delConfirmP.get() == null ? "确定删除该属性吗" : delConfirmP.get();
+			boolean isDel = AlertUtil.showConfirmAlert(delConfirm);
+			if (isDel) {
+				tblPropertyValues.remove(model.getSelectedItem());
+			}
+		});
+		ContextMenu menu = new ContextMenu(item);
+		Property<ContextMenu> tblCM = new SimpleObjectProperty<ContextMenu>(menu);
+		tblProperty.contextMenuProperty().bind(tblCM);
+		// 添加列
 		Callback<TableColumn<TableAttributeKeyValue, String>, TableCell<TableAttributeKeyValue, String>> cellFactory = (
 				TableColumn<TableAttributeKeyValue, String> p) -> new TableAttributeKeyValueEditingCell();
 		tdKey.setCellValueFactory(new PropertyValueFactory<>("key"));
@@ -144,12 +169,12 @@ public class SetServiceController extends BaseController {
 			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDescribe(t.getNewValue());
 		});
 		tblProperty.setItems(tblPropertyValues);
-		LOG.debug("初始化SetServoceConterller->初始化模板文件名选择...");
+		LOG.debug("初始化SetServiceConterller->初始化模板文件名选择...");
 		cboTemplate.getItems().addAll(indexController.getTemplateNameItems());
 		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_SERVICE)) {
 			cboTemplate.setValue(Constant.TEMPLATE_NAME_SERVICE);
 		}
-		LOG.debug("初始化SetServoceConterller->初始化配置信息...");
+		LOG.debug("初始化SetServiceConterller->初始化配置信息...");
 		if (indexController.getHistoryConfig() != null) {
 			if (indexController.getHistoryConfig().getServiceConfig() == null) {
 				loadConfig(getConfig());
@@ -164,7 +189,7 @@ public class SetServiceController extends BaseController {
 			loadConfig(getConfig(configName));
 		}
 		initLanguage();
-		LOG.debug("初始化SetServoceConterller-->成功!");
+		LOG.debug("初始化SetServiceConterller-->成功!");
 	}
 
 	/**
@@ -184,6 +209,7 @@ public class SetServiceController extends BaseController {
 		txtKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_KEY));
 		txtValue.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_VALUE));
 		txtDescribe.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_DESCRIBE));
+		chkOverrideFile.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_OVERRIDE_FILE));
 	}
 
 	/**
@@ -213,7 +239,7 @@ public class SetServiceController extends BaseController {
 			LOG.error("执行从数据库中获取配置文件-->失败:", e);
 			AlertUtil.showErrorAlert("执行获得配置文件-->失败:" + e);
 		}
-		return new ServiceConfig();
+		return new ServiceConfig().initDefaultValue();
 	}
 
 	/**

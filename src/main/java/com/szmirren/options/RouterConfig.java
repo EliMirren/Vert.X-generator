@@ -9,18 +9,18 @@ import com.szmirren.models.TableAttributeKeyValue;
 import javafx.collections.ObservableList;
 
 /**
- * SqlAssist属性的配置文件
+ * Router属性的配置文件
  * 
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
 public class RouterConfig {
-	/** SqlAssist设置的tableItem */
+	/** 设置的tableItem */
 	private List<TableAttributeKeyValue> tableItem = new ArrayList<>();
 	/** 生成模板的名字 */
 	private String templateName = Constant.TEMPLATE_NAME_ROUTER;
 	/** 是否覆盖原文件 */
-	private boolean overrideFile;
+	private boolean overrideFile = true;
 
 	/**
 	 * 初始化
@@ -53,6 +53,19 @@ public class RouterConfig {
 		}
 		this.templateName = templateName;
 		this.overrideFile = overrideFile;
+	}
+
+	/**
+	 * 初始化默认数据
+	 */
+	public RouterConfig initDefaultValue() {
+		tableItem.add(new TableAttributeKeyValue("count", "get{C}Count", "获取数据总行数"));
+		tableItem.add(new TableAttributeKeyValue("select", "find{C}", "查询所有数据"));
+		tableItem.add(new TableAttributeKeyValue("selectById", "get{C}ById", "通过id查询数据"));
+		tableItem.add(new TableAttributeKeyValue("insertNotNull", "saveNotNull{C}", "插入不为空的数据"));
+		tableItem.add(new TableAttributeKeyValue("updateNotNull", "updateNotNull{C}", "更新不为空的数据"));
+		tableItem.add(new TableAttributeKeyValue("deleteById", "delete{C}ById", "通过id删除数据"));
+		return this;
 	}
 
 	/**
@@ -111,7 +124,7 @@ public class RouterConfig {
 
 	@Override
 	public String toString() {
-		return "SqlAssistConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
+		return "RouterConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
 	}
 
 }

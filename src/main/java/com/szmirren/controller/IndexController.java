@@ -20,8 +20,18 @@ import com.szmirren.common.DBUtil;
 import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
 import com.szmirren.models.EntityAttribute;
+import com.szmirren.options.AbstractSqlConfig;
+import com.szmirren.options.CustomConfig;
+import com.szmirren.options.CustomPropertyConfig;
 import com.szmirren.options.DatabaseConfig;
 import com.szmirren.options.HistoryConfig;
+import com.szmirren.options.RouterConfig;
+import com.szmirren.options.ServiceConfig;
+import com.szmirren.options.ServiceImplConfig;
+import com.szmirren.options.SqlAndParamsConfig;
+import com.szmirren.options.SqlAssistConfig;
+import com.szmirren.options.SqlConfig;
+import com.szmirren.options.UnitTestConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.beans.property.StringProperty;
@@ -82,6 +92,8 @@ public class IndexController extends BaseController {
 	private String routerNamePlace;
 	/** SQL默认占位符 */
 	private String sqlNamePlace;
+	/** 单元测试默认占位符 */
+	private String unitTestPlace;
 
 	// ========================fxml控件============================
 	/** 数据库连接 */
@@ -126,6 +138,9 @@ public class IndexController extends BaseController {
 	/** SqlParams包名 */
 	@FXML
 	private Label lblSqlParamsPackage;
+	/** 单元测试的包名 */
+	@FXML
+	private Label lblUnitTestPackage;
 
 	/** 实体类类名 */
 	@FXML
@@ -151,6 +166,10 @@ public class IndexController extends BaseController {
 	/** SqlParams类名 */
 	@FXML
 	private Label lblSqlParamsName;
+	/** 单元测试的类名 */
+	@FXML
+	private Label lblUnitTestName;
+
 	/** 自定义包名与类 */
 	@FXML
 	private Label lblSetCustom;
@@ -200,6 +219,9 @@ public class IndexController extends BaseController {
 	/** SqlParams包名 */
 	@FXML
 	private TextField txtSqlParamsPackage;
+	/** 单元测试的包名 */
+	@FXML
+	private TextField txtUnitTestPackage;
 
 	/** 实体类类名 */
 	@FXML
@@ -225,6 +247,9 @@ public class IndexController extends BaseController {
 	/** SqlParams类名 */
 	@FXML
 	private TextField txtSqlParamsName;
+	/** 单元测试类名 */
+	@FXML
+	private TextField txtUnitTestName;
 
 	/** 选择根目录按钮 */
 	@FXML
@@ -259,6 +284,9 @@ public class IndexController extends BaseController {
 	/** SqlAndParams的设置按钮 */
 	@FXML
 	private Button btnSetSqlAndParams;
+	/** 单元测试的设置按钮 */
+	@FXML
+	private Button btnSetUnitTest;
 	/** 自定义包名类的设置按钮 */
 	@FXML
 	private Button btnSetCustom;
@@ -375,6 +403,10 @@ public class IndexController extends BaseController {
 		txtAssistPackage.setText(config.getSqlAssistPackage());
 		txtAbstractSqlPackage.setText(config.getAbstractSqlPackage());
 		txtSqlParamsPackage.setText(config.getSqlAssistPackage());
+		txtUnitTestPackage.setText(config.getUnitTestPackage());
+		if (txtUnitTestName.getText().contains("{c}")) {
+			txtUnitTestName.setText(config.getUnitTestName());
+		}
 		cboCodeFormat.setValue(config.getCodeFormat());
 	}
 
@@ -402,6 +434,8 @@ public class IndexController extends BaseController {
 		lblAbstractSqlName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_ABSTRACT_SQL_NAME));
 		lblSqlParamsPackage.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_SQL_AND_PARAMS_PACKAGE));
 		lblSqlParamsName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_SQL_AND_PARAMS_NAME));
+		lblUnitTestPackage.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_UNIT_TEST_PACKAGE));
+		lblUnitTestName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_UNIT_TEST_NAME));
 		lblSetCustom.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_SET_CUSTOM));
 		lblSetCustomProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_SET_CUSTOM_PROPERTY));
 		lblCodeFormat.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_CODE_FORMAT));
@@ -414,6 +448,7 @@ public class IndexController extends BaseController {
 		btnSetAssist.textProperty().bind(Main.LANGUAGE.get(LanguageKey.COMMON_BTN_SET));
 		btnSetAbstractSql.textProperty().bind(Main.LANGUAGE.get(LanguageKey.COMMON_BTN_SET));
 		btnSetSqlAndParams.textProperty().bind(Main.LANGUAGE.get(LanguageKey.COMMON_BTN_SET));
+		btnSetUnitTest.textProperty().bind(Main.LANGUAGE.get(LanguageKey.COMMON_BTN_SET));
 		btnSetCustom.textProperty().bind(Main.LANGUAGE.get(LanguageKey.COMMON_BTN_SET));
 		btnSetCustomProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.COMMON_BTN_SET));
 		btnRunCreate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_BTN_RUN_CREATE));
@@ -441,9 +476,11 @@ public class IndexController extends BaseController {
 		String assistPackage = txtAssistPackage.getText();
 		String abstractSqlPackage = txtAbstractSqlPackage.getText();
 		String sqlParamsPackage = txtSqlParamsPackage.getText();
+		String unitTestPackage = txtUnitTestPackage.getText();
+		String unitTestName = txtUnitTestName.getText();
 		String codeFormat = cboCodeFormat.getValue();
 		HistoryConfig config = new HistoryConfig(projectPath, entityPackage, entityName, servicePackage, serviceName, serviceImplPackage, serviceImplName, routerPackage, routerName, sqlPackage, sqlName,
-				assistPackage, abstractSqlPackage, sqlParamsPackage, codeFormat);
+				assistPackage, abstractSqlPackage, sqlParamsPackage, unitTestPackage, unitTestName, codeFormat);
 		config.setDbConfig(selectedDatabaseConfig);
 		config.setEntityConfig(historyConfig.getEntityConfig());
 		config.setServiceConfig(historyConfig.getServiceConfig());
@@ -453,8 +490,51 @@ public class IndexController extends BaseController {
 		config.setAssistConfig(historyConfig.getAssistConfig());
 		config.setAbstractSqlConfig(historyConfig.getAbstractSqlConfig());
 		config.setSqlAndParamsConfig(historyConfig.getSqlAndParamsConfig());
+		config.setUnitTestConfig(historyConfig.getUnitTestConfig());
 		config.setCustomConfig(historyConfig.getCustomConfig());
 		config.setCustomPropertyConfig(historyConfig.getCustomPropertyConfig());
+		return config;
+	}
+
+	/**
+	 * 获得当前页面的信息并实例化为配置信息对象,
+	 * 
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	private HistoryConfig getThisHistoryConfigAndInit() throws Exception {
+		HistoryConfig config = getThisHistoryConfig();
+		if (config.getServiceConfig() == null) {
+			config.setServiceConfig(Optional.ofNullable(ConfigUtil.getServiceConfig(Constant.DEFAULT)).orElse(new ServiceConfig().initDefaultValue()));
+		}
+		if (config.getServiceImplConfig() == null) {
+			config.setServiceImplConfig(Optional.ofNullable(ConfigUtil.getServiceImplConfig(Constant.DEFAULT)).orElse(new ServiceImplConfig().initDefaultValue()));
+		}
+		if (config.getSqlConfig() == null) {
+			config.setSqlConfig(Optional.ofNullable(ConfigUtil.getSQLConfig(Constant.DEFAULT)).orElse(new SqlConfig()));
+		}
+		if (config.getRouterConfig() == null) {
+			config.setRouterConfig(Optional.ofNullable(ConfigUtil.getRouterConfig(Constant.DEFAULT)).orElse(new RouterConfig().initDefaultValue()));
+		}
+		if (config.getUnitTestConfig() == null) {
+			config.setUnitTestConfig(Optional.ofNullable(ConfigUtil.getUnitTestConfig(Constant.DEFAULT)).orElse(new UnitTestConfig().initDefaultValue()));
+		}
+		if (config.getAssistConfig() == null) {
+			config.setAssistConfig(Optional.ofNullable(ConfigUtil.getSqlAssistConfig(Constant.DEFAULT)).orElse(new SqlAssistConfig().initDefaultValue()));
+		}
+		if (config.getAbstractSqlConfig() == null) {
+			config.setAbstractSqlConfig(Optional.ofNullable(ConfigUtil.getAbstractSqlConfig(Constant.DEFAULT)).orElse(new AbstractSqlConfig().initDefaultValue()));
+		}
+		if (config.getSqlAndParamsConfig() == null) {
+			config.setSqlAndParamsConfig(Optional.ofNullable(ConfigUtil.getSqlAndParamsConfig(Constant.DEFAULT)).orElse(new SqlAndParamsConfig().initDefaultValue()));
+		}
+		if (config.getCustomConfig() == null) {
+			config.setCustomConfig(Optional.ofNullable(ConfigUtil.getCustomConfig(Constant.DEFAULT)).orElse(new CustomConfig().initDefaultValue()));
+		}
+		if (config.getCustomPropertyConfig() == null) {
+			config.setCustomPropertyConfig(Optional.ofNullable(ConfigUtil.getCustomPropertyConfig(Constant.DEFAULT)).orElse(new CustomPropertyConfig().initDefaultValue()));
+		}
 		return config;
 	}
 
@@ -467,6 +547,7 @@ public class IndexController extends BaseController {
 		ServiceImplNamePlace = txtServiceImplName.getText();
 		routerNamePlace = txtRouterName.getText();
 		sqlNamePlace = txtSqlName.getText();
+		unitTestPlace = txtUnitTestName.getText();
 	}
 
 	/**
@@ -608,6 +689,7 @@ public class IndexController extends BaseController {
 						txtServiceImplName.setText(ServiceImplNamePlace.replace("{c}", pascalTableName));
 						txtRouterName.setText(routerNamePlace.replace("{c}", pascalTableName));
 						txtSqlName.setText(sqlNamePlace.replace("{c}", pascalTableName));
+						txtUnitTestName.setText(unitTestPlace.replace("{c}", pascalTableName));
 						LOG.debug("将表的数据加载到数据面板成功!");
 					}
 				}
@@ -760,6 +842,18 @@ public class IndexController extends BaseController {
 	}
 
 	/**
+	 * 打开设置实体类
+	 * 
+	 * @param event
+	 */
+	public void onSetEntity(ActionEvent event) {
+		SetEntityAttributeController controller = (SetEntityAttributeController) loadFXMLPage("Entity Attribute Setting", FXMLPage.SET_ENTITY_ATTRIBUTE, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
 	 * 打开设置Service
 	 * 
 	 * @param event
@@ -796,7 +890,7 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 打开设置SQL
+	 * 打开设置SetSQL
 	 * 
 	 * @param event
 	 */
@@ -808,7 +902,7 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 打开设置SqlAssist
+	 * 打开设置SetSqlAssist
 	 * 
 	 * @param event
 	 */
@@ -820,7 +914,7 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 打开设置SqlAssist
+	 * 打开设置SetAbstractSQ
 	 * 
 	 * @param event
 	 */
@@ -832,7 +926,7 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 打开设置SqlAssist
+	 * 打开设置SqlAndParams
 	 * 
 	 * @param event
 	 */
@@ -844,7 +938,31 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 打开设置SqlAssist
+	 * 打开设置单元测试
+	 * 
+	 * @param event
+	 */
+	public void onSetUnitTest(ActionEvent event) {
+		SetUnitTestController controller = (SetUnitTestController) loadFXMLPage("UnitTest Setting", FXMLPage.SET_UNIT_TEST, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置SetCustom
+	 * 
+	 * @param event
+	 */
+	public void onSetCustom(ActionEvent event) {
+		SetCustomController controller = (SetCustomController) loadFXMLPage("SetCustom Setting", FXMLPage.SET_CUSTOM, false);
+		controller.setIndexController(this);
+		controller.showDialogStage();
+		controller.init();
+	}
+
+	/**
+	 * 打开设置CustomProperty
 	 * 
 	 * @param event
 	 */
@@ -863,7 +981,7 @@ public class IndexController extends BaseController {
 	public void onSaveConfig(ActionEvent event) {
 		LOG.debug("执行保存配置文件...");
 		// 检查是否类名是否存在占位符
-		boolean indexOf = StrUtil.indexOf("{c}", txtEntityName.getText(), txtServiceName.getText(), txtServiceImplName.getText(), txtRouterName.getText(), txtSqlName.getText());
+		boolean indexOf = StrUtil.indexOf("{c}", txtEntityName.getText(), txtServiceName.getText(), txtServiceImplName.getText(), txtRouterName.getText(), txtSqlName.getText(), txtUnitTestName.getText());
 		if (!indexOf) {
 			StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_SAVE_CONFIG_NOT_C_TIPS);
 			String title = property == null ? "所有类名里面必须包含用于替换表名的占位符: {c}" : property.get();
@@ -897,7 +1015,13 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void onCreate(ActionEvent event) {
-		System.err.println(getThisHistoryConfig());
+		// TODO 编写创建的代码
+		try {
+			System.err.println(getThisHistoryConfigAndInit());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// ======================get/set============================

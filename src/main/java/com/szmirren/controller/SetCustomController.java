@@ -10,9 +10,9 @@ import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.Constant;
 import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
-import com.szmirren.models.TableAttributeKeyValue;
-import com.szmirren.models.TableAttributeKeyValueEditingCell;
-import com.szmirren.options.RouterConfig;
+import com.szmirren.models.TableAttributeKeyValueTemplate;
+import com.szmirren.models.TableAttributeKeyValueTemplateEditingCell;
+import com.szmirren.options.CustomConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.beans.property.Property;
@@ -31,10 +31,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 
 /**
@@ -43,12 +44,12 @@ import javafx.util.Callback;
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
-public class SetRouterController extends BaseController {
+public class SetCustomController extends BaseController {
 	private Logger LOG = Logger.getLogger(this.getClass());
 	/** 首页的控制器 */
 	private IndexController indexController;
 	/** 存储信息table里面的所有属性 */
-	private ObservableList<TableAttributeKeyValue> tblPropertyValues;
+	private ObservableList<TableAttributeKeyValueTemplate> tblPropertyValues;
 
 	// =======================控件区域===========================
 	/** 提示语句 */
@@ -57,32 +58,34 @@ public class SetRouterController extends BaseController {
 	/** 添加自定义属性 */
 	@FXML
 	private Label lblAddCustomProperty;
-	/** 描述 */
+	/** 添加自定义包名 */
 	@FXML
-	private Label lblDescribe;
-	/** 使用模板 */
+	private Label lblPackageName;
+	/** 添加自定义类名 */
 	@FXML
-	private Label lblTemplate;
+	private Label lblClassName;
 	@FXML
-	private TableView<TableAttributeKeyValue> tblProperty;
+	private TableView<TableAttributeKeyValueTemplate> tblProperty;
 	/** 属性表的key列 */
 	@FXML
-	private TableColumn<TableAttributeKeyValue, String> tdKey;
+	private TableColumn<TableAttributeKeyValueTemplate, String> tdKey;
 	/** 属性表的value列 */
 	@FXML
-	private TableColumn<TableAttributeKeyValue, String> tdValue;
+	private TableColumn<TableAttributeKeyValueTemplate, String> tdPackageName;
 	/** 属性表的value列 */
 	@FXML
-	private TableColumn<TableAttributeKeyValue, String> tdDescribe;
+	private TableColumn<TableAttributeKeyValueTemplate, String> tdClassName;
+	@FXML
+	private TableColumn<TableAttributeKeyValueTemplate, ComboBox<String>> tdTemplate;
 	/** 自定义key输入框 */
 	@FXML
 	private TextField txtKey;
-	/** 自定义value输入框 */
+	/** 自定义包名输入框 */
 	@FXML
-	private TextField txtValue;
-	/** 自定义描述输入框 */
+	private TextField txtPackageName;
+	/** 自定义类名输入框 */
 	@FXML
-	private TextField txtDescribe;
+	private TextField txtClassName;
 	/** 添加自定义属性按钮 */
 	@FXML
 	private Button btnAddProperty;
@@ -100,9 +103,9 @@ public class SetRouterController extends BaseController {
 	@FXML
 	private CheckBox chkOverrideFile;
 
-	/** 使用指定模板 */
+	/** 右边的pane */
 	@FXML
-	private ComboBox<String> cboTemplate;
+	private AnchorPane apRightPane;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -115,29 +118,54 @@ public class SetRouterController extends BaseController {
 		// 设置列的大小自适应
 		tblProperty.setColumnResizePolicy(resize -> {
 			double width = resize.getTable().getWidth();
-			tdKey.setPrefWidth(width / 3);
-			tdValue.setPrefWidth(width / 3);
-			tdDescribe.setPrefWidth(width / 3);
+			tdKey.setPrefWidth(width / 4);
+			tdPackageName.setPrefWidth(width / 4);
+			tdClassName.setPrefWidth(width / 4);
+			tdTemplate.setPrefWidth(width / 4);
 			return true;
 		});
 		btnConfirm.widthProperty().addListener(w -> {
 			double x = btnConfirm.getLayoutX() + btnConfirm.getWidth() + 10;
 			btnCancel.setLayoutX(x);
 		});
+		// 设置输入包名自适应
+		lblPackageName.widthProperty().addListener(w -> {
+			double x = lblPackageName.getLayoutX() + lblPackageName.getWidth() + 25;
+			txtPackageName.setLayoutY(x);
+			txtPackageName.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		apRightPane.widthProperty().addListener(w -> {
+			double x = lblPackageName.getLayoutX() + lblPackageName.getWidth() + 25;
+			txtPackageName.setLayoutY(x);
+			txtPackageName.setPrefWidth(apRightPane.getWidth() - x);
+		});
+
+		// 设置输入类名自适应
+		lblClassName.widthProperty().addListener(w -> {
+			double x = lblClassName.getLayoutX() + lblClassName.getWidth() + 25;
+			txtClassName.setLayoutY(x);
+			txtClassName.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		apRightPane.widthProperty().addListener(w -> {
+			double x = lblClassName.getLayoutX() + lblClassName.getWidth() + 25;
+			txtClassName.setLayoutY(x);
+			txtClassName.setPrefWidth(apRightPane.getWidth() - x);
+		});
+
 	}
 
 	/**
 	 * 初始化
 	 */
 	public void init() {
-		LOG.debug("初始化SetRouterController...");
-		LOG.debug("初始化SetRouterController->初始化属性...");
+		LOG.debug("初始化SetCustomConterller...");
+		LOG.debug("初始化SetCustomConterller->初始化属性...");
 		// 添加右键删除属性
 		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE);
 		String delMenu = property.get() == null ? "删除该属性" : property.get();
 		MenuItem item = new MenuItem(delMenu);
 		item.setOnAction(event -> {
-			TableViewSelectionModel<TableAttributeKeyValue> model = tblProperty.selectionModelProperty().get();
+			TableViewSelectionModel<TableAttributeKeyValueTemplate> model = tblProperty.selectionModelProperty().get();
 			StringProperty delConfirmP = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE_CONFIRM);
 			String delConfirm = delConfirmP.get() == null ? "确定删除该属性吗" : delConfirmP.get();
 			boolean isDel = AlertUtil.showConfirmAlert(delConfirm);
@@ -149,37 +177,35 @@ public class SetRouterController extends BaseController {
 		Property<ContextMenu> tblCM = new SimpleObjectProperty<ContextMenu>(menu);
 		tblProperty.contextMenuProperty().bind(tblCM);
 		// 添加列
-		Callback<TableColumn<TableAttributeKeyValue, String>, TableCell<TableAttributeKeyValue, String>> cellFactory = (
-				TableColumn<TableAttributeKeyValue, String> p) -> new TableAttributeKeyValueEditingCell();
+		Callback<TableColumn<TableAttributeKeyValueTemplate, String>, TableCell<TableAttributeKeyValueTemplate, String>> cellFactory = (
+				TableColumn<TableAttributeKeyValueTemplate, String> p) -> new TableAttributeKeyValueTemplateEditingCell();
 		tdKey.setCellValueFactory(new PropertyValueFactory<>("key"));
 		tdKey.setCellFactory(cellFactory);
-		tdKey.setOnEditCommit((CellEditEvent<TableAttributeKeyValue, String> t) -> {
-			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setKey(t.getNewValue());
+		tdKey.setOnEditCommit((CellEditEvent<TableAttributeKeyValueTemplate, String> t) -> {
+			((TableAttributeKeyValueTemplate) t.getTableView().getItems().get(t.getTablePosition().getRow())).setKey(t.getNewValue());
 		});
-		tdValue.setCellValueFactory(new PropertyValueFactory<>("value"));
-		tdValue.setCellFactory(cellFactory);
-		tdValue.setOnEditCommit((CellEditEvent<TableAttributeKeyValue, String> t) -> {
+		tdPackageName.setCellValueFactory(new PropertyValueFactory<>("packageName"));
+		tdPackageName.setCellFactory(cellFactory);
+		tdPackageName.setOnEditCommit((CellEditEvent<TableAttributeKeyValueTemplate, String> t) -> {
 			System.out.println(t.getNewValue());
-			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setValue(t.getNewValue());
+			((TableAttributeKeyValueTemplate) t.getTableView().getItems().get(t.getTablePosition().getRow())).setPackageName(t.getNewValue());
 		});
-		tdDescribe.setCellValueFactory(new PropertyValueFactory<>("describe"));
-		tdDescribe.setCellFactory(cellFactory);
-		tdDescribe.setOnEditCommit((CellEditEvent<TableAttributeKeyValue, String> t) -> {
+		tdClassName.setCellValueFactory(new PropertyValueFactory<>("className"));
+		tdClassName.setCellFactory(cellFactory);
+		tdClassName.setOnEditCommit((CellEditEvent<TableAttributeKeyValueTemplate, String> t) -> {
 			System.out.println(t.getNewValue());
-			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDescribe(t.getNewValue());
+			((TableAttributeKeyValueTemplate) t.getTableView().getItems().get(t.getTablePosition().getRow())).setClassName(t.getNewValue());
 		});
+		tdTemplate.setCellValueFactory(new PropertyValueFactory<>("template"));
 		tblProperty.setItems(tblPropertyValues);
-		LOG.debug("初始化SetRouterController->初始化模板文件名选择...");
-		cboTemplate.getItems().addAll(indexController.getTemplateNameItems());
-		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_ROUTER)) {
-			cboTemplate.setValue(Constant.TEMPLATE_NAME_ROUTER);
-		}
-		LOG.debug("初始化SetRouterController->初始化配置信息...");
+
+		LOG.debug("初始化SetCustomConterller->初始化模板文件名选择...");
+		LOG.debug("初始化SetCustomConterller->初始化配置信息...");
 		if (indexController.getHistoryConfig() != null) {
-			if (indexController.getHistoryConfig().getRouterConfig() == null) {
+			if (indexController.getHistoryConfig().getCustomConfig() == null) {
 				loadConfig(getConfig());
 			} else {
-				loadConfig(indexController.getHistoryConfig().getRouterConfig());
+				loadConfig(indexController.getHistoryConfig().getCustomConfig());
 			}
 		} else {
 			String configName = indexController.getHistoryConfigName();
@@ -189,7 +215,7 @@ public class SetRouterController extends BaseController {
 			loadConfig(getConfig(configName));
 		}
 		initLanguage();
-		LOG.debug("初始化SetRouterController-->成功!");
+		LOG.debug("初始化SetCustomConterller-->成功!");
 	}
 
 	/**
@@ -197,18 +223,19 @@ public class SetRouterController extends BaseController {
 	 */
 	private void initLanguage() {
 		lblTips.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_TIPS));
-		tdDescribe.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TD_DESCRIBE));
+		tdClassName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_COMMON_CLASS_NAME));
+		tdPackageName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_COMMON_PACKAGE_NAME));
+		tdTemplate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_COMMON_TEMPLATE_NAME));
 		lblAddCustomProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_ADD_CUSTOM_PROPERTY));
-		lblDescribe.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_DESCRIBE));
-		lblTemplate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_TEMPLATE));
+		lblPackageName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_PACKAGE_NAME));
+		lblClassName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_CLASS_NAME));
 		btnSaveConfig.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_SAVE_CONFIG));
 		btnAddProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_ADD_PROPERTY));
-		cboTemplate.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
 		btnConfirm.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CONFIRM));
 		btnCancel.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL));
 		txtKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_KEY));
-		txtValue.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_VALUE));
-		txtDescribe.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_DESCRIBE));
+		txtPackageName.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_PACKAGE_NAME));
+		txtClassName.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_CLASS_NAME));
 		chkOverrideFile.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_OVERRIDE_FILE));
 	}
 
@@ -217,7 +244,7 @@ public class SetRouterController extends BaseController {
 	 * 
 	 * @return
 	 */
-	public RouterConfig getConfig() {
+	public CustomConfig getConfig() {
 		return getConfig(Constant.DEFAULT);
 	}
 
@@ -227,10 +254,10 @@ public class SetRouterController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public RouterConfig getConfig(String name) {
+	public CustomConfig getConfig(String name) {
 		LOG.debug("执行从数据库中获取配置文件...");
 		try {
-			RouterConfig config = ConfigUtil.getRouterConfig(name);
+			CustomConfig config = ConfigUtil.getCustomConfig(name);
 			LOG.debug("执行获取配置文件-->成功!");
 			if (config != null) {
 				return config;
@@ -239,7 +266,7 @@ public class SetRouterController extends BaseController {
 			LOG.error("执行从数据库中获取配置文件-->失败:", e);
 			AlertUtil.showErrorAlert("执行获得配置文件-->失败:" + e);
 		}
-		return new RouterConfig().initDefaultValue();
+		return new CustomConfig();
 	}
 
 	/**
@@ -248,9 +275,9 @@ public class SetRouterController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public RouterConfig getThisConfig() {
+	public CustomConfig getThisConfig() {
 		LOG.debug("执行获取当前页面配置文件...");
-		RouterConfig config = new RouterConfig(tblPropertyValues, cboTemplate.getValue(), chkOverrideFile.isSelected());
+		CustomConfig config = new CustomConfig(tblPropertyValues, chkOverrideFile.isSelected());
 		LOG.debug("执行获取当前页面配置文件-->成功!");
 		return config;
 	}
@@ -260,20 +287,19 @@ public class SetRouterController extends BaseController {
 	 * 
 	 * @param config
 	 */
-	public void loadConfig(RouterConfig config) {
+	public void loadConfig(CustomConfig config) {
 		LOG.debug("执行加载配置文件到当前页面...");
 		tblPropertyValues.clear();
 		if (config != null && config.getTableItem() != null) {
 			config.getTableItem().forEach(v -> {
-				tblPropertyValues.add(new TableAttributeKeyValue(v.getKey(), v.getValue(), v.getDescribe()));
+				TableAttributeKeyValueTemplate attribute = new TableAttributeKeyValueTemplate(v.getKey(), v.getPackageName(), v.getClassName(), v.getTemplateValue());
+				attribute.getTemplate().promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
+				attribute.getTemplate().prefWidthProperty().bind(tdTemplate.widthProperty());
+				attribute.getTemplate().setEditable(true);
+				attribute.getTemplate().getItems().addAll(indexController.getTemplateNameItems());
+				attribute.getTemplate().setValue(v.getTemplateValue());
+				tblPropertyValues.add(attribute);
 			});
-		}
-		if (config.getTemplateName() != null) {
-			String templateName = config.getTemplateName();
-			if (!indexController.getTemplateNameItems().contains(templateName)) {
-				AlertUtil.showWarnAlert("在模板文件夹中没有发现名字为" + templateName + "的模板,系统已经为你加载配置,如果已经不存在该模板请重新选择");
-			}
-			cboTemplate.setValue(templateName);
 		}
 		chkOverrideFile.setSelected(config.isOverrideFile());
 		LOG.debug("执行加载配置文件到当前页面->成功!");
@@ -292,7 +318,7 @@ public class SetRouterController extends BaseController {
 			if (StrUtil.isNullOrEmpty(configName)) {
 				configName = Constant.DEFAULT;
 			}
-			ConfigUtil.saveRouterConfig(getThisConfig(), configName);
+			ConfigUtil.saveCustomConfig(getThisConfig(), configName);
 			LOG.debug("执行将配置文件保存到数据库-->成功!");
 			AlertUtil.showInfoAlert("保存配置信息成功!");
 		} catch (Exception e) {
@@ -308,7 +334,12 @@ public class SetRouterController extends BaseController {
 	 */
 	public void onAddPropertyToTable(ActionEvent event) {
 		LOG.debug("执行添加自定义属性...");
-		TableAttributeKeyValue attribute = new TableAttributeKeyValue(txtKey.getText(), txtValue.getText(), txtDescribe.getText());
+		ComboBox<String> comboBox = new ComboBox<>();
+		comboBox.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
+		comboBox.prefWidthProperty().bind(tdTemplate.widthProperty());
+		comboBox.setEditable(true);
+		comboBox.getItems().addAll(indexController.getTemplateNameItems());
+		TableAttributeKeyValueTemplate attribute = new TableAttributeKeyValueTemplate(txtKey.getText(), txtPackageName.getText(), txtClassName.getText(), comboBox);
 		tblPropertyValues.add(attribute);
 		LOG.debug("添加自定义属性-->成功!");
 	}
@@ -331,7 +362,7 @@ public class SetRouterController extends BaseController {
 	 * @param event
 	 */
 	public void onConfirm(ActionEvent event) {
-		indexController.getHistoryConfig().setRouterConfig(getThisConfig());
+		indexController.getHistoryConfig().setCustomConfig(getThisConfig());
 		getDialogStage().close();
 	}
 

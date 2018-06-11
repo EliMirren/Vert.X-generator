@@ -59,6 +59,8 @@ public interface LanguageKey {
 	static final String INDEX_LBL_ABSTRACT_SQL_PACKAGE = "index.lblAbstractSqlPackage";
 	/** 首页-SQLAndParams包名 */
 	static final String INDEX_LBL_SQL_AND_PARAMS_PACKAGE = "index.lblSqlParamsPackage";
+	/** 首页-单元测试包名 */
+	static final String INDEX_LBL_UNIT_TEST_PACKAGE = "index.lblUnitTestPackage";
 	/** 首页-实体类类名 */
 	static final String INDEX_LBL_ENTITY_NAME = "index.lblEntityName";
 	/** 首页-Service接口名 */
@@ -75,6 +77,9 @@ public interface LanguageKey {
 	static final String INDEX_LBL_ABSTRACT_SQL_NAME = "index.lblAbstractSqlName";
 	/** 首页-SqlAndParams类名 */
 	static final String INDEX_LBL_SQL_AND_PARAMS_NAME = "index.lblSqlParamsName";
+	/** 首页-单元测试类名 */
+	static final String INDEX_LBL_UNIT_TEST_NAME = "index.lblUnitTestName";
+	
 	/** 首页-正在生成提示语句 */
 	static final String INDEX_RUN_CREATE_TIPS_TEXT = "index.runCreateTipsText";
 	/** 首页-自定义包名与类 */
@@ -198,4 +203,22 @@ public interface LanguageKey {
 	/** 设置-根据数据库类型自动选择 */
 	static final String SET_ABSTRACT_AUTOMATIC = "set.abstractAutomatic";
 
+	/** 设置-表格属性中删除menu */
+	static final String SET_TBL_MENU_ITEM_DELETE = "set.tblMenuItemDelete";
+	/** 设置-表格属性中删除提示语句 */
+	static final String SET_TBL_MENU_ITEM_DELETE_CONFIRM = "set.tblMenuItemDeleteConfirm";
+	/** 设置-通用包名 */
+	static final String SET_COMMON_PACKAGE_NAME = "set.commonPackageName";
+	/** 设置-通用类名 */
+	static final String SET_COMMON_CLASS_NAME = "set.commonPackageName";
+	/** 设置-通用模板名 */
+	static final String SET_COMMON_TEMPLATE_NAME = "set.commonTemplateName";
+	/** 设置-文本属性包名 */
+	static final String SET_LBL_PACKAGE_NAME = "set.lblPackageName";
+	/** 设置-文本属性类名 */
+	static final String SET_LBL_CLASS_NAME = "set.lblClassName";
+	/** 设置-输入框属性包名 */
+	static final String SET_TXT_PACKAGE_NAME = "set.txtPackageName";
+	/** 设置-输入框属性类名 */
+	static final String SET_TXT_CLASS_NAME = "set.txtClassName";
 }

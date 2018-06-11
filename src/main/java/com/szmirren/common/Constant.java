@@ -17,6 +17,8 @@ public interface Constant {
 	static final String TEMPLATE_DIR_NAME = "template";
 	/** 刷新模板文件夹 */
 	static final String TEMPLATE_DIR_REFRESH = "刷新模板文件夹";
+	/** 实体类模板的默认名字 */
+	static final String TEMPLATE_NAME_ENTITY = "Entity.ftl";
 	/** Service模板的默认名字 */
 	static final String TEMPLATE_NAME_SERVICE = "Service.ftl";
 	/** ServiceImpl模板的默认名字 */
@@ -31,5 +33,7 @@ public interface Constant {
 	static final String TEMPLATE_NAME_ABSTRACT_SQL = Main.LANGUAGE.get(LanguageKey.SET_ABSTRACT_AUTOMATIC).get();
 	/** SqlAndParams模板的默认名字 */
 	static final String TEMPLATE_NAME_SQL_AND_PARAMS = "SqlAndParams.ftl";
+	/** 单元测试模板的默认名字 */
+	static final String TEMPLATE_NAME_UNIT_TEST = "UnitTest.ftl";
 
 }

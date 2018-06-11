@@ -1,5 +1,12 @@
 package com.szmirren.options;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.szmirren.common.Constant;
+import com.szmirren.models.TableAttributeEntity;
+import com.szmirren.models.TableAttributeKeyValue;
+
 /**
  * 实体类的配置文件
  * 
@@ -7,141 +14,44 @@ package com.szmirren.options;
  *
  */
 public class EntityConfig {
-	private boolean seriz = false;
-	private boolean unlineCamel = true;
-	private boolean getAndSet = true;
-	private boolean construct = true;
-	private boolean constructAll = true;
-	private boolean constructJson = true;
-	private boolean tojson = true;
-	private boolean formJson = true;
-	private boolean formMultiMap = true;
-	private boolean comment = true;
-	private boolean entityAdd = false;
-	private boolean delOldFile = true;
+	/** 设置的tableItem */
+	private List<TableAttributeEntity> tableItem = new ArrayList<>();
+	/** 生成模板的名字 */
+	private String templateName = Constant.TEMPLATE_NAME_ENTITY;
+	/** 是否覆盖原文件 */
+	private boolean overrideFile = true;
 
 	public EntityConfig() {
 		super();
 	}
 
-	public EntityConfig(boolean seriz, boolean unlineCamel, boolean getAndSet, boolean construct, boolean constructAll, boolean constructJson,
-			boolean tojson, boolean formJson, boolean formMultiMap, boolean comment, boolean entityAdd, boolean delOldFile) {
-		super();
-		this.seriz = seriz;
-		this.unlineCamel = unlineCamel;
-		this.getAndSet = getAndSet;
-		this.construct = construct;
-		this.constructAll = constructAll;
-		this.constructJson = constructJson;
-		this.tojson = tojson;
-		this.formJson = formJson;
-		this.formMultiMap = formMultiMap;
-		this.comment = comment;
-		this.entityAdd = entityAdd;
-		this.delOldFile = delOldFile;
+	public List<TableAttributeEntity> getTableItem() {
+		return tableItem;
 	}
 
-	public boolean isDelOldFile() {
-		return delOldFile;
+	public void setTableItem(List<TableAttributeEntity> tableItem) {
+		this.tableItem = tableItem;
 	}
 
-	public void setDelOldFile(boolean delOldFile) {
-		this.delOldFile = delOldFile;
+	public String getTemplateName() {
+		return templateName;
 	}
 
-	public boolean isSeriz() {
-		return seriz;
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
-	public void setSeriz(boolean seriz) {
-		this.seriz = seriz;
+	public boolean isOverrideFile() {
+		return overrideFile;
 	}
 
-	public boolean isUnlineCamel() {
-		return unlineCamel;
-	}
-
-	public void setUnlineCamel(boolean unlineCamel) {
-		this.unlineCamel = unlineCamel;
-	}
-
-	public boolean isGetAndSet() {
-		return getAndSet;
-	}
-
-	public void setGetAndSet(boolean getAndSet) {
-		this.getAndSet = getAndSet;
-	}
-
-	public boolean isConstruct() {
-		return construct;
-	}
-
-	public void setConstruct(boolean construct) {
-		this.construct = construct;
-	}
-
-	public boolean isConstructAll() {
-		return constructAll;
-	}
-
-	public void setConstructAll(boolean constructAll) {
-		this.constructAll = constructAll;
-	}
-
-	public boolean isConstructJson() {
-		return constructJson;
-	}
-
-	public void setConstructJson(boolean constructJson) {
-		this.constructJson = constructJson;
-	}
-
-	public boolean isTojson() {
-		return tojson;
-	}
-
-	public void setTojson(boolean tojson) {
-		this.tojson = tojson;
-	}
-
-	public boolean isFormJson() {
-		return formJson;
-	}
-
-	public void setFormJson(boolean formJson) {
-		this.formJson = formJson;
-	}
-
-	public boolean isFormMultiMap() {
-		return formMultiMap;
-	}
-
-	public void setFormMultiMap(boolean formMultiMap) {
-		this.formMultiMap = formMultiMap;
-	}
-
-	public boolean isComment() {
-		return comment;
-	}
-
-	public void setComment(boolean comment) {
-		this.comment = comment;
-	}
-
-	public boolean isEntityAdd() {
-		return entityAdd;
-	}
-
-	public void setEntityAdd(boolean entityAdd) {
-		this.entityAdd = entityAdd;
+	public void setOverrideFile(boolean overrideFile) {
+		this.overrideFile = overrideFile;
 	}
 
 	@Override
 	public String toString() {
-		return "ClassConfig [seriz=" + seriz + ", unlineCamel=" + unlineCamel + ", getAndSet=" + getAndSet + ", construct=" + construct
-				+ ", constructAll=" + constructAll + ", constructJson=" + constructJson + ", tojson=" + tojson + ", formJson=" + formJson
-				+ ", comment=" + comment + "]";
+		return "EntityConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
 	}
 
 }

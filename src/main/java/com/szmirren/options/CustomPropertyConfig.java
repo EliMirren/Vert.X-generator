@@ -8,13 +8,13 @@ import com.szmirren.models.TableAttributeKeyValue;
 import javafx.collections.ObservableList;
 
 /**
- * SqlAssist属性的配置文件
+ * 自定义属性的配置文件
  * 
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
 public class CustomPropertyConfig {
-	/** SqlAssist设置的tableItem */
+	/** 设置的tableItem */
 	private List<TableAttributeKeyValue> tableItem = new ArrayList<>();
 
 	/**
@@ -34,6 +34,15 @@ public class CustomPropertyConfig {
 		if (item != null && !item.isEmpty()) {
 			tableItem.addAll(item);
 		}
+	}
+
+	/**
+	 * 初始化默认参数
+	 * 
+	 * @return
+	 */
+	public CustomPropertyConfig initDefaultValue() {
+		return this;
 	}
 
 	/**

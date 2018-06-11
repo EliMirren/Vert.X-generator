@@ -12,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.szmirren.options.AbstractSqlConfig;
-import com.szmirren.options.ClassConfig;
 import com.szmirren.options.CustomConfig;
 import com.szmirren.options.CustomPropertyConfig;
 import com.szmirren.options.DatabaseConfig;
+import com.szmirren.options.EntityConfig;
 import com.szmirren.options.HistoryConfig;
 import com.szmirren.options.RouterConfig;
 import com.szmirren.options.ServiceConfig;
@@ -24,6 +25,7 @@ import com.szmirren.options.ServiceImplConfig;
 import com.szmirren.options.SqlAndParamsConfig;
 import com.szmirren.options.SqlAssistConfig;
 import com.szmirren.options.SqlConfig;
+import com.szmirren.options.UnitTestConfig;
 
 /**
  * 配置文件工具
@@ -346,7 +348,7 @@ public class ConfigUtil {
 	 * @param Config
 	 * @throws Exception
 	 */
-	public static int saveClassConfig(ClassConfig config, String name) throws Exception {
+	public static int saveEntityConfig(EntityConfig config, String name) throws Exception {
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
@@ -373,7 +375,7 @@ public class ConfigUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static ClassConfig getClassConfig(String name) throws Exception {
+	public static EntityConfig getEntityConfig(String name) throws Exception {
 		Connection conn = null;
 		Statement stat = null;
 		ResultSet rs = null;
@@ -383,7 +385,7 @@ public class ConfigUtil {
 			String sql = String.format("select * from ClassConfig where name='%s'", name);
 			ResultSet resultSet = stat.executeQuery(sql);
 			while (resultSet.next()) {
-				ClassConfig result = JSON.parseObject(resultSet.getString("value"), ClassConfig.class);
+				EntityConfig result = JSON.parseObject(resultSet.getString("value"), EntityConfig.class);
 				return result;
 			}
 		} finally {
@@ -797,6 +799,63 @@ public class ConfigUtil {
 	}
 
 	/**
+	 * 保存单元测试配置文件信息
+	 * 
+	 * @param Config
+	 * @throws Exception
+	 */
+	public static int saveUnitTestConfig(UnitTestConfig config, String name) throws Exception {
+		Connection conn = null;
+		Statement stat = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			stat = conn.createStatement();
+			String jsonStr = JSON.toJSONString(config);
+			String sql = String.format("replace into UnitTestConfig (name,value) values('%s', '%s')", name, jsonStr);
+			int result = stat.executeUpdate(sql);
+			return result;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (stat != null)
+				stat.close();
+			if (conn != null)
+				conn.close();
+		}
+	}
+
+	/**
+	 * 获得单元测试配置文件信息
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public static UnitTestConfig getUnitTestConfig(String name) throws Exception {
+		Connection conn = null;
+		Statement stat = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			stat = conn.createStatement();
+			String sql = String.format("select * from UnitTestConfig where name='%s'", name);
+			ResultSet resultSet = stat.executeQuery(sql);
+			while (resultSet.next()) {
+				UnitTestConfig result = JSON.parseObject(resultSet.getString("value"), UnitTestConfig.class);
+				return result;
+			}
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (stat != null)
+				stat.close();
+			if (conn != null)
+				conn.close();
+		}
+		return null;
+	}
+
+	/**
 	 * 保存Custom配置文件信息
 	 * 
 	 * @param Config
@@ -809,7 +868,7 @@ public class ConfigUtil {
 		try {
 			conn = getConnection();
 			stat = conn.createStatement();
-			String jsonStr = JSON.toJSONString(config);
+			String jsonStr = config.toJsonString();
 			String sql = String.format("replace into CustomConfig (name,value) values('%s', '%s')", name, jsonStr);
 			int result = stat.executeUpdate(sql);
 			return result;
@@ -839,7 +898,8 @@ public class ConfigUtil {
 			String sql = String.format("select * from CustomConfig where name='%s'", name);
 			ResultSet resultSet = stat.executeQuery(sql);
 			while (resultSet.next()) {
-				CustomConfig result = JSON.parseObject(resultSet.getString("value"), CustomConfig.class);
+				JSONObject object = JSON.parseObject(resultSet.getString("value"), JSONObject.class);
+				CustomConfig result = new CustomConfig(object);
 				return result;
 			}
 		} finally {

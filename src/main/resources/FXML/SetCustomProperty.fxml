@@ -111,7 +111,7 @@
 								<Insets bottom="8.0" left="20.0" right="20.0" top="8.0" />
 							</padding>
 						</Button>
-						<Button fx:id="btnCancel" layoutX="178.0" layoutY="597.0" mnemonicParsing="false" onAction="#onCancel" text="取 消" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="178.0">
+						<Button fx:id="btnCancel" layoutX="178.0" layoutY="597.0" mnemonicParsing="false" onAction="#onCancel" text="取 消" AnchorPane.bottomAnchor="59.0">
 							<styleClass>
 								<String fx:value="btn" />
 								<String fx:value="btn-default" />

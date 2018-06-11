@@ -39,7 +39,9 @@ public class Main extends Application {
 		ConfigUtil.existsConfigDB();// 创建配置文件
 		// LanguageUtil.existsTemplate();// 国际化文件夹创建
 		TemplateUtil.existsTemplate();// 创建模板
-		loadLanguage(Locale.getDefault());// 加载语言资源
+		loadLanguage(Locale.getDefault());// 加载本地语言资源
+//		loadLanguage(Locale.ENGLISH);// 加载英语资源
+		
 		URL url = Thread.currentThread().getContextClassLoader().getResource("FXML/Index.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(url);
 		Parent root = fxmlLoader.load();

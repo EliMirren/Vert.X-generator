@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
  *
  */
 public class SqlAssistConfig {
-	/** SqlAssist设置的tableItem */
+	/** 设置的tableItem */
 	private List<TableAttributeKeyValue> tableItem = new ArrayList<>();
 	/** 生成模板的名字 */
 	private String templateName = Constant.TEMPLATE_NAME_SQL_ASSIST;
@@ -53,6 +53,15 @@ public class SqlAssistConfig {
 		}
 		this.templateName = templateName;
 		this.overrideFile = overrideFile;
+	}
+
+	/**
+	 * 初始化默认参数
+	 * 
+	 * @return
+	 */
+	public SqlAssistConfig initDefaultValue() {
+		return this;
 	}
 
 	/**
@@ -113,7 +122,5 @@ public class SqlAssistConfig {
 	public String toString() {
 		return "SqlAssistConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
 	}
-	
-	
 
 }

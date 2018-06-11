@@ -14,7 +14,7 @@ public enum FXMLPage {
 	/** 配置信息页面 */
 	HISTORY_CONFIG("FXML/HistoryConfig.fxml"),
 	/** 实体类属性设置页面 */
-	SET_ATTRIBUTE("FXML/SetAttribute.fxml"),
+	SET_ENTITY_ATTRIBUTE("FXML/setEntityAttribute.fxml"),
 	/** Service设置页面 */
 	SET_ROUTER_SERVICE("FXML/SetService.fxml"),
 	/** ServiceImpl设置页面 */
@@ -29,6 +29,10 @@ public enum FXMLPage {
 	SET_ABSTRACT_SQL("FXML/SetAbstractSQL.fxml"),
 	/** SQLAssist设置页面 */
 	SET_SQL_AND_PARAMS("FXML/SetSqlAndParams.fxml"),
+	/** SQLAssist设置页面 */
+	SET_UNIT_TEST("FXML/SetUnitTest.fxml"),
+	/** SetCustomProperty设置页面 */
+	SET_CUSTOM("FXML/SetCustom.fxml"),
 	/** SetCustomProperty设置页面 */
 	SET_CUSTOM_PROPERTY("FXML/SetCustomProperty.fxml"),
 	/** 使用说明页面 */

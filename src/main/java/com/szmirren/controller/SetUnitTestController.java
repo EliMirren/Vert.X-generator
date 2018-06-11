@@ -12,7 +12,7 @@ import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
 import com.szmirren.models.TableAttributeKeyValue;
 import com.szmirren.models.TableAttributeKeyValueEditingCell;
-import com.szmirren.options.RouterConfig;
+import com.szmirren.options.UnitTestConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.beans.property.Property;
@@ -31,8 +31,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
@@ -43,7 +43,7 @@ import javafx.util.Callback;
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
-public class SetRouterController extends BaseController {
+public class SetUnitTestController extends BaseController {
 	private Logger LOG = Logger.getLogger(this.getClass());
 	/** 首页的控制器 */
 	private IndexController indexController;
@@ -130,8 +130,8 @@ public class SetRouterController extends BaseController {
 	 * 初始化
 	 */
 	public void init() {
-		LOG.debug("初始化SetRouterController...");
-		LOG.debug("初始化SetRouterController->初始化属性...");
+		LOG.debug("初始化SetUnitTestConterller...");
+		LOG.debug("初始化SetUnitTestConterller->初始化属性...");
 		// 添加右键删除属性
 		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_TBL_MENU_ITEM_DELETE);
 		String delMenu = property.get() == null ? "删除该属性" : property.get();
@@ -169,17 +169,17 @@ public class SetRouterController extends BaseController {
 			((TableAttributeKeyValue) t.getTableView().getItems().get(t.getTablePosition().getRow())).setDescribe(t.getNewValue());
 		});
 		tblProperty.setItems(tblPropertyValues);
-		LOG.debug("初始化SetRouterController->初始化模板文件名选择...");
+		LOG.debug("初始化SetUnitTestConterller->初始化模板文件名选择...");
 		cboTemplate.getItems().addAll(indexController.getTemplateNameItems());
-		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_ROUTER)) {
-			cboTemplate.setValue(Constant.TEMPLATE_NAME_ROUTER);
+		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_UNIT_TEST)) {
+			cboTemplate.setValue(Constant.TEMPLATE_NAME_UNIT_TEST);
 		}
-		LOG.debug("初始化SetRouterController->初始化配置信息...");
+		LOG.debug("初始化SetUnitTestConterller->初始化配置信息...");
 		if (indexController.getHistoryConfig() != null) {
-			if (indexController.getHistoryConfig().getRouterConfig() == null) {
+			if (indexController.getHistoryConfig().getUnitTestConfig() == null) {
 				loadConfig(getConfig());
 			} else {
-				loadConfig(indexController.getHistoryConfig().getRouterConfig());
+				loadConfig(indexController.getHistoryConfig().getUnitTestConfig());
 			}
 		} else {
 			String configName = indexController.getHistoryConfigName();
@@ -189,7 +189,7 @@ public class SetRouterController extends BaseController {
 			loadConfig(getConfig(configName));
 		}
 		initLanguage();
-		LOG.debug("初始化SetRouterController-->成功!");
+		LOG.debug("初始化SetUnitTestConterller-->成功!");
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class SetRouterController extends BaseController {
 	 * 
 	 * @return
 	 */
-	public RouterConfig getConfig() {
+	public UnitTestConfig getConfig() {
 		return getConfig(Constant.DEFAULT);
 	}
 
@@ -227,10 +227,10 @@ public class SetRouterController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public RouterConfig getConfig(String name) {
+	public UnitTestConfig getConfig(String name) {
 		LOG.debug("执行从数据库中获取配置文件...");
 		try {
-			RouterConfig config = ConfigUtil.getRouterConfig(name);
+			UnitTestConfig config = ConfigUtil.getUnitTestConfig(name);
 			LOG.debug("执行获取配置文件-->成功!");
 			if (config != null) {
 				return config;
@@ -239,7 +239,7 @@ public class SetRouterController extends BaseController {
 			LOG.error("执行从数据库中获取配置文件-->失败:", e);
 			AlertUtil.showErrorAlert("执行获得配置文件-->失败:" + e);
 		}
-		return new RouterConfig().initDefaultValue();
+		return new UnitTestConfig().initDefaultValue();
 	}
 
 	/**
@@ -248,9 +248,9 @@ public class SetRouterController extends BaseController {
 	 * @param name
 	 * @return
 	 */
-	public RouterConfig getThisConfig() {
+	public UnitTestConfig getThisConfig() {
 		LOG.debug("执行获取当前页面配置文件...");
-		RouterConfig config = new RouterConfig(tblPropertyValues, cboTemplate.getValue(), chkOverrideFile.isSelected());
+		UnitTestConfig config = new UnitTestConfig(tblPropertyValues, cboTemplate.getValue(), chkOverrideFile.isSelected());
 		LOG.debug("执行获取当前页面配置文件-->成功!");
 		return config;
 	}
@@ -260,7 +260,7 @@ public class SetRouterController extends BaseController {
 	 * 
 	 * @param config
 	 */
-	public void loadConfig(RouterConfig config) {
+	public void loadConfig(UnitTestConfig config) {
 		LOG.debug("执行加载配置文件到当前页面...");
 		tblPropertyValues.clear();
 		if (config != null && config.getTableItem() != null) {
@@ -292,7 +292,7 @@ public class SetRouterController extends BaseController {
 			if (StrUtil.isNullOrEmpty(configName)) {
 				configName = Constant.DEFAULT;
 			}
-			ConfigUtil.saveRouterConfig(getThisConfig(), configName);
+			ConfigUtil.saveUnitTestConfig(getThisConfig(), configName);
 			LOG.debug("执行将配置文件保存到数据库-->成功!");
 			AlertUtil.showInfoAlert("保存配置信息成功!");
 		} catch (Exception e) {
@@ -331,7 +331,7 @@ public class SetRouterController extends BaseController {
 	 * @param event
 	 */
 	public void onConfirm(ActionEvent event) {
-		indexController.getHistoryConfig().setRouterConfig(getThisConfig());
+		indexController.getHistoryConfig().setUnitTestConfig(getThisConfig());
 		getDialogStage().close();
 	}
 

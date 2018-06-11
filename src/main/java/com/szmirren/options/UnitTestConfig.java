@@ -9,23 +9,23 @@ import com.szmirren.models.TableAttributeKeyValue;
 import javafx.collections.ObservableList;
 
 /**
- * Service属性的配置文件
+ * 单元测试属性的配置文件
  * 
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
-public class ServiceConfig {
+public class UnitTestConfig {
 	/** 设置的tableItem */
 	private List<TableAttributeKeyValue> tableItem = new ArrayList<>();
 	/** 生成模板的名字 */
-	private String templateName = Constant.TEMPLATE_NAME_SERVICE;
+	private String templateName = Constant.TEMPLATE_NAME_UNIT_TEST;
 	/** 是否覆盖原文件 */
 	private boolean overrideFile = true;
 
 	/**
 	 * 初始化
 	 */
-	public ServiceConfig() {
+	public UnitTestConfig() {
 		super();
 	}
 
@@ -34,7 +34,7 @@ public class ServiceConfig {
 	 * 
 	 * @param tableItem
 	 */
-	public ServiceConfig(ObservableList<TableAttributeKeyValue> item) {
+	public UnitTestConfig(ObservableList<TableAttributeKeyValue> item) {
 		super();
 		if (item != null && !item.isEmpty()) {
 			tableItem.addAll(item);
@@ -46,7 +46,7 @@ public class ServiceConfig {
 	 * 
 	 * @param tableItem
 	 */
-	public ServiceConfig(ObservableList<TableAttributeKeyValue> item, String templateName, boolean overrideFile) {
+	public UnitTestConfig(ObservableList<TableAttributeKeyValue> item, String templateName, boolean overrideFile) {
 		super();
 		if (item != null && !item.isEmpty()) {
 			tableItem.addAll(item);
@@ -58,11 +58,11 @@ public class ServiceConfig {
 	/**
 	 * 初始化默认数据
 	 */
-	public ServiceConfig initDefaultValue() {
+	public UnitTestConfig initDefaultValue() {
 		tableItem.add(new TableAttributeKeyValue("count", "get{C}Count", "获取数据总行数"));
-		tableItem.add(new TableAttributeKeyValue("select", "select{C}", "查询所有数据"));
-		tableItem.add(new TableAttributeKeyValue("selectById", "select{C}ById", "通过id查询数据"));
-		tableItem.add(new TableAttributeKeyValue("insertNotNull", "insertNotNull{C}", "插入不为空的数据"));
+		tableItem.add(new TableAttributeKeyValue("select", "find{C}", "查询所有数据"));
+		tableItem.add(new TableAttributeKeyValue("selectById", "get{C}ById", "通过id查询数据"));
+		tableItem.add(new TableAttributeKeyValue("insertNotNull", "saveNotNull{C}", "插入不为空的数据"));
 		tableItem.add(new TableAttributeKeyValue("updateNotNull", "updateNotNull{C}", "更新不为空的数据"));
 		tableItem.add(new TableAttributeKeyValue("deleteById", "delete{C}ById", "通过id删除数据"));
 		return this;
@@ -124,7 +124,7 @@ public class ServiceConfig {
 
 	@Override
 	public String toString() {
-		return "ServiceConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
+		return "UnitTestConfig [tableItem=" + tableItem + ", templateName=" + templateName + ", overrideFile=" + overrideFile + "]";
 	}
 
 }
