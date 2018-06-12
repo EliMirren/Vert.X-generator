@@ -1,5 +1,7 @@
 package com.szmirren.entity;
 
+import com.szmirren.models.TableAttributeEntity;
+
 /**
  * 实体类的属性
  * 
@@ -29,15 +31,21 @@ public class FieldAttribute extends TableColumnsAttribute {
 		super();
 	}
 
-	public FieldAttribute(boolean create, String field, String fieldPascal, String fget, String fset, String fgetType, String fsetType) {
+	/**
+	 * 初始化
+	 */
+	public FieldAttribute(TableAttributeEntity entity) {
 		super();
-		this.create = create;
-		this.field = field;
-		this.fieldPascal = fieldPascal;
-		this.fget = fget;
-		this.fset = fset;
-		this.fgetType = fgetType;
-		this.fsetType = fsetType;
+		super.setJavaType(entity.getTdJavaType().getValue());
+		super.setNullable(entity.isNullable());
+		super.setColumnName(entity.getTdColumnName());
+		super.setColumnDef(entity.getColumnDef());
+		super.setRemarks(entity.getRemarks());
+		super.setColumnSize(entity.getColumnSize());
+		super.setTypeName(entity.getTdJdbcType());
+		super.setDecimalDigits(entity.getDecimalDigits());
+		super.setOrdinalPosition(entity.getOrdinalPosition());
+		this.create = entity.getTdCreate();
 	}
 
 	public boolean isCreate() {
@@ -98,7 +106,8 @@ public class FieldAttribute extends TableColumnsAttribute {
 
 	@Override
 	public String toString() {
-		return "ClassAttribute [create=" + create + ", field=" + field + ", fieldPascal=" + fieldPascal + ", fget=" + fget + ", fset=" + fset + ", fgetType=" + fgetType + ", fsetType=" + fsetType + "]";
+		return "ClassAttribute [create=" + create + ", field=" + field + ", fieldPascal=" + fieldPascal + ", fget=" + fget + ", fset=" + fset
+				+ ", fgetType=" + fgetType + ", fsetType=" + fsetType + "]";
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.szmirren.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
@@ -8,10 +10,12 @@ import org.apache.log4j.Logger;
 import com.szmirren.Main;
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.Constant;
+import com.szmirren.common.DBUtil;
 import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
 import com.szmirren.models.TableAttributeEntity;
 import com.szmirren.models.TableAttributeEntityEditingCell;
+import com.szmirren.options.DatabaseConfig;
 import com.szmirren.options.EntityConfig;
 import com.szmirren.view.AlertUtil;
 
@@ -69,7 +73,7 @@ public class SetEntityAttributeController extends BaseController {
 	private TableColumn<TableAttributeEntity, ComboBox<String>> tdJavaType;
 	/** java属性名 */
 	@FXML
-	private TableColumn<TableAttributeEntity, String> tdFiled;
+	private TableColumn<TableAttributeEntity, String> tdField;
 
 	/** 表的别名 */
 	@FXML
@@ -118,6 +122,9 @@ public class SetEntityAttributeController extends BaseController {
 	/** 如果文件存在就将其覆盖 */
 	@FXML
 	private CheckBox chkOverrideFile;
+	/** 字段属性名使用驼峰命名 */
+	@FXML
+	private CheckBox chkFieldCamel;
 	/** 使用模板 */
 	@FXML
 	private ComboBox<String> cboTemplate;
@@ -137,40 +144,63 @@ public class SetEntityAttributeController extends BaseController {
 		// 设置列的大小自适应
 		tblProperty.setColumnResizePolicy(resize -> {
 			double width = resize.getTable().getWidth();
-			tdIsCreate.setPrefWidth(width * 10 / 1);
-			tdColumn.setPrefWidth(width * 10 / 2.25);
-			tdSqlType.setPrefWidth(width * 10 / 2.25);
-			tdJavaType.setPrefWidth(width * 10 / 2.25);
-			tdFiled.setPrefWidth(width * 10 / 2.25);
+			tdIsCreate.setPrefWidth(width * 0.1);
+			tdColumn.setPrefWidth(width * 0.2);
+			tdSqlType.setPrefWidth(width * 0.2);
+			tdJavaType.setPrefWidth(width * 0.25);
+			tdField.setPrefWidth(width * 0.25);
 			return true;
 		});
 		btnConfirm.widthProperty().addListener(w -> {
 			double x = btnConfirm.getLayoutX() + btnConfirm.getWidth() + 10;
 			btnCancel.setLayoutX(x);
 		});
-		// // 设置输入包名自适应
-		// lblPackageName.widthProperty().addListener(w -> {
-		// double x = lblPackageName.getLayoutX() + lblPackageName.getWidth() + 25;
-		// txtPackageName.setLayoutY(x);
-		// txtPackageName.setPrefWidth(apRightPane.getWidth() - x);
-		// });
-		// apRightPane.widthProperty().addListener(w -> {
-		// double x = lblPackageName.getLayoutX() + lblPackageName.getWidth() + 25;
-		// txtPackageName.setLayoutY(x);
-		// txtPackageName.setPrefWidth(apRightPane.getWidth() - x);
-		// });
-		//
-		// // 设置输入类名自适应
-		// lblClassName.widthProperty().addListener(w -> {
-		// double x = lblClassName.getLayoutX() + lblClassName.getWidth() + 25;
-		// txtClassName.setLayoutY(x);
-		// txtClassName.setPrefWidth(apRightPane.getWidth() - x);
-		// });
-		// apRightPane.widthProperty().addListener(w -> {
-		// double x = lblClassName.getLayoutX() + lblClassName.getWidth() + 25;
-		// txtClassName.setLayoutY(x);
-		// txtClassName.setPrefWidth(apRightPane.getWidth() - x);
-		// });
+		// 设置输入包名自适应
+		lblTableAlias.widthProperty().addListener(w -> {
+			double x = lblTableAlias.getLayoutX() + lblTableAlias.getWidth() + 25;
+			txtTableAlias.setLayoutY(x);
+			txtTableAlias.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		apRightPane.widthProperty().addListener(w -> {
+			double x = lblTableAlias.getLayoutX() + lblTableAlias.getWidth() + 25;
+			txtTableAlias.setLayoutY(x);
+			txtTableAlias.setPrefWidth(apRightPane.getWidth() - x);
+		});
+
+		// 设置输入主键名称自适应
+		lblPrimaryKey.widthProperty().addListener(w -> {
+			double x = lblPrimaryKey.getLayoutX() + lblPrimaryKey.getWidth() + 25;
+			txtPrimaryKey.setLayoutY(x);
+			txtPrimaryKey.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		apRightPane.widthProperty().addListener(w -> {
+			double x = lblPrimaryKey.getLayoutX() + lblPrimaryKey.getWidth() + 25;
+			txtPrimaryKey.setLayoutY(x);
+			txtPrimaryKey.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		// 设置输入自定义属性类型自适应
+		lblKey.widthProperty().addListener(w -> {
+			double x = lblKey.getLayoutX() + lblKey.getWidth() + 25;
+			txtKey.setLayoutY(x);
+			txtKey.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		apRightPane.widthProperty().addListener(w -> {
+			double x = lblKey.getLayoutX() + lblKey.getWidth() + 25;
+			txtKey.setLayoutY(x);
+			txtKey.setPrefWidth(apRightPane.getWidth() - x);
+		});
+
+		// 设置输入自定义属性名称自适应
+		lblValue.widthProperty().addListener(w -> {
+			double x = lblValue.getLayoutX() + lblValue.getWidth() + 25;
+			txtValue.setLayoutY(x);
+			txtValue.setPrefWidth(apRightPane.getWidth() - x);
+		});
+		apRightPane.widthProperty().addListener(w -> {
+			double x = lblValue.getLayoutX() + lblValue.getWidth() + 25;
+			txtValue.setLayoutY(x);
+			txtValue.setPrefWidth(apRightPane.getWidth() - x);
+		});
 
 	}
 
@@ -197,41 +227,46 @@ public class SetEntityAttributeController extends BaseController {
 		Property<ContextMenu> tblCM = new SimpleObjectProperty<ContextMenu>(menu);
 		tblProperty.contextMenuProperty().bind(tblCM);
 		// 添加列
-		Callback<TableColumn<TableAttributeEntity, String>, TableCell<TableAttributeEntity, String>> cellFactory = (TableColumn<TableAttributeEntity, String> p) -> new TableAttributeEntityEditingCell();
+		Callback<TableColumn<TableAttributeEntity, String>, TableCell<TableAttributeEntity, String>> cellFactory = (
+				TableColumn<TableAttributeEntity, String> p) -> new TableAttributeEntityEditingCell();
 		tdIsCreate.setCellFactory(CheckBoxTableCell.forTableColumn(tdIsCreate));
-		tdIsCreate.setCellValueFactory(new PropertyValueFactory<>("create"));
+		tdIsCreate.setCellValueFactory(new PropertyValueFactory<>("tdCreate"));
 
-		tdColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
+		tdColumn.setCellValueFactory(new PropertyValueFactory<>("tdColumnName"));
 		tdColumn.setCellFactory(cellFactory);
 		tdColumn.setOnEditCommit((CellEditEvent<TableAttributeEntity, String> t) -> {
-			((TableAttributeEntity) t.getTableView().getItems().get(t.getTablePosition().getRow())).setColumnName(t.getNewValue());
+			((TableAttributeEntity) t.getTableView().getItems().get(t.getTablePosition().getRow())).setTdColumnName(t.getNewValue());
 		});
 
-		tdSqlType.setCellValueFactory(new PropertyValueFactory<>("jdbcType"));
+		tdSqlType.setCellValueFactory(new PropertyValueFactory<>("tdJdbcType"));
 		tdSqlType.setCellFactory(cellFactory);
 		tdSqlType.setOnEditCommit((CellEditEvent<TableAttributeEntity, String> t) -> {
-			System.out.println(t.getNewValue());
-			((TableAttributeEntity) t.getTableView().getItems().get(t.getTablePosition().getRow())).setJdbcType(t.getNewValue());
+			((TableAttributeEntity) t.getTableView().getItems().get(t.getTablePosition().getRow())).setTdJdbcType(t.getNewValue());
 		});
-		tdJavaType.setCellValueFactory(new PropertyValueFactory<>("javaType"));
-		tdFiled.setCellValueFactory(new PropertyValueFactory<>("field"));
-		tdFiled.setCellFactory(cellFactory);
-		tdFiled.setOnEditCommit((CellEditEvent<TableAttributeEntity, String> t) -> {
-			System.out.println(t.getNewValue());
-			((TableAttributeEntity) t.getTableView().getItems().get(t.getTablePosition().getRow())).setField(t.getNewValue());
+		tdJavaType.setCellValueFactory(new PropertyValueFactory<>("tdJavaType"));
+		tdField.setCellValueFactory(new PropertyValueFactory<>("tdField"));
+		tdField.setCellFactory(cellFactory);
+		tdField.setOnEditCommit((CellEditEvent<TableAttributeEntity, String> t) -> {
+			((TableAttributeEntity) t.getTableView().getItems().get(t.getTablePosition().getRow())).setTdField(t.getNewValue());
 		});
-		tblProperty.setItems(tblPropertyValues);
+
+		tblProperty.setItems(tblPropertyValues);;
+
 		LOG.debug("初始化SetEntityAttribute->初始化模板文件名选择...");
 		cboTemplate.getItems().addAll(indexController.getTemplateNameItems());
 		if (indexController.getTemplateNameItems().contains(Constant.TEMPLATE_NAME_ENTITY)) {
 			cboTemplate.setValue(Constant.TEMPLATE_NAME_ENTITY);
 		}
 		LOG.debug("初始化SetEntityAttribute->初始化配置信息...");
+		// 该属性用来判断是否需要重新加载表格数据与主键
+		boolean isInitProperyAndKey = true;
 		if (indexController.getHistoryConfig() != null) {
 			if (indexController.getHistoryConfig().getEntityConfig() == null) {
 				loadConfig(getConfig());
 			} else {
+				LOG.debug("加载数据...从上一次保存获取");
 				loadConfig(indexController.getHistoryConfig().getEntityConfig());
+				isInitProperyAndKey = false;
 			}
 		} else {
 			String configName = indexController.getHistoryConfigName();
@@ -241,6 +276,11 @@ public class SetEntityAttributeController extends BaseController {
 			loadConfig(getConfig(configName));
 		}
 		initLanguage();
+		if (isInitProperyAndKey) {
+			LOG.debug("加载数据...从数据库获取");
+			initTablePrimaryKey(indexController.getSelectedDatabaseConfig(), indexController.getSelectedTableName());
+			initTablePropery(indexController.getSelectedDatabaseConfig(), indexController.getSelectedTableName());
+		}
 		LOG.debug("初始化SetEntityAttribute-->成功!");
 	}
 
@@ -248,23 +288,64 @@ public class SetEntityAttributeController extends BaseController {
 	 * 初始化语言
 	 */
 	private void initLanguage() {
-		// lblTips.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_TIPS));
-		// tdClassName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_COMMON_CLASS_NAME));
-		// tdPackageName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_COMMON_PACKAGE_NAME));
-		// tdTemplate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_COMMON_TEMPLATE_NAME));
-		// lblAddCustomProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_ADD_CUSTOM_PROPERTY));
-		// lblPackageName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_PACKAGE_NAME));
-		// lblClassName.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_CLASS_NAME));
-		// btnSaveConfig.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_SAVE_CONFIG));
-		// btnAddProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_ADD_PROPERTY));
-		// btnConfirm.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CONFIRM));
-		// btnCancel.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL));
-		// txtKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_KEY));
-		// txtPackageName.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_PACKAGE_NAME));
-		// txtClassName.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_CLASS_NAME));
-		// chkOverrideFile.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_OVERRIDE_FILE));
+		tdIsCreate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TD_CREATE));
+		tdColumn.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TD_COLUMN));
+		tdSqlType.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TD_SQL_TYPE));
+		tdJavaType.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TD_JAVA_TYPE));
+		tdField.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TD_FIELD));
+		lblAddCustomProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_ADD_CUSTOM_PROPERTY));
+		lblKey.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_LBL_KEY));
+		lblValue.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_LBL_VALUE));
+		btnSaveConfig.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_SAVE_CONFIG));
+		btnAddProperty.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_ADD_PROPERTY));
+		btnConfirm.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CONFIRM));
+		btnCancel.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL));
+		txtKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_TXT_KEY));
+		txtKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TXT_KEY));
+		txtValue.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TXT_VALUE));
+		chkOverrideFile.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_OVERRIDE_FILE));
+		lblTemplate.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_LBL_TEMPLATE));
+		cboTemplate.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
+		lblTableAlias.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_LBL_TABLE_ALIAS));
+		txtTableAlias.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TXT_TABLE_ALIAS));
+		lblPrimaryKey.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_LBL_PRIMARY_KEY));
+		txtPrimaryKey.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_ENTITY_TXT_PRIMARY_KEY));
+		chkFieldCamel.textProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CHK_FIELD_CAMEL));
+	}
+	/**
+	 * 初始化表格属性
+	 */
+	public void initTablePropery(DatabaseConfig selectedDatabaseConfig, String selectedTableName) {
+		try {
+			LOG.debug("执行获取表的列数据...");
+			List<TableAttributeEntity> columns = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
+			loadTablePropertyValues(columns);
+			LOG.debug("执行获取表的列数据-->成功!");
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert("获取表的列数据!失败原因:\r\n" + e.getMessage());
+			LOG.error("执行获取表的列数据-->失败:", e);
+		}
 	}
 
+	/**
+	 * 初始化主键
+	 */
+	public void initTablePrimaryKey(DatabaseConfig selectedDatabaseConfig, String selectedTableName) {
+		try {
+			LOG.debug("执行获取表的主键列...");
+			String key = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
+			if (key != null) {
+				txtPrimaryKey.setText(key);
+				LOG.debug("获取表的主键列成功!");
+			} else {
+				LOG.debug("获取表的主键列失败,当前表不存在主键!");
+			}
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert("获得主键失败!失败原因:\r\n" + e.getMessage());
+			LOG.error("获取表的主键列失败!!!" + e);
+		}
+
+	}
 	/**
 	 * 从数据库中获取配置文件,使用默认值获取
 	 * 
@@ -303,9 +384,29 @@ public class SetEntityAttributeController extends BaseController {
 	 */
 	public EntityConfig getThisConfig() {
 		LOG.debug("执行获取当前页面配置文件...");
-		// TODO
 		EntityConfig config = new EntityConfig();
+		config.setFieldCamel(chkFieldCamel.isSelected());
+		config.setOverrideFile(chkOverrideFile.isSelected());
+		config.setTemplateName(cboTemplate.getValue());
 		LOG.debug("执行获取当前页面配置文件-->成功!");
+		return config;
+	}
+	/**
+	 * 获取当前控制器配置文件,带有表格数据
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public EntityConfig getThisConfigHasProperty() {
+		LOG.debug("执行获取当前页面带有表格数据配置文件...");
+		EntityConfig config = new EntityConfig();
+		config.setFieldCamel(chkFieldCamel.isSelected());
+		config.setOverrideFile(chkOverrideFile.isSelected());
+		config.setTemplateName(cboTemplate.getValue());
+		config.setTblPropertyValues(tblPropertyValues);
+		config.setTableAlias(txtTableAlias.getText());
+		config.setPrimaryKey(txtPrimaryKey.getText());
+		LOG.debug("执行获取当前页面带有表格数据配置文件-->成功!");
 		return config;
 	}
 
@@ -316,22 +417,32 @@ public class SetEntityAttributeController extends BaseController {
 	 */
 	public void loadConfig(EntityConfig config) {
 		LOG.debug("执行加载配置文件到当前页面...");
-		tblPropertyValues.clear();
-		if (config != null && config.getTableItem() != null) {
-			config.getTableItem().forEach(v -> {
-				// TableAttributeEntity attribute = new
-				// TableAttributeEntity(v.getKey(), v.getPackageName(),
-				// v.getClassName(), v.getTemplateValue());
-				// attribute.getTemplate().promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
-				// attribute.getTemplate().prefWidthProperty().bind(tdTemplate.widthProperty());
-				// attribute.getTemplate().setEditable(true);
-				// attribute.getTemplate().getItems().addAll(indexController.getTemplateNameItems());
-				// attribute.getTemplate().setValue(v.getTemplateValue());
-				// tblPropertyValues.add(attribute);
-			});
-		}
+		chkFieldCamel.setSelected(config.isFieldCamel());
 		chkOverrideFile.setSelected(config.isOverrideFile());
+		cboTemplate.setValue(config.getTemplateName());
+		if (config.getTableAlias() != null) {
+			txtTableAlias.setText(config.getTableAlias());
+		}
+		if (config.getPrimaryKey() != null) {
+			txtPrimaryKey.setText(config.getPrimaryKey());
+		}
+		if (config.getTblPropertyValues() != null) {
+			tblPropertyValues.addAll(config.getTblPropertyValues());
+		}
 		LOG.debug("执行加载配置文件到当前页面->成功!");
+	}
+
+	/**
+	 * 加载表数据
+	 */
+	public void loadTablePropertyValues(List<TableAttributeEntity> attr) {
+		tblPropertyValues.clear();
+		for (TableAttributeEntity entity : attr) {
+			if (chkFieldCamel.isSelected()) {
+				entity.setTdField(StrUtil.unlineToCamel(entity.getTdColumnName()));
+			}
+			tblPropertyValues.add(entity);
+		}
 	}
 
 	// =======================事件=================================
@@ -363,16 +474,33 @@ public class SetEntityAttributeController extends BaseController {
 	 */
 	public void onAddPropertyToTable(ActionEvent event) {
 		LOG.debug("执行添加自定义属性...");
-		// ComboBox<String> comboBox = new ComboBox<>();
-		// comboBox.promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
-		// comboBox.prefWidthProperty().bind(tdTemplate.widthProperty());
-		// comboBox.setEditable(true);
-		// comboBox.getItems().addAll(indexController.getTemplateNameItems());
-		// TableAttributeEntity attribute = new
-		// TableAttributeEntity(txtKey.getText(),
-		// txtPackageName.getText(), txtClassName.getText(), comboBox);
-		// tblPropertyValues.add(attribute);
+		TableAttributeEntity field = new TableAttributeEntity(txtKey.getText(), txtValue.getText());
+		tblPropertyValues.add(field);
 		LOG.debug("添加自定义属性-->成功!");
+	}
+	/**
+	 * 是否驼峰命名
+	 * 
+	 * @param event
+	 */
+	public void onCamel(ActionEvent event) {
+		ArrayList<TableAttributeEntity> list = new ArrayList<>(tblPropertyValues);
+		tblPropertyValues.clear();
+		if (chkFieldCamel.isSelected()) {
+			for (TableAttributeEntity entity : list) {
+				entity.setTdField(StrUtil.unlineToCamel(entity.getTdField()));
+				tblPropertyValues.add(entity);
+			}
+			tblProperty.setItems(tblPropertyValues);
+		} else {
+			for (TableAttributeEntity entity : list) {
+				if (!StrUtil.isNullOrEmpty(entity.getTdColumnName())) {
+					entity.setTdField(entity.getTdColumnName());
+				}
+				tblPropertyValues.add(entity);
+			}
+			tblProperty.setItems(tblPropertyValues);
+		}
 	}
 
 	/**
@@ -381,8 +509,11 @@ public class SetEntityAttributeController extends BaseController {
 	 * @param event
 	 */
 	public void onCancel(ActionEvent event) {
-		boolean result = AlertUtil.showConfirmAlert("如果取消全部的设置都将回复到默认值,确定取消吗?");
+		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL_TIPS);
+		String tips = property == null ? "如果取消,全部的设置都将恢复到默认值,确定取消吗?" : property.get();
+		boolean result = AlertUtil.showConfirmAlert(tips);
 		if (result) {
+			indexController.getHistoryConfig().setEntityConfig(null);
 			getDialogStage().close();
 		}
 	}
@@ -393,7 +524,7 @@ public class SetEntityAttributeController extends BaseController {
 	 * @param event
 	 */
 	public void onConfirm(ActionEvent event) {
-		indexController.getHistoryConfig().setEntityConfig(getThisConfig());
+		indexController.getHistoryConfig().setEntityConfig(getThisConfigHasProperty());
 		getDialogStage().close();
 	}
 

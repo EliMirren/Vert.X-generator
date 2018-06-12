@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.szmirren.entity.TableColumnsAttribute;
 import com.szmirren.models.DBType;
 import com.szmirren.models.DBTypeName;
+import com.szmirren.models.TableAttributeEntity;
 import com.szmirren.options.DatabaseConfig;
 
 /**
@@ -43,7 +43,8 @@ public class DBUtil {
 			try {
 				connection = DriverManager.getConnection(url, config.getUserName(), config.getUserPwd());
 			} catch (Exception e) {
-				String oracle = String.format(DBType.OracleServiceName.getConnectionUrlPattern(), config.getConnURL(), config.getListenPort(), config.getDbName());
+				String oracle = String.format(DBType.OracleServiceName.getConnectionUrlPattern(), config.getConnURL(), config.getListenPort(),
+						config.getDbName());
 				connection = DriverManager.getConnection(oracle, config.getUserName(), config.getUserPwd());
 			}
 			return connection;
@@ -61,7 +62,8 @@ public class DBUtil {
 	 */
 	public static String getConnectionURL(DatabaseConfig dbConfig) throws ClassNotFoundException {
 		DBType dbType = DBType.valueOf(dbConfig.getDbType());
-		String connectionRUL = String.format(dbType.getConnectionUrlPattern(), dbConfig.getConnURL(), dbConfig.getListenPort(), dbConfig.getDbName(), dbConfig.getEncoding());
+		String connectionRUL = String.format(dbType.getConnectionUrlPattern(), dbConfig.getConnURL(), dbConfig.getListenPort(),
+				dbConfig.getDbName(), dbConfig.getEncoding());
 		return connectionRUL;
 	}
 
@@ -87,7 +89,7 @@ public class DBUtil {
 		} else {
 			// 如果非sqlserver类型的数据库通过JDBC获得所有表跟视图
 			DatabaseMetaData md = conn.getMetaData();
-			String[] types = { "TABLE", "VIEW" };
+			String[] types = {"TABLE", "VIEW"};
 			if (config.getDbType().equalsIgnoreCase(DBTypeName.POSTGRE_SQL.getValue())) {
 				rs = md.getTables(null, null, null, types);
 			} else {
@@ -111,28 +113,29 @@ public class DBUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<TableColumnsAttribute> getTableColumns(DatabaseConfig config, String tableName) throws Exception {
+	public static List<TableAttributeEntity> getTableColumns(DatabaseConfig config, String tableName) throws Exception {
 		Connection conn = getConnection(config);
 		DatabaseMetaData md = conn.getMetaData();
 		ResultSet rs = md.getColumns(null, null, tableName, null);
-		Map<String, TableColumnsAttribute> columnMap = new HashMap<>();
+		Map<String, TableAttributeEntity> columnMap = new HashMap<>();
 		while (rs.next()) {
-			TableColumnsAttribute attr = new TableColumnsAttribute();
-			attr.setColumnName(rs.getString("COLUMN_NAME"));
+			TableAttributeEntity attr = new TableAttributeEntity();
+			attr.setTdColumnName(rs.getString("COLUMN_NAME"));
+			attr.setTdJdbcType(rs.getString("TYPE_NAME"));
+			attr.setTdJavaType(JavaType.jdbcTypeToJavaType(rs.getString("TYPE_NAME")));
+
 			attr.setColumnDef(rs.getString("COLUMN_DEF"));
 			attr.setRemarks(rs.getString("REMARKS"));
 			attr.setColumnSize(rs.getInt("COLUMN_SIZE"));
-			attr.setTypeName(rs.getString("TYPE_NAME"));
 			attr.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
 			attr.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
 			attr.setNullable(rs.getInt("NULLABLE") == 1 ? true : false);
-			attr.setJavaType(JavaType.jdbcTypeToJavaType(rs.getString("TYPE_NAME")));
 			columnMap.put(rs.getString("COLUMN_NAME"), attr);
 		}
 		if (columnMap.size() == 0) {
 			throw new NullPointerException("从表中获取字段失败!获取不到任何字段!");
 		}
-		ArrayList<TableColumnsAttribute> result = new ArrayList<>(columnMap.values());
+		ArrayList<TableAttributeEntity> result = new ArrayList<>(columnMap.values());
 		Collections.sort(result);
 		return result;
 	}

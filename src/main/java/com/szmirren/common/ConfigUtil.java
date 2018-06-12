@@ -355,7 +355,7 @@ public class ConfigUtil {
 		try {
 			conn = getConnection();
 			stat = conn.createStatement();
-			String jsonStr = JSON.toJSONString(config);
+			String jsonStr = config.toJsonString();
 			String sql = String.format("replace into ClassConfig(name,value) values('%s', '%s')", name, jsonStr);
 			int result = stat.executeUpdate(sql);
 			return result;
@@ -385,7 +385,8 @@ public class ConfigUtil {
 			String sql = String.format("select * from ClassConfig where name='%s'", name);
 			ResultSet resultSet = stat.executeQuery(sql);
 			while (resultSet.next()) {
-				EntityConfig result = JSON.parseObject(resultSet.getString("value"), EntityConfig.class);
+				JSONObject object = JSON.parseObject(resultSet.getString("value"), JSONObject.class);
+				EntityConfig result = new EntityConfig(object);
 				return result;
 			}
 		} finally {

@@ -1,5 +1,7 @@
 package com.szmirren.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -12,18 +14,33 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
+import org.postgresql.translation.messages_zh_TW;
 
 import com.szmirren.Main;
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.Constant;
+import com.szmirren.common.ConverterUtil;
 import com.szmirren.common.DBUtil;
 import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
-import com.szmirren.models.EntityAttribute;
+import com.szmirren.entity.AbstractSqlContent;
+import com.szmirren.entity.CustomContent;
+import com.szmirren.entity.CustomPropertyContent;
+import com.szmirren.entity.EntityContent;
+import com.szmirren.entity.GeneratorContent;
+import com.szmirren.entity.RouterContent;
+import com.szmirren.entity.SQLContent;
+import com.szmirren.entity.ServiceContent;
+import com.szmirren.entity.ServiceImplContent;
+import com.szmirren.entity.SqlAndParamsContent;
+import com.szmirren.entity.SqlAssistContent;
+import com.szmirren.entity.UnitTestContent;
+import com.szmirren.models.TableAttributeEntity;
 import com.szmirren.options.AbstractSqlConfig;
 import com.szmirren.options.CustomConfig;
 import com.szmirren.options.CustomPropertyConfig;
 import com.szmirren.options.DatabaseConfig;
+import com.szmirren.options.EntityConfig;
 import com.szmirren.options.HistoryConfig;
 import com.szmirren.options.RouterConfig;
 import com.szmirren.options.ServiceConfig;
@@ -35,6 +52,7 @@ import com.szmirren.options.UnitTestConfig;
 import com.szmirren.view.AlertUtil;
 
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -74,20 +92,16 @@ public class IndexController extends BaseController {
 	/** 存储数据库指定数据库,修改属性时用 */
 	private DatabaseConfig selectedDatabaseConfig;
 	private DatabaseConfig updateOfDatabaseConfig;
-	/** 表与实体类的属性,表名-包名-类名在执行是时添加到本属性 */
-	private EntityAttribute ctEntityAttribute;
 
 	/** 记录存储的表名,修改属性时用 */
 	private String selectedTableName;
-	/** 标记属性是否修改false为没有修改 */
-	private boolean changeEntityInfo = false;
 
 	/** 实体类名默认的占位符 */
 	private String entityNamePlace;
 	/** Service默认占位符 */
-	private String ServiceNamePlace;
+	private String serviceNamePlace;
 	/** ServiceImpl默认占位符 */
-	private String ServiceImplNamePlace;
+	private String serviceImplNamePlace;
 	/** Router默认占位符 */
 	private String routerNamePlace;
 	/** SQL默认占位符 */
@@ -327,7 +341,8 @@ public class IndexController extends BaseController {
 		lblInstructions.setGraphic(lblInstructionsImage);
 		lblInstructions.textProperty().bind(Main.LANGUAGE.get(LanguageKey.INDEX_LBL_INSTRUCTIONS));
 		lblInstructions.setOnMouseClicked(this::onInstructions);
-		lblInstructions.widthProperty().addListener(event -> lblSetting.setLayoutX(ml + lblInstructions.getLayoutX() + lblInstructions.getWidth()));
+		lblInstructions.widthProperty()
+				.addListener(event -> lblSetting.setLayoutX(ml + lblInstructions.getLayoutX() + lblInstructions.getWidth()));
 
 		ImageView lblSettingImage = new ImageView("image/setting.png");
 		lblSettingImage.setFitHeight(40);
@@ -479,8 +494,9 @@ public class IndexController extends BaseController {
 		String unitTestPackage = txtUnitTestPackage.getText();
 		String unitTestName = txtUnitTestName.getText();
 		String codeFormat = cboCodeFormat.getValue();
-		HistoryConfig config = new HistoryConfig(projectPath, entityPackage, entityName, servicePackage, serviceName, serviceImplPackage, serviceImplName, routerPackage, routerName, sqlPackage, sqlName,
-				assistPackage, abstractSqlPackage, sqlParamsPackage, unitTestPackage, unitTestName, codeFormat);
+		HistoryConfig config = new HistoryConfig(projectPath, entityPackage, entityName, servicePackage, serviceName, serviceImplPackage,
+				serviceImplName, routerPackage, routerName, sqlPackage, sqlName, assistPackage, abstractSqlPackage, sqlParamsPackage,
+				unitTestPackage, unitTestName, codeFormat);
 		config.setDbConfig(selectedDatabaseConfig);
 		config.setEntityConfig(historyConfig.getEntityConfig());
 		config.setServiceConfig(historyConfig.getServiceConfig());
@@ -497,43 +513,60 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 获得当前页面的信息并实例化为配置信息对象,
+	 * 获得当前页面的配置信息,如果某个配置信息没有初始化就实例化并初始化基本属性,
 	 * 
 	 * @param name
 	 * @return
 	 * @throws Exception
 	 */
-	private HistoryConfig getThisHistoryConfigAndInit() throws Exception {
+	private HistoryConfig getThisHistoryConfigAndInit(String selectedTableName) throws Exception {
 		HistoryConfig config = getThisHistoryConfig();
+		if (config.getEntityConfig() == null) {
+			EntityConfig entityConfig = Optional.ofNullable(ConfigUtil.getEntityConfig(Constant.DEFAULT)).orElse(new EntityConfig());
+			List<TableAttributeEntity> columns = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
+			entityConfig.setTblPropertyValues(FXCollections.observableArrayList(columns));
+			String primaryKey = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
+			entityConfig.setPrimaryKey(primaryKey);
+			config.setEntityConfig(entityConfig);
+		}
 		if (config.getServiceConfig() == null) {
-			config.setServiceConfig(Optional.ofNullable(ConfigUtil.getServiceConfig(Constant.DEFAULT)).orElse(new ServiceConfig().initDefaultValue()));
+			config.setServiceConfig(
+					Optional.ofNullable(ConfigUtil.getServiceConfig(Constant.DEFAULT)).orElse(new ServiceConfig().initDefaultValue()));
 		}
 		if (config.getServiceImplConfig() == null) {
-			config.setServiceImplConfig(Optional.ofNullable(ConfigUtil.getServiceImplConfig(Constant.DEFAULT)).orElse(new ServiceImplConfig().initDefaultValue()));
+			config.setServiceImplConfig(
+					Optional.ofNullable(ConfigUtil.getServiceImplConfig(Constant.DEFAULT)).orElse(new ServiceImplConfig().initDefaultValue()));
 		}
 		if (config.getSqlConfig() == null) {
 			config.setSqlConfig(Optional.ofNullable(ConfigUtil.getSQLConfig(Constant.DEFAULT)).orElse(new SqlConfig()));
 		}
 		if (config.getRouterConfig() == null) {
-			config.setRouterConfig(Optional.ofNullable(ConfigUtil.getRouterConfig(Constant.DEFAULT)).orElse(new RouterConfig().initDefaultValue()));
+			config
+					.setRouterConfig(Optional.ofNullable(ConfigUtil.getRouterConfig(Constant.DEFAULT)).orElse(new RouterConfig().initDefaultValue()));
 		}
 		if (config.getUnitTestConfig() == null) {
-			config.setUnitTestConfig(Optional.ofNullable(ConfigUtil.getUnitTestConfig(Constant.DEFAULT)).orElse(new UnitTestConfig().initDefaultValue()));
+			config.setUnitTestConfig(
+					Optional.ofNullable(ConfigUtil.getUnitTestConfig(Constant.DEFAULT)).orElse(new UnitTestConfig().initDefaultValue()));
 		}
 		if (config.getAssistConfig() == null) {
-			config.setAssistConfig(Optional.ofNullable(ConfigUtil.getSqlAssistConfig(Constant.DEFAULT)).orElse(new SqlAssistConfig().initDefaultValue()));
+			config.setAssistConfig(
+					Optional.ofNullable(ConfigUtil.getSqlAssistConfig(Constant.DEFAULT)).orElse(new SqlAssistConfig().initDefaultValue()));
 		}
 		if (config.getAbstractSqlConfig() == null) {
-			config.setAbstractSqlConfig(Optional.ofNullable(ConfigUtil.getAbstractSqlConfig(Constant.DEFAULT)).orElse(new AbstractSqlConfig().initDefaultValue()));
+			config.setAbstractSqlConfig(
+					Optional.ofNullable(ConfigUtil.getAbstractSqlConfig(Constant.DEFAULT)).orElse(new AbstractSqlConfig().initDefaultValue()));
 		}
 		if (config.getSqlAndParamsConfig() == null) {
-			config.setSqlAndParamsConfig(Optional.ofNullable(ConfigUtil.getSqlAndParamsConfig(Constant.DEFAULT)).orElse(new SqlAndParamsConfig().initDefaultValue()));
+			config.setSqlAndParamsConfig(
+					Optional.ofNullable(ConfigUtil.getSqlAndParamsConfig(Constant.DEFAULT)).orElse(new SqlAndParamsConfig().initDefaultValue()));
 		}
 		if (config.getCustomConfig() == null) {
-			config.setCustomConfig(Optional.ofNullable(ConfigUtil.getCustomConfig(Constant.DEFAULT)).orElse(new CustomConfig().initDefaultValue()));
+			config
+					.setCustomConfig(Optional.ofNullable(ConfigUtil.getCustomConfig(Constant.DEFAULT)).orElse(new CustomConfig().initDefaultValue()));
 		}
 		if (config.getCustomPropertyConfig() == null) {
-			config.setCustomPropertyConfig(Optional.ofNullable(ConfigUtil.getCustomPropertyConfig(Constant.DEFAULT)).orElse(new CustomPropertyConfig().initDefaultValue()));
+			config.setCustomPropertyConfig(
+					Optional.ofNullable(ConfigUtil.getCustomPropertyConfig(Constant.DEFAULT)).orElse(new CustomPropertyConfig().initDefaultValue()));
 		}
 		return config;
 	}
@@ -543,8 +576,8 @@ public class IndexController extends BaseController {
 	 */
 	private void loadPlace() {
 		entityNamePlace = txtEntityName.getText();
-		ServiceNamePlace = txtServiceName.getText();
-		ServiceImplNamePlace = txtServiceImplName.getText();
+		serviceNamePlace = txtServiceName.getText();
+		serviceImplNamePlace = txtServiceImplName.getText();
 		routerNamePlace = txtRouterName.getText();
 		sqlNamePlace = txtSqlName.getText();
 		unitTestPlace = txtUnitTestName.getText();
@@ -685,8 +718,8 @@ public class IndexController extends BaseController {
 						txtTableName.setText(tableName);
 						String pascalTableName = StrUtil.unlineToPascal(tableName);
 						txtEntityName.setText(entityNamePlace.replace("{c}", pascalTableName));
-						txtServiceName.setText(ServiceNamePlace.replace("{c}", pascalTableName));
-						txtServiceImplName.setText(ServiceImplNamePlace.replace("{c}", pascalTableName));
+						txtServiceName.setText(serviceNamePlace.replace("{c}", pascalTableName));
+						txtServiceImplName.setText(serviceImplNamePlace.replace("{c}", pascalTableName));
 						txtRouterName.setText(routerNamePlace.replace("{c}", pascalTableName));
 						txtSqlName.setText(sqlNamePlace.replace("{c}", pascalTableName));
 						txtUnitTestName.setText(unitTestPlace.replace("{c}", pascalTableName));
@@ -728,8 +761,8 @@ public class IndexController extends BaseController {
 	public void loadTemplate() {
 		LOG.debug("执行加载模板文件夹里面所有模板的名字...");
 		try {
-			this.templateNameItems = Files.list(Paths.get(Constant.TEMPLATE_DIR_NAME)).filter(f -> f.getFileName().toString().endsWith(".ftl")).map(p -> p.getFileName().toString())
-					.collect(Collectors.toList());
+			this.templateNameItems = Files.list(Paths.get(Constant.TEMPLATE_DIR_NAME)).filter(f -> f.getFileName().toString().endsWith(".ftl"))
+					.map(p -> p.getFileName().toString()).collect(Collectors.toList());
 			if (this.templateNameItems == null) {
 				this.templateNameItems = new ArrayList<>();
 			}
@@ -781,7 +814,164 @@ public class IndexController extends BaseController {
 		}
 	}
 
+	/**
+	 * 获得模板需要的上下文
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public GeneratorContent getGeneratorContent() throws Exception {
+		GeneratorContent content = new GeneratorContent();
+		HistoryConfig history = getThisHistoryConfigAndInit(selectedTableName);
+		// 实体类属性
+		EntityConfig ec = getThisHistoryConfigAndInit(selectedTableName).getEntityConfig();
+		String className = txtEntityName.getText();
+		EntityContent entityContent = new EntityContent(txtEntityPackage.getText(), txtEntityName.getText(), txtTableName.getText());
+		ConverterUtil.entityConfigToContent(ec, entityContent);
+		content.setEntity(entityContent);
+		// Service属性
+		ServiceConfig sc = history.getServiceConfig();
+		ServiceContent serviceContent = new ServiceContent(txtServicePackage.getText(), txtServiceName.getText());
+		ConverterUtil.serviceConfigToContent(sc, serviceContent, className);
+		content.setService(serviceContent);
+		// ServiceImpl属性
+		ServiceImplConfig sci = history.getServiceImplConfig();
+		ServiceImplContent serviceImplContent = new ServiceImplContent(txtServiceImplPackage.getText(), txtServiceImplName.getText());
+		ConverterUtil.serviceImplConfigToContent(sci, serviceImplContent, className);
+		content.setServiceImpl(serviceImplContent);
+		// SQL属性
+		SqlConfig sql = history.getSqlConfig();
+		SQLContent sqlContent = new SQLContent(txtSqlPackage.getText(), txtSqlName.getText());
+		ConverterUtil.SqlConfigToContent(sql, sqlContent, className);
+		content.setSql(sqlContent);
+		// Router属性
+		RouterConfig router = history.getRouterConfig();
+		RouterContent routerContent = new RouterContent(txtRouterPackage.getText(), txtRouterName.getText());
+		ConverterUtil.routerConfigToContent(router, routerContent, className);
+		content.setRouter(routerContent);
+		// 单元测试 属性
+		UnitTestConfig unit = history.getUnitTestConfig();
+		UnitTestContent unitTestContent = new UnitTestContent(txtUnitTestPackage.getText(), txtUnitTestName.getText());
+		ConverterUtil.unitTestConfigToContent(unit, unitTestContent, className);
+		content.setUnitTest(unitTestContent);
+		// SqlAssist属性
+		SqlAssistConfig assistConfig = history.getAssistConfig();
+		SqlAssistContent assistContent = new SqlAssistContent(txtAssistPackage.getText(), txtAssistName.getText());
+		ConverterUtil.sqlAssistConfigToContent(assistConfig, assistContent, className);
+		content.setSqlAssist(assistContent);
+		// AbstractSql属性
+		AbstractSqlConfig abstractSqlConfig = history.getAbstractSqlConfig();
+		AbstractSqlContent abstractSqlContent = new AbstractSqlContent(txtAbstractSqlPackage.getText(), txtAbstractSqlName.getText());
+		ConverterUtil.abstractSqlConfigToContent(abstractSqlConfig, abstractSqlContent, className);
+		content.setAbstractSql(abstractSqlContent);
+		// SqlAndParamsConfig属性
+		SqlAndParamsConfig sqlAndParamsConfig = history.getSqlAndParamsConfig();
+		SqlAndParamsContent sqlAndParamsContent = new SqlAndParamsContent(txtSqlParamsPackage.getText(), txtSqlParamsName.getText());
+		ConverterUtil.sqlAndParamsConfigToContent(sqlAndParamsConfig, sqlAndParamsContent, className);
+		content.setSqlAndParams(sqlAndParamsContent);
+		// 自定义包类属性
+		CustomConfig customConfig = history.getCustomConfig();
+		CustomContent customContent = new CustomContent();
+		ConverterUtil.customConfigToContent(customConfig, customContent, className);
+		content.setCustom(customContent);
+		// 自定义属性
+		CustomPropertyConfig propertyConfig = history.getCustomPropertyConfig();
+		CustomPropertyContent propertyContent = new CustomPropertyContent();
+		ConverterUtil.customPropertyConfigToContent(propertyConfig, propertyContent, className);
+		content.setCustomProperty(propertyContent);
+		return content;
+	}
+
 	// ============================事件区域=================================
+
+	/**
+	 * 保存配置文件
+	 * 
+	 * @param event
+	 */
+	public void onSaveConfig(ActionEvent event) {
+		LOG.debug("执行保存配置文件...");
+		// 检查是否类名是否存在占位符
+		boolean indexOf = StrUtil.indexOf("{c}", txtEntityName.getText(), txtServiceName.getText(), txtServiceImplName.getText(),
+				txtRouterName.getText(), txtSqlName.getText(), txtUnitTestName.getText());
+		if (!indexOf) {
+			StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_SAVE_CONFIG_NOT_C_TIPS);
+			String title = property == null ? "所有类名里面必须包含用于替换表名的占位符: {c}" : property.get();
+			AlertUtil.showWarnAlert(title);
+			return;
+		}
+		TextInputDialog dialog = new TextInputDialog("");
+		dialog.setTitle("保存当前配置");
+		StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_SAVE_CONFIG_TIPS);
+		String title = property == null ? "请输入配置名称:\\r\\n(表名不在保存范围内必须通过数据库加载!!!)" : property.get();
+		dialog.setContentText(title);
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			String name = result.map(n -> n).orElse("null");
+			try {
+				HistoryConfig config = getThisHistoryConfig();
+				config.setHistoryConfigName(name);
+				ConfigUtil.saveHistoryConfig(config);
+				AlertUtil.showInfoAlert("保存配置成功!");
+				LOG.debug("保存配置成功!");
+			} catch (Exception e) {
+				AlertUtil.showErrorAlert("保存配置失败!失败原因:\r\n" + e.getMessage());
+				LOG.error("保存配置失败!!!" + e);
+			}
+		}
+	}
+
+	/**
+	 * 执行创建
+	 * 
+	 * @param event
+	 */
+	public void onCreate(ActionEvent event) {
+		LOG.debug("执行创建...");
+		// TODO 编写创建的代码
+		try {
+			if (StrUtil.isNullOrEmpty(txtProjectPath.getText())) {
+				StringProperty property = Main.LANGUAGE.get(LanguageKey.TIPS_PATH_CANT_EMPTY);
+				String tips = property == null ? "生成的路径不能为空" : property.get();
+				AlertUtil.showWarnAlert(tips);
+				return;
+			}
+			if (StrUtil.isNullOrEmpty(txtTableName.getText())) {
+				StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_TIPS_CREATE_TABLE);
+				String tips = property == null ? "请双击左侧数据选择想要生成的表,或者在左侧右键全库生成!" : property.get();
+				AlertUtil.showWarnAlert(tips);
+				return;
+			}
+			GeneratorContent content = getGeneratorContent();
+			System.out.println();
+			System.out.println(content.getEntity());
+			System.out.println();
+			System.out.println(content.getService());
+			System.out.println();
+			System.out.println(content.getServiceImpl());
+			System.out.println();
+			System.out.println(content.getSql());
+			System.out.println();
+			System.out.println(content.getRouter());
+			System.out.println();
+			System.out.println(content.getUnitTest());
+			System.out.println();
+			System.out.println(content.getSqlAssist());
+			System.out.println();
+			System.out.println(content.getAbstractSql());
+			System.out.println();
+			System.out.println(content.getSqlAndParams());
+			System.out.println();
+			System.out.println(content.getCustom());
+			System.out.println();
+			System.out.println(content.getCustomProperty());
+
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert("创建文件失败:" + e);
+			LOG.error("执行创建-->失败:", e);
+		}
+	}
+
 	/**
 	 * 数据库连接
 	 * 
@@ -847,7 +1037,14 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void onSetEntity(ActionEvent event) {
-		SetEntityAttributeController controller = (SetEntityAttributeController) loadFXMLPage("Entity Attribute Setting", FXMLPage.SET_ENTITY_ATTRIBUTE, false);
+		if (selectedTableName == null) {
+			StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_TIPS_SELECT_TABLE_NAME);
+			String tips = property == null ? "请先选择数据库表!打开左侧数据库双击表名便可加载..." : property.get();
+			AlertUtil.showWarnAlert(tips);
+			return;
+		}
+		SetEntityAttributeController controller = (SetEntityAttributeController) loadFXMLPage("Entity Attribute Setting",
+				FXMLPage.SET_ENTITY_ATTRIBUTE, false);
 		controller.setIndexController(this);
 		controller.showDialogStage();
 		controller.init();
@@ -871,7 +1068,8 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void onSetServiceImpl(ActionEvent event) {
-		SetServiceImplController controller = (SetServiceImplController) loadFXMLPage("Service implement Setting", FXMLPage.SET_ROUTER_SERVICE_IMPL, false);
+		SetServiceImplController controller = (SetServiceImplController) loadFXMLPage("Service implement Setting",
+				FXMLPage.SET_ROUTER_SERVICE_IMPL, false);
 		controller.setIndexController(this);
 		controller.showDialogStage();
 		controller.init();
@@ -931,7 +1129,8 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void onSetSqlAndParams(ActionEvent event) {
-		SetSqlAndParamsController controller = (SetSqlAndParamsController) loadFXMLPage("SqlAndParams Setting", FXMLPage.SET_SQL_AND_PARAMS, false);
+		SetSqlAndParamsController controller = (SetSqlAndParamsController) loadFXMLPage("SqlAndParams Setting", FXMLPage.SET_SQL_AND_PARAMS,
+				false);
 		controller.setIndexController(this);
 		controller.showDialogStage();
 		controller.init();
@@ -967,63 +1166,12 @@ public class IndexController extends BaseController {
 	 * @param event
 	 */
 	public void onSetCustomProperty(ActionEvent event) {
-		SetCustomPropertyController controller = (SetCustomPropertyController) loadFXMLPage("SetCustomProperty Setting", FXMLPage.SET_CUSTOM_PROPERTY, false);
+		SetCustomPropertyController controller = (SetCustomPropertyController) loadFXMLPage("SetCustomProperty Setting",
+				FXMLPage.SET_CUSTOM_PROPERTY, false);
 		controller.setIndexController(this);
 		controller.showDialogStage();
 		controller.init();
 	}
-
-	/**
-	 * 保存配置文件
-	 * 
-	 * @param event
-	 */
-	public void onSaveConfig(ActionEvent event) {
-		LOG.debug("执行保存配置文件...");
-		// 检查是否类名是否存在占位符
-		boolean indexOf = StrUtil.indexOf("{c}", txtEntityName.getText(), txtServiceName.getText(), txtServiceImplName.getText(), txtRouterName.getText(), txtSqlName.getText(), txtUnitTestName.getText());
-		if (!indexOf) {
-			StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_SAVE_CONFIG_NOT_C_TIPS);
-			String title = property == null ? "所有类名里面必须包含用于替换表名的占位符: {c}" : property.get();
-			AlertUtil.showWarnAlert(title);
-			return;
-		}
-		TextInputDialog dialog = new TextInputDialog("");
-		dialog.setTitle("保存当前配置");
-		StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_SAVE_CONFIG_TIPS);
-		String title = property == null ? "请输入配置名称:\\r\\n(表名不在保存范围内必须通过数据库加载!!!)" : property.get();
-		dialog.setContentText(title);
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()) {
-			String name = result.map(n -> n).orElse("null");
-			try {
-				HistoryConfig config = getThisHistoryConfig();
-				config.setHistoryConfigName(name);
-				ConfigUtil.saveHistoryConfig(config);
-				AlertUtil.showInfoAlert("保存配置成功!");
-				LOG.debug("保存配置成功!");
-			} catch (Exception e) {
-				AlertUtil.showErrorAlert("保存配置失败!失败原因:\r\n" + e.getMessage());
-				LOG.error("保存配置失败!!!" + e);
-			}
-		}
-	}
-
-	/**
-	 * 执行创建
-	 * 
-	 * @param event
-	 */
-	public void onCreate(ActionEvent event) {
-		// TODO 编写创建的代码
-		try {
-			System.err.println(getThisHistoryConfigAndInit());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	// ======================get/set============================
 	/**
 	 * 获得当前选择数据库的信息
@@ -1113,24 +1261,6 @@ public class IndexController extends BaseController {
 	 */
 	public void setSelectedTableName(String selectedTableName) {
 		this.selectedTableName = selectedTableName;
-	}
-
-	/**
-	 * 是否有修改实体类的属性
-	 * 
-	 * @return
-	 */
-	public boolean isChangeEntityInfo() {
-		return changeEntityInfo;
-	}
-
-	/**
-	 * 设置是否有修改实体类的属性
-	 * 
-	 * @param changeInfo
-	 */
-	public void setChangeEntityInfo(boolean changeInfo) {
-		this.changeEntityInfo = changeInfo;
 	}
 
 	/**

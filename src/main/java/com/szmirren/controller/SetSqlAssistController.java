@@ -319,7 +319,9 @@ public class SetSqlAssistController extends BaseController {
 	 * @param event
 	 */
 	public void onCancel(ActionEvent event) {
-		boolean result = AlertUtil.showConfirmAlert("如果取消全部的设置都将回复到默认值,确定取消吗?");
+		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL_TIPS);
+		String tips = property == null ? "如果取消,全部的设置都将恢复到默认值,确定取消吗?" : property.get();
+		boolean result = AlertUtil.showConfirmAlert(tips);
 		if (result) {
 			getDialogStage().close();
 		}

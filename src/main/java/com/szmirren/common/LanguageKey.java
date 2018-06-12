@@ -15,6 +15,10 @@ public interface LanguageKey {
 	// =========================提示语================================
 	/** 生成路径不能为空 */
 	static final String TIPS_PATH_CANT_EMPTY = "tips.pathCantEmpty";
+	/** 首页-提示先选择表名 */
+	static final String INDEX_TIPS_SELECT_TABLE_NAME = "index.selectTableTips";
+	/** 首页-提示先选择表名或者全库生成 */
+	static final String INDEX_TIPS_CREATE_TABLE = "index.createTableTips";
 	// ========================通用区域===============================
 	/** 通用设置按钮 */
 	static final String COMMON_BTN_SET = "common.btnSet";
@@ -79,7 +83,7 @@ public interface LanguageKey {
 	static final String INDEX_LBL_SQL_AND_PARAMS_NAME = "index.lblSqlParamsName";
 	/** 首页-单元测试类名 */
 	static final String INDEX_LBL_UNIT_TEST_NAME = "index.lblUnitTestName";
-	
+
 	/** 首页-正在生成提示语句 */
 	static final String INDEX_RUN_CREATE_TIPS_TEXT = "index.runCreateTipsText";
 	/** 首页-自定义包名与类 */
@@ -170,6 +174,34 @@ public interface LanguageKey {
 	/** 数据库连接-删除 */
 	static final String CONFIG_BTN_DATELE = "config.btnDelete";
 	// ========================设置==================================
+	/** 设置实体类-是否创建 */
+	static final String SET_ENTITY_TD_CREATE = "setEntity.tdcreate";
+	/** 设置实体类-数据库列名 */
+	static final String SET_ENTITY_TD_COLUMN = "setEntity.tdColumn";
+	/** 设置实体类-SQL数据类型 */
+	static final String SET_ENTITY_TD_SQL_TYPE = "setEntity.tdSqlType";
+	/** 设置实体类-java数据类型 */
+	static final String SET_ENTITY_TD_JAVA_TYPE = "setEntity.tdJavaType";
+	/** 设置实体类-字段属性名 */
+	static final String SET_ENTITY_TD_FIELD = "setEntity.tdField";
+	/** 设置实体类-表的别名 */
+	static final String SET_ENTITY_LBL_TABLE_ALIAS = "setEntity.lblTableAlias";
+	/** 设置实体类-表的别名 */
+	static final String SET_ENTITY_TXT_TABLE_ALIAS = "setEntity.txtTableAlias";
+	/** 设置实体类-主键名称 */
+	static final String SET_ENTITY_LBL_PRIMARY_KEY = "setEntity.lblPrimaryKey";
+	/** 设置实体类-主键名称 */
+	static final String SET_ENTITY_TXT_PRIMARY_KEY = "setEntity.txtPrimaryKey";
+	/** 设置实体类- 自定属性类型 */
+	static final String SET_ENTITY_LBL_KEY = "setEntity.lblKey";
+	/** 设置实体类-自定属性类型 */
+	static final String SET_ENTITY_TXT_KEY = "setEntity.txtKey";
+	/** 设置实体类-自定属性类型名称 */
+	static final String SET_ENTITY_LBL_VALUE = "setEntity.lblValue";
+	/** 设置实体类-自定属性类型名称 */
+	static final String SET_ENTITY_TXT_VALUE = "setEntity.txtValue";
+	/** 设置实体类-字段驼峰命名 */
+	static final String SET_CHK_FIELD_CAMEL = "setEntity.chkFieldCamel";
 	/** 设置-表格详情 */
 	static final String SET_TBL_TIPS = "set.tblTips";
 	/** 设置-列详情 */
@@ -198,6 +230,8 @@ public interface LanguageKey {
 	static final String SET_BTN_CONFIRM = "set.btnConfirm";
 	/** 设置-取消 */
 	static final String SET_BTN_CANCEL = "set.btnCancel";
+	/** 设置-取消设置的提示 */
+	static final String SET_BTN_CANCEL_TIPS = "set.btnCancelTips";
 	/** 设置-覆盖存在的文件 */
 	static final String SET_CHK_OVERRIDE_FILE = "set.chkOverrideFile";
 	/** 设置-根据数据库类型自动选择 */

@@ -292,7 +292,8 @@ public class SetCustomController extends BaseController {
 		tblPropertyValues.clear();
 		if (config != null && config.getTableItem() != null) {
 			config.getTableItem().forEach(v -> {
-				TableAttributeKeyValueTemplate attribute = new TableAttributeKeyValueTemplate(v.getKey(), v.getPackageName(), v.getClassName(), v.getTemplateValue());
+				TableAttributeKeyValueTemplate attribute = new TableAttributeKeyValueTemplate(v.getKey(), v.getPackageName(), v.getClassName(),
+						v.getTemplateValue());
 				attribute.getTemplate().promptTextProperty().bind(Main.LANGUAGE.get(LanguageKey.SET_CBO_TEMPLATE));
 				attribute.getTemplate().prefWidthProperty().bind(tdTemplate.widthProperty());
 				attribute.getTemplate().setEditable(true);
@@ -339,7 +340,8 @@ public class SetCustomController extends BaseController {
 		comboBox.prefWidthProperty().bind(tdTemplate.widthProperty());
 		comboBox.setEditable(true);
 		comboBox.getItems().addAll(indexController.getTemplateNameItems());
-		TableAttributeKeyValueTemplate attribute = new TableAttributeKeyValueTemplate(txtKey.getText(), txtPackageName.getText(), txtClassName.getText(), comboBox);
+		TableAttributeKeyValueTemplate attribute = new TableAttributeKeyValueTemplate(txtKey.getText(), txtPackageName.getText(),
+				txtClassName.getText(), comboBox);
 		tblPropertyValues.add(attribute);
 		LOG.debug("添加自定义属性-->成功!");
 	}
@@ -350,7 +352,9 @@ public class SetCustomController extends BaseController {
 	 * @param event
 	 */
 	public void onCancel(ActionEvent event) {
-		boolean result = AlertUtil.showConfirmAlert("如果取消全部的设置都将回复到默认值,确定取消吗?");
+		StringProperty property = Main.LANGUAGE.get(LanguageKey.SET_BTN_CANCEL_TIPS);
+		String tips = property == null ? "如果取消,全部的设置都将恢复到默认值,确定取消吗?" : property.get();
+		boolean result = AlertUtil.showConfirmAlert(tips);
 		if (result) {
 			getDialogStage().close();
 		}

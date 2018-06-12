@@ -37,8 +37,14 @@ public class SettingController extends BaseController {
 			}
 		});
 		// 给语言添加事件
-		lblEnglish.setOnMouseClicked(ev -> Main.loadLanguage(Locale.ENGLISH));
-		lblSimpleChinese.setOnMouseClicked(ev -> Main.loadLanguage(Locale.SIMPLIFIED_CHINESE));
+		lblEnglish.setOnMouseClicked(ev -> {
+			Main.loadLanguage(Locale.ENGLISH);
+			closeDialogStage();
+		});
+		lblSimpleChinese.setOnMouseClicked(ev -> {
+			Main.loadLanguage(Locale.SIMPLIFIED_CHINESE);
+			closeDialogStage();
+		});
 	}
 
 }

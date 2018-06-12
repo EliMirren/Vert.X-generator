@@ -9,7 +9,7 @@ import java.util.Map;
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
-public class SqlAssist {
+public class SQLContent {
 	/** SqlAssist类的包名 */
 	private String classPackage;
 	/** SqlAssist类的类型 */
@@ -20,7 +20,7 @@ public class SqlAssist {
 	/**
 	 * 初始化
 	 */
-	public SqlAssist() {
+	public SQLContent() {
 		super();
 	}
 
@@ -30,7 +30,7 @@ public class SqlAssist {
 	 * @param classPackage
 	 * @param className
 	 */
-	public SqlAssist(String classPackage, String className) {
+	public SQLContent(String classPackage, String className) {
 		super();
 		this.classPackage = classPackage;
 		this.className = className;
@@ -61,6 +61,11 @@ public class SqlAssist {
 
 	public void setItem(Map<String, Object> item) {
 		this.item = item;
+	}
+
+	@Override
+	public String toString() {
+		return "SQLContent [classPackage=" + classPackage + ", className=" + className + ", item=" + item + "]";
 	}
 
 }
