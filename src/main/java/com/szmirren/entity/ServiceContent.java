@@ -4,17 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SqlAssist的实体类
+ * Service的实体类
  * 
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
 public class ServiceContent {
-	/** SqlAssist类的包名 */
+	/** Service类的包名 */
 	private String classPackage;
-	/** SqlAssist类的类型 */
+	/** Service类的类型 */
 	private String className;
-	/** SqlAssist类的配置文件 */
+	/** Service类的属性 */
 	private Map<String, Object> item = new HashMap<>();
 
 	/**

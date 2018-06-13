@@ -7,6 +7,7 @@ import java.util.Map;
 import com.szmirren.entity.AbstractSqlContent;
 import com.szmirren.entity.CustomContent;
 import com.szmirren.entity.CustomPropertyContent;
+import com.szmirren.entity.DatabaseContent;
 import com.szmirren.entity.EntityContent;
 import com.szmirren.entity.FieldAttribute;
 import com.szmirren.entity.RouterContent;
@@ -19,9 +20,11 @@ import com.szmirren.entity.UnitTestContent;
 import com.szmirren.models.TableAttributeEntity;
 import com.szmirren.models.TableAttributeKeyValue;
 import com.szmirren.models.TableAttributeKeyValueTemplate;
+import com.szmirren.models.TableAttributeKeyValueTemplateVO;
 import com.szmirren.options.AbstractSqlConfig;
 import com.szmirren.options.CustomConfig;
 import com.szmirren.options.CustomPropertyConfig;
+import com.szmirren.options.DatabaseConfig;
 import com.szmirren.options.EntityConfig;
 import com.szmirren.options.RouterConfig;
 import com.szmirren.options.ServiceConfig;
@@ -46,6 +49,24 @@ public class ConverterUtil {
 	 * @param content
 	 *          装换目标类
 	 */
+	public static void databaseConfigToContent(DatabaseConfig dc, DatabaseContent content) {
+		content.setDisplayName(dc.getConnName());
+		content.setHost(dc.getConnURL());
+		content.setPort(dc.getListenPort());
+		content.setUserName(dc.getUserName());
+		content.setUserPwd(dc.getUserPwd());
+		content.setDbName(dc.getDbName());
+		content.setDbType(dc.getDbType());
+		content.setEncoding(dc.getEncoding());
+	}
+	/**
+	 * 将实体类属性信息转换为模板类需要用的上下文属性
+	 * 
+	 * @param ec
+	 *          实体类信息
+	 * @param content
+	 *          装换目标类
+	 */
 	public static void entityConfigToContent(EntityConfig ec, EntityContent content) {
 		if (!StrUtil.isNullOrEmpty(ec.getTableAlias())) {
 			content.setTableAlias(ec.getTableAlias());
@@ -55,6 +76,9 @@ public class ConverterUtil {
 		}
 		if (ec.getTblPropertyValues() != null) {
 			ArrayList<FieldAttribute> list = new ArrayList<>();
+			ArrayList<FieldAttribute> cantNullAttrs = null;
+			ArrayList<FieldAttribute> otherAttrs = null;
+
 			for (TableAttributeEntity c : ec.getTblPropertyValues()) {
 				if (!c.getTdCreate()) {
 					continue;
@@ -74,9 +98,30 @@ public class ConverterUtil {
 				attr.setFset("set" + upField);
 				attr.setFgetType("get" + javaType);
 				attr.setFsetType("set" + javaType);
+				// 添加属性到所有属性
 				list.add(attr);
+				// 设置主键的类型与主键的属性列
+				if (ec.getPrimaryKey() != null && ec.getPrimaryKey().equals(c.getTdColumnName())) {
+					content.setPrimaryKeyJdbcType(c.getTdJdbcType());
+					content.setPrimaryKeyJavaType(c.getTdJavaType().getValue());
+					content.setPrimaryKeyAttr(attr);
+				}
+				// 添加不能为空的属性属性列与其他属性
+				if (!attr.isNullable() && StrUtil.isNullOrEmpty(attr.getColumnDef())) {
+					if (cantNullAttrs == null) {
+						cantNullAttrs = new ArrayList<>();
+					}
+					cantNullAttrs.add(attr);
+				} else {
+					if (otherAttrs == null) {
+						otherAttrs = new ArrayList<>();
+					}
+					otherAttrs.add(attr);
+				}
 			}
 			content.setAttrs(list);
+			content.setCantNullAttrs(cantNullAttrs);
+			content.setOtherAttrs(otherAttrs);
 		}
 	}
 	/**
@@ -284,7 +329,7 @@ public class ConverterUtil {
 				String cpackage = c.getPackageName().replace("{C}", className).replace("{c}", loCase);
 				String name = c.getClassName().replace("{C}", className).replace("{c}", loCase);
 				String templateValue = c.getTemplateValue();
-				map.put(c.getKey(), new TableAttributeKeyValueTemplate(key, cpackage, name, templateValue));
+				map.put(c.getKey(), new TableAttributeKeyValueTemplateVO(key, cpackage, name, templateValue));
 			}
 			content.setItem(map);
 		}

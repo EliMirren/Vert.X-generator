@@ -46,7 +46,7 @@ public class CustomPropertyConfig {
 	}
 
 	/**
-	 * 设置属性集合
+	 * 获取属性集合
 	 * 
 	 * @return
 	 */
@@ -55,7 +55,7 @@ public class CustomPropertyConfig {
 	}
 
 	/**
-	 * 获取属性集合
+	 * 设置属性集合
 	 * 
 	 * @param tableItem
 	 */

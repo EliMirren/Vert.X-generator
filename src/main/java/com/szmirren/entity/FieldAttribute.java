@@ -106,8 +106,8 @@ public class FieldAttribute extends TableColumnsAttribute {
 
 	@Override
 	public String toString() {
-		return "ClassAttribute [create=" + create + ", field=" + field + ", fieldPascal=" + fieldPascal + ", fget=" + fget + ", fset=" + fset
-				+ ", fgetType=" + fgetType + ", fsetType=" + fsetType + "]";
+		return super.toString() + "\nFieldAttribute [create=" + create + ", field=" + field + ", fieldPascal=" + fieldPascal + ", fget=" + fget
+				+ ", fset=" + fset + ", fgetType=" + fgetType + ", fsetType=" + fsetType + "]";
 	}
 
 }

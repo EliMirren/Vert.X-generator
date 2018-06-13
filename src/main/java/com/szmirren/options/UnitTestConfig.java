@@ -59,7 +59,6 @@ public class UnitTestConfig {
 	 * 初始化默认数据
 	 */
 	public UnitTestConfig initDefaultValue() {
-		tableItem.add(new TableAttributeKeyValue("count", "get{C}Count", "获取数据总行数"));
 		tableItem.add(new TableAttributeKeyValue("select", "find{C}", "查询所有数据"));
 		tableItem.add(new TableAttributeKeyValue("selectById", "get{C}ById", "通过id查询数据"));
 		tableItem.add(new TableAttributeKeyValue("insertNotNull", "saveNotNull{C}", "插入不为空的数据"));

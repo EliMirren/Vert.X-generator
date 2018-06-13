@@ -31,9 +31,21 @@ public interface Constant {
 	static final String TEMPLATE_NAME_SQL_ASSIST = "SqlAssist.ftl";
 	/** Abstract模板的默认名字 */
 	static final String TEMPLATE_NAME_ABSTRACT_SQL = Main.LANGUAGE.get(LanguageKey.SET_ABSTRACT_AUTOMATIC).get();
+	/** Abstract模板的默认名字前缀 */
+	static final String TEMPLATE_NAME_ABSTRACT_SQL_PREFIX = "AbstractSQL";
+	/** Abstract模板的默认名字后缀 */
+	static final String TEMPLATE_NAME_ABSTRACT_SQL_SUFFIX = ".ftl";
 	/** SqlAndParams模板的默认名字 */
 	static final String TEMPLATE_NAME_SQL_AND_PARAMS = "SqlAndParams.ftl";
 	/** 单元测试模板的默认名字 */
 	static final String TEMPLATE_NAME_UNIT_TEST = "UnitTest.ftl";
+	/** SqlPropertyValue默认的类名 */
+	static final String SQL_PROPERTY_VALUE = "SqlPropertyValue";
+	/** SqlPropertyValue模板的默认名字 */
+	static final String TEMPLATE_NAME_SQL_PROPERTY_VALUE = "SqlPropertyValue.ftl";
+	/** SqlWhereCondition 默认的类名 */
+	static final String SQL_WHERE_CONDITION = "SqlWhereCondition";
+	/** SqlWhereCondition模板的默认名字 */
+	static final String TEMPLATE_NAME_SQL_WHERE_CONDITION = "SqlWhereCondition.ftl";
 
 }

@@ -4,17 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * SqlAssist的实体类
+ * ServiceImpl的实体类
  * 
  * @author <a href="http://szmirren.com">Mirren</a>
  *
  */
 public class ServiceImplContent {
-	/** SqlAssist类的包名 */
+	/** ServiceImpl类的包名 */
 	private String classPackage;
-	/** SqlAssist类的类型 */
+	/** ServiceImpl类的类型 */
 	private String className;
-	/** SqlAssist类的配置文件 */
+	/** ServiceImpl类的属性 */
 	private Map<String, Object> item = new HashMap<>();
 
 	/**
@@ -35,10 +35,7 @@ public class ServiceImplContent {
 		this.classPackage = classPackage;
 		this.className = className;
 	}
-	
-	
-	
-	
+
 	public String getClassPackage() {
 		return classPackage;
 	}

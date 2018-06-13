@@ -7,6 +7,9 @@ package com.szmirren.entity;
  *
  */
 public class GeneratorContent {
+
+	/** 数据库配置文件 */
+	private DatabaseContent database;
 	/** 实体类配置信息 */
 	private EntityContent entity;
 	/** 实体类配置信息 */
@@ -33,6 +36,15 @@ public class GeneratorContent {
 	public EntityContent getEntity() {
 		return entity;
 	}
+
+	public DatabaseContent getDatabase() {
+		return database;
+	}
+
+	public void setDatabase(DatabaseContent database) {
+		this.database = database;
+	}
+
 	public void setEntity(EntityContent entity) {
 		this.entity = entity;
 	}

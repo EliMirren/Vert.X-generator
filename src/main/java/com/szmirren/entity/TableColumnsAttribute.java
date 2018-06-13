@@ -9,7 +9,7 @@ package com.szmirren.entity;
 public class TableColumnsAttribute implements Comparable<TableColumnsAttribute> {
 
 	// --------------------自定义属性--------------------------------
-	/** JavaType */
+	/** 字段java的数据类型 */
 	private String javaType;
 	/**
 	 * 是否允许使用 NULL值<br>
@@ -63,7 +63,8 @@ public class TableColumnsAttribute implements Comparable<TableColumnsAttribute> 
 	 * @param ordinalPosition
 	 *          列在表中的顺序
 	 */
-	public TableColumnsAttribute(String javaType, String columnName, String columnDef, String remarks, int columnSize, String typeName, int decimalDigits, boolean nullable, int ordinalPosition) {
+	public TableColumnsAttribute(String javaType, String columnName, String columnDef, String remarks, int columnSize, String typeName,
+			int decimalDigits, boolean nullable, int ordinalPosition) {
 		super();
 		this.javaType = javaType;
 		this.columnName = columnName;
@@ -150,8 +151,9 @@ public class TableColumnsAttribute implements Comparable<TableColumnsAttribute> 
 
 	@Override
 	public String toString() {
-		return "TableColumnsAttribute [javaType=" + javaType + ", columnName=" + columnName + ", columnDef=" + columnDef + ", remarks=" + remarks + ", columnSize=" + columnSize + ", typeName=" + typeName
-				+ ", decimalDigits=" + decimalDigits + ", nullable=" + nullable + ", ordinalPosition=" + ordinalPosition + "]";
+		return "TableColumnsAttribute [javaType=" + javaType + ", columnName=" + columnName + ", columnDef=" + columnDef + ", remarks="
+				+ remarks + ", columnSize=" + columnSize + ", typeName=" + typeName + ", decimalDigits=" + decimalDigits + ", nullable=" + nullable
+				+ ", ordinalPosition=" + ordinalPosition + "]";
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package com.szmirren.controller;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -14,18 +12,19 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
-import org.postgresql.translation.messages_zh_TW;
 
 import com.szmirren.Main;
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.Constant;
 import com.szmirren.common.ConverterUtil;
+import com.szmirren.common.CreateFileUtil;
 import com.szmirren.common.DBUtil;
 import com.szmirren.common.LanguageKey;
 import com.szmirren.common.StrUtil;
 import com.szmirren.entity.AbstractSqlContent;
 import com.szmirren.entity.CustomContent;
 import com.szmirren.entity.CustomPropertyContent;
+import com.szmirren.entity.DatabaseContent;
 import com.szmirren.entity.EntityContent;
 import com.szmirren.entity.GeneratorContent;
 import com.szmirren.entity.RouterContent;
@@ -36,6 +35,7 @@ import com.szmirren.entity.SqlAndParamsContent;
 import com.szmirren.entity.SqlAssistContent;
 import com.szmirren.entity.UnitTestContent;
 import com.szmirren.models.TableAttributeEntity;
+import com.szmirren.models.TableAttributeKeyValueTemplate;
 import com.szmirren.options.AbstractSqlConfig;
 import com.szmirren.options.CustomConfig;
 import com.szmirren.options.CustomPropertyConfig;
@@ -524,6 +524,15 @@ public class IndexController extends BaseController {
 		if (config.getEntityConfig() == null) {
 			EntityConfig entityConfig = Optional.ofNullable(ConfigUtil.getEntityConfig(Constant.DEFAULT)).orElse(new EntityConfig());
 			List<TableAttributeEntity> columns = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
+			if (entityConfig.isFieldCamel()) {
+				for (TableAttributeEntity attr : columns) {
+					attr.setTdField(StrUtil.unlineToCamel(attr.getTdColumnName()));
+				}
+			} else {
+				for (TableAttributeEntity attr : columns) {
+					attr.setTdField(attr.getTdColumnName());
+				}
+			}
 			entityConfig.setTblPropertyValues(FXCollections.observableArrayList(columns));
 			String primaryKey = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
 			entityConfig.setPrimaryKey(primaryKey);
@@ -774,47 +783,6 @@ public class IndexController extends BaseController {
 	}
 
 	/**
-	 * 将数据库中所有的表创建
-	 * 
-	 * @param databaseConfig
-	 */
-	public void createAllTable(DatabaseConfig databaseConfig) {
-		try {
-			List<String> tables = DBUtil.getTableNames(databaseConfig);
-			if (tables.size() == 0) {
-				AlertUtil.showWarnAlert("当前数据库不存在表");
-			}
-			double progIndex = 1.0 / tables.size();
-			probCreateAll.setVisible(true);
-			Task<Void> task = new Task<Void>() {
-				@Override
-				protected Void call() throws Exception {
-					for (int i = 0; i < tables.size(); i++) {
-						updateProgress(progIndex * (i + 1), 1.0);
-						updateMessage(runCreateTipsText + " {t} ...".replace("{t}", tables.get(i)));
-						try {
-							// TODO 执行创建所有
-							// runCreateAll(databaseConfig, tables.get(i));
-						} catch (Exception e) {
-							AlertUtil.showErrorAlert("全库生成失败:" + e);
-							LOG.error("执行全库创建-->失败:" + e);
-						}
-					}
-					updateMessage("创建成功!");
-					LOG.debug("执行全库生成-->成功");
-					return null;
-				}
-			};
-			probCreateAll.progressProperty().bind(task.progressProperty());
-			lblRunCreateAllTips.textProperty().bind(task.messageProperty());
-			new Thread(task).start();
-		} catch (Exception e) {
-			AlertUtil.showErrorAlert("创建文件失败:" + e);
-			LOG.error("执行创建文件-->失败:" + e);
-		}
-	}
-
-	/**
 	 * 获得模板需要的上下文
 	 * 
 	 * @return
@@ -823,6 +791,10 @@ public class IndexController extends BaseController {
 	public GeneratorContent getGeneratorContent() throws Exception {
 		GeneratorContent content = new GeneratorContent();
 		HistoryConfig history = getThisHistoryConfigAndInit(selectedTableName);
+		// 数据库属性
+		DatabaseContent databaseContent = new DatabaseContent();
+		ConverterUtil.databaseConfigToContent(selectedDatabaseConfig, databaseContent);
+		content.setDatabase(databaseContent);
 		// 实体类属性
 		EntityConfig ec = getThisHistoryConfigAndInit(selectedTableName).getEntityConfig();
 		String className = txtEntityName.getText();
@@ -881,8 +853,243 @@ public class IndexController extends BaseController {
 		content.setCustomProperty(propertyContent);
 		return content;
 	}
+	/**
+	 * 将数据库中所有的表创建
+	 * 
+	 * @param databaseConfig
+	 */
+	public void createAllTable(DatabaseConfig databaseConfig) {
+		try {
+			List<String> tables = DBUtil.getTableNames(databaseConfig);
+			if (tables.size() == 0) {
+				AlertUtil.showWarnAlert("当前数据库不存在表");
+				return;
+			}
+			double progIndex = 1.0 / tables.size();
+			probCreateAll.setVisible(true);
+			Task<Void> task = new Task<Void>() {
+				@Override
+				protected Void call() throws Exception {
+					for (int i = 0; i < tables.size(); i++) {
+						updateProgress((i + 1), 1.0);
+						updateMessage(runCreateTipsText + " {t} ...".replace("{t}", tables.get(i)));
+						try {
+							// TODO 执行创建所有
+							// runCreateAll(databaseConfig, tables.get(i));
+						} catch (Exception e) {
+							AlertUtil.showErrorAlert("全库生成失败:" + e);
+							LOG.error("执行全库创建-->失败:" + e);
+						}
+					}
+					updateMessage("创建成功!");
+					LOG.debug("执行全库生成-->成功");
+					return null;
+				}
+			};
+			probCreateAll.progressProperty().bind(task.progressProperty());
+			lblRunCreateAllTips.textProperty().bind(task.messageProperty());
+			new Thread(task).start();
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert("创建文件失败:" + e);
+			LOG.error("执行创建文件-->失败:" + e);
+		}
+	}
 
 	// ============================事件区域=================================
+	/**
+	 * 执行创建
+	 * 
+	 * @param event
+	 */
+	public void onCreate(ActionEvent event) {
+		LOG.debug("执行创建...");
+		// TODO 编写创建的代码
+		try {
+			if (StrUtil.isNullOrEmpty(txtProjectPath.getText())) {
+				StringProperty property = Main.LANGUAGE.get(LanguageKey.TIPS_PATH_CANT_EMPTY);
+				String tips = property == null ? "生成的路径不能为空" : property.get();
+				AlertUtil.showWarnAlert(tips);
+				return;
+			}
+			if (StrUtil.isNullOrEmpty(txtTableName.getText())) {
+				StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_TIPS_CREATE_TABLE);
+				String tips = property == null ? "请双击左侧数据选择想要生成的表,或者在左侧右键全库生成!" : property.get();
+				AlertUtil.showWarnAlert(tips);
+				return;
+			}
+			probCreateAll.setVisible(true);
+			Task<Void> task = new Task<Void>() {
+				@Override
+				protected Void call() throws Exception {
+					updateProgress(1, 9);
+					// 项目生成的路径
+					String projectPath = txtProjectPath.getText();
+					String codeFormat = cboCodeFormat.getValue();
+					GeneratorContent content = getGeneratorContent();
+					HistoryConfig historyConfig = getThisHistoryConfigAndInit(selectedTableName);
+					// 生成实体类
+					try {
+						EntityConfig config = historyConfig.getEntityConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtEntityName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtEntityPackage.getText(),
+									txtEntityName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成实体类-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成实体类:" + txtEntityName.getText() + "失败:" + e);
+						LOG.error("执行生成实体类-->失败:", e);
+					}
+					// 生成Service
+					updateProgress(2, 9);
+					try {
+						ServiceConfig config = historyConfig.getServiceConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtServiceName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServicePackage.getText(),
+									txtServiceName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成Service-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成Service:" + txtServiceName.getText() + "失败:" + e);
+						LOG.error("执行生成Service-->失败:", e);
+					}
+					// 生成ServiceImpl
+					updateProgress(3, 9);
+					try {
+						ServiceImplConfig config = historyConfig.getServiceImplConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtServiceImplName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServiceImplPackage.getText(),
+									txtServiceImplName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成ServiceImpl-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成ServiceImpl:" + txtServiceImplName.getText() + "失败:" + e);
+						LOG.error("执行生成ServiceImpl-->失败:", e);
+					}
+					// 生成SQL
+					updateProgress(4, 9);
+					try {
+						SqlConfig config = historyConfig.getSqlConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtSqlName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlPackage.getText(),
+									txtSqlName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成SQL-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成SQL:" + txtSqlName.getText() + "失败:" + e);
+						LOG.error("执行生成SQL-->失败:", e);
+					}
+					// 生成Router
+					updateProgress(5, 9);
+					try {
+						RouterConfig config = historyConfig.getRouterConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtRouterName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtRouterPackage.getText(),
+									txtRouterName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成Router-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成Router:" + txtRouterName.getText() + "失败:" + e);
+						LOG.error("执行生成Router-->失败:", e);
+					}
+					// 生成单元测试
+					updateProgress(6, 9);
+					try {
+						UnitTestConfig config = historyConfig.getUnitTestConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtUnitTestName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtUnitTestPackage.getText(),
+									txtUnitTestName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成单元测试-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成单元测试:" + txtUnitTestName.getText() + "失败:" + e);
+						LOG.error("执行生成单元测试-->失败:", e);
+					}
+					// 生成SqlAssist
+					updateProgress(6, 9);
+					try {
+						SqlAssistConfig config = historyConfig.getAssistConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtAssistName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAssistPackage.getText(),
+									txtAssistName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_PROPERTY_VALUE, projectPath, txtAssistPackage.getText(),
+								Constant.SQL_PROPERTY_VALUE + ".java", codeFormat, config.isOverrideFile());
+						CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_WHERE_CONDITION, projectPath, txtAssistPackage.getText(),
+								Constant.SQL_WHERE_CONDITION + ".java", codeFormat, config.isOverrideFile());
+						LOG.debug("执行生成SqlAssist-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成SqlAssist:" + txtAssistName.getText() + "失败:" + e);
+						LOG.error("执行生成SqlAssist-->失败:", e);
+					}
+					// 生成AbstractSQL
+					updateProgress(7, 9);
+					try {
+						AbstractSqlConfig config = historyConfig.getAbstractSqlConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							if (Constant.TEMPLATE_NAME_ABSTRACT_SQL.equals(config.getTemplateName())) {
+								config.setTemplateName(Constant.TEMPLATE_NAME_ABSTRACT_SQL_PREFIX + selectedDatabaseConfig.getDbType()
+										+ Constant.TEMPLATE_NAME_ABSTRACT_SQL_SUFFIX);
+							}
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtAbstractSqlName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAbstractSqlPackage.getText(),
+									txtAbstractSqlName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成AbstractSQL-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成AbstractSQL:" + txtAbstractSqlName.getText() + "失败:" + e);
+						LOG.error("执行生成AbstractSQL-->失败:", e);
+					}
+					// 生成SqlAndParams
+					updateProgress(8, 9);
+					try {
+						SqlAndParamsConfig config = historyConfig.getSqlAndParamsConfig();
+						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtSqlParamsName.getText() + ""));
+							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlParamsPackage.getText(),
+									txtSqlParamsName.getText() + ".java", codeFormat, config.isOverrideFile());
+						}
+						LOG.debug("执行生成SqlAndParams-->成功!");
+					} catch (Exception e) {
+						updateMessage("执行生成SqlAndParams:" + txtSqlParamsName.getText() + "失败:" + e);
+						LOG.error("执行生成SqlAndParams-->失败:", e);
+					}
+
+					CustomConfig config = historyConfig.getCustomConfig();
+					if (config.getTableItem() != null) {
+						for (TableAttributeKeyValueTemplate custom : config.getTableItem()) {
+							if (!StrUtil.isNullOrEmpty(custom.getTemplateValue())) {
+								try {
+									updateMessage(runCreateTipsText + " {t} ...".replace("{t}", custom.getClassName() + ""));
+									CreateFileUtil.createFile(content, custom.getTemplateValue(), projectPath, custom.getPackageName(),
+											custom.getClassName() + ".java", codeFormat, config.isOverrideFile());
+								} catch (Exception e) {
+									updateMessage("执行生成自定义生成包类:" + custom.getClassName() + "失败:" + e);
+									LOG.error("执行生成自定义生成包类-->失败:", e);
+								}
+							}
+						}
+					}
+					updateProgress(9, 9);
+					updateMessage("创建成功!");
+					LOG.debug("执行创建-->成功!");
+					return null;
+				}
+			};
+			probCreateAll.progressProperty().bind(task.progressProperty());
+			lblRunCreateAllTips.textProperty().bind(task.messageProperty());
+			new Thread(task).start();
+		} catch (Exception e) {
+			AlertUtil.showErrorAlert("创建文件失败:" + e);
+			LOG.error("执行创建-->失败:", e);
+		}
+	}
 
 	/**
 	 * 保存配置文件
@@ -918,57 +1125,6 @@ public class IndexController extends BaseController {
 				AlertUtil.showErrorAlert("保存配置失败!失败原因:\r\n" + e.getMessage());
 				LOG.error("保存配置失败!!!" + e);
 			}
-		}
-	}
-
-	/**
-	 * 执行创建
-	 * 
-	 * @param event
-	 */
-	public void onCreate(ActionEvent event) {
-		LOG.debug("执行创建...");
-		// TODO 编写创建的代码
-		try {
-			if (StrUtil.isNullOrEmpty(txtProjectPath.getText())) {
-				StringProperty property = Main.LANGUAGE.get(LanguageKey.TIPS_PATH_CANT_EMPTY);
-				String tips = property == null ? "生成的路径不能为空" : property.get();
-				AlertUtil.showWarnAlert(tips);
-				return;
-			}
-			if (StrUtil.isNullOrEmpty(txtTableName.getText())) {
-				StringProperty property = Main.LANGUAGE.get(LanguageKey.INDEX_TIPS_CREATE_TABLE);
-				String tips = property == null ? "请双击左侧数据选择想要生成的表,或者在左侧右键全库生成!" : property.get();
-				AlertUtil.showWarnAlert(tips);
-				return;
-			}
-			GeneratorContent content = getGeneratorContent();
-			System.out.println();
-			System.out.println(content.getEntity());
-			System.out.println();
-			System.out.println(content.getService());
-			System.out.println();
-			System.out.println(content.getServiceImpl());
-			System.out.println();
-			System.out.println(content.getSql());
-			System.out.println();
-			System.out.println(content.getRouter());
-			System.out.println();
-			System.out.println(content.getUnitTest());
-			System.out.println();
-			System.out.println(content.getSqlAssist());
-			System.out.println();
-			System.out.println(content.getAbstractSql());
-			System.out.println();
-			System.out.println(content.getSqlAndParams());
-			System.out.println();
-			System.out.println(content.getCustom());
-			System.out.println();
-			System.out.println(content.getCustomProperty());
-
-		} catch (Exception e) {
-			AlertUtil.showErrorAlert("创建文件失败:" + e);
-			LOG.error("执行创建-->失败:", e);
 		}
 	}
 
