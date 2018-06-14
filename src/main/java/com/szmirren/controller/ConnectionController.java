@@ -9,8 +9,8 @@ import com.szmirren.Main;
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.DBUtil;
 import com.szmirren.common.LanguageKey;
-import com.szmirren.models.DBTypeName;
 import com.szmirren.options.DatabaseConfig;
+import com.szmirren.spi.DatabaseTypeNames;
 import com.szmirren.view.AlertUtil;
 
 import javafx.event.ActionEvent;
@@ -85,11 +85,21 @@ public class ConnectionController extends BaseController {
 	public void initialize(URL location, ResourceBundle resources) {
 		LOG.debug("初始化数据库连接窗口....");
 		// 初始化下拉列表
-		cboDBType.getItems().addAll(DBTypeName.MYSQL.getValue(), DBTypeName.POSTGRE_SQL.getValue(), DBTypeName.ORACLE.getValue(), DBTypeName.SQL_SERVER.getValue());
+		cboDBType.setEditable(true);
+		cboDBType.getItems().addAll(DatabaseTypeNames.dbTypeNames());
 		cboDBCoding.setEditable(true);
 		cboDBCoding.getItems().addAll("utf8", "utf16", "utf32", "utf8mb4", "gb2312", "gbk", "ascii");
 		cboDBCoding.setValue("utf8");
+		btnTestConn.widthProperty().addListener(w -> {
+			double cw = btnTestConn.getLayoutX() + btnTestConn.getWidth() + 20;
+			btnSave.setLayoutX(cw);
+		});
+		btnSave.widthProperty().addListener(w -> {
+			double cw = btnSave.getLayoutX() + btnSave.getWidth() + 20;
+			btnCancel.setLayoutX(cw);
+		});
 		initLanguage();
+
 		LOG.debug("初始化数据库连接成功!");
 	}
 

@@ -519,65 +519,70 @@ public class IndexController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	private HistoryConfig getThisHistoryConfigAndInit(String selectedTableName) throws Exception {
-		HistoryConfig config = getThisHistoryConfig();
-		if (config.getEntityConfig() == null) {
-			EntityConfig entityConfig = Optional.ofNullable(ConfigUtil.getEntityConfig(Constant.DEFAULT)).orElse(new EntityConfig());
-			List<TableAttributeEntity> columns = DBUtil.getTableColumns(selectedDatabaseConfig, selectedTableName);
-			if (entityConfig.isFieldCamel()) {
-				for (TableAttributeEntity attr : columns) {
-					attr.setTdField(StrUtil.unlineToCamel(attr.getTdColumnName()));
+	private HistoryConfig getThisHistoryConfigAndInit(DatabaseConfig databaseConfig, String selectedTableName) {
+		try {
+			HistoryConfig config = getThisHistoryConfig();
+			if (config.getEntityConfig() == null) {
+				EntityConfig entityConfig = Optional.ofNullable(ConfigUtil.getEntityConfig(Constant.DEFAULT)).orElse(new EntityConfig());
+				List<TableAttributeEntity> columns = DBUtil.getTableColumns(databaseConfig, selectedTableName);
+				if (entityConfig.isFieldCamel()) {
+					for (TableAttributeEntity attr : columns) {
+						attr.setTdField(StrUtil.unlineToCamel(attr.getTdColumnName()));
+					}
+				} else {
+					for (TableAttributeEntity attr : columns) {
+						attr.setTdField(attr.getTdColumnName());
+					}
 				}
-			} else {
-				for (TableAttributeEntity attr : columns) {
-					attr.setTdField(attr.getTdColumnName());
-				}
+				entityConfig.setTblPropertyValues(FXCollections.observableArrayList(columns));
+				String primaryKey = DBUtil.getTablePrimaryKey(databaseConfig, selectedTableName);
+				entityConfig.setPrimaryKey(primaryKey);
+				config.setEntityConfig(entityConfig);
 			}
-			entityConfig.setTblPropertyValues(FXCollections.observableArrayList(columns));
-			String primaryKey = DBUtil.getTablePrimaryKey(selectedDatabaseConfig, selectedTableName);
-			entityConfig.setPrimaryKey(primaryKey);
-			config.setEntityConfig(entityConfig);
+			if (config.getServiceConfig() == null) {
+				config.setServiceConfig(
+						Optional.ofNullable(ConfigUtil.getServiceConfig(Constant.DEFAULT)).orElse(new ServiceConfig().initDefaultValue()));
+			}
+			if (config.getServiceImplConfig() == null) {
+				config.setServiceImplConfig(
+						Optional.ofNullable(ConfigUtil.getServiceImplConfig(Constant.DEFAULT)).orElse(new ServiceImplConfig().initDefaultValue()));
+			}
+			if (config.getSqlConfig() == null) {
+				config.setSqlConfig(Optional.ofNullable(ConfigUtil.getSQLConfig(Constant.DEFAULT)).orElse(new SqlConfig()));
+			}
+			if (config.getRouterConfig() == null) {
+				config.setRouterConfig(
+						Optional.ofNullable(ConfigUtil.getRouterConfig(Constant.DEFAULT)).orElse(new RouterConfig().initDefaultValue()));
+			}
+			if (config.getUnitTestConfig() == null) {
+				config.setUnitTestConfig(
+						Optional.ofNullable(ConfigUtil.getUnitTestConfig(Constant.DEFAULT)).orElse(new UnitTestConfig().initDefaultValue()));
+			}
+			if (config.getAssistConfig() == null) {
+				config.setAssistConfig(
+						Optional.ofNullable(ConfigUtil.getSqlAssistConfig(Constant.DEFAULT)).orElse(new SqlAssistConfig().initDefaultValue()));
+			}
+			if (config.getAbstractSqlConfig() == null) {
+				config.setAbstractSqlConfig(
+						Optional.ofNullable(ConfigUtil.getAbstractSqlConfig(Constant.DEFAULT)).orElse(new AbstractSqlConfig().initDefaultValue()));
+			}
+			if (config.getSqlAndParamsConfig() == null) {
+				config.setSqlAndParamsConfig(
+						Optional.ofNullable(ConfigUtil.getSqlAndParamsConfig(Constant.DEFAULT)).orElse(new SqlAndParamsConfig().initDefaultValue()));
+			}
+			if (config.getCustomConfig() == null) {
+				config.setCustomConfig(
+						Optional.ofNullable(ConfigUtil.getCustomConfig(Constant.DEFAULT)).orElse(new CustomConfig().initDefaultValue()));
+			}
+			if (config.getCustomPropertyConfig() == null) {
+				config.setCustomPropertyConfig(Optional.ofNullable(ConfigUtil.getCustomPropertyConfig(Constant.DEFAULT))
+						.orElse(new CustomPropertyConfig().initDefaultValue()));
+			}
+			return config;
+		} catch (Exception e) {
+			LOG.debug("执行初始化配置信息-->失败:", e);
 		}
-		if (config.getServiceConfig() == null) {
-			config.setServiceConfig(
-					Optional.ofNullable(ConfigUtil.getServiceConfig(Constant.DEFAULT)).orElse(new ServiceConfig().initDefaultValue()));
-		}
-		if (config.getServiceImplConfig() == null) {
-			config.setServiceImplConfig(
-					Optional.ofNullable(ConfigUtil.getServiceImplConfig(Constant.DEFAULT)).orElse(new ServiceImplConfig().initDefaultValue()));
-		}
-		if (config.getSqlConfig() == null) {
-			config.setSqlConfig(Optional.ofNullable(ConfigUtil.getSQLConfig(Constant.DEFAULT)).orElse(new SqlConfig()));
-		}
-		if (config.getRouterConfig() == null) {
-			config
-					.setRouterConfig(Optional.ofNullable(ConfigUtil.getRouterConfig(Constant.DEFAULT)).orElse(new RouterConfig().initDefaultValue()));
-		}
-		if (config.getUnitTestConfig() == null) {
-			config.setUnitTestConfig(
-					Optional.ofNullable(ConfigUtil.getUnitTestConfig(Constant.DEFAULT)).orElse(new UnitTestConfig().initDefaultValue()));
-		}
-		if (config.getAssistConfig() == null) {
-			config.setAssistConfig(
-					Optional.ofNullable(ConfigUtil.getSqlAssistConfig(Constant.DEFAULT)).orElse(new SqlAssistConfig().initDefaultValue()));
-		}
-		if (config.getAbstractSqlConfig() == null) {
-			config.setAbstractSqlConfig(
-					Optional.ofNullable(ConfigUtil.getAbstractSqlConfig(Constant.DEFAULT)).orElse(new AbstractSqlConfig().initDefaultValue()));
-		}
-		if (config.getSqlAndParamsConfig() == null) {
-			config.setSqlAndParamsConfig(
-					Optional.ofNullable(ConfigUtil.getSqlAndParamsConfig(Constant.DEFAULT)).orElse(new SqlAndParamsConfig().initDefaultValue()));
-		}
-		if (config.getCustomConfig() == null) {
-			config
-					.setCustomConfig(Optional.ofNullable(ConfigUtil.getCustomConfig(Constant.DEFAULT)).orElse(new CustomConfig().initDefaultValue()));
-		}
-		if (config.getCustomPropertyConfig() == null) {
-			config.setCustomPropertyConfig(
-					Optional.ofNullable(ConfigUtil.getCustomPropertyConfig(Constant.DEFAULT)).orElse(new CustomPropertyConfig().initDefaultValue()));
-		}
-		return config;
+		return null;
 	}
 
 	/**
@@ -684,6 +689,7 @@ public class IndexController extends BaseController {
 						}
 						LOG.debug("执行全库生成...");
 						DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+
 						createAllTable(selectedConfig);
 					});
 					contextMenu.getItems().addAll(itemCreateAll, item0, item1, item3, item2);
@@ -785,45 +791,55 @@ public class IndexController extends BaseController {
 	/**
 	 * 获得模板需要的上下文
 	 * 
+	 * @param tableName
+	 *          表的名字,如果表名不为空,将类名设置为默认值占位表名,如果直接使用版面数据输入null
 	 * @return
 	 * @throws Exception
 	 */
-	public GeneratorContent getGeneratorContent() throws Exception {
+	public GeneratorContent getGeneratorContent(DatabaseConfig databaseConfig, String tableName) throws Exception {
 		GeneratorContent content = new GeneratorContent();
-		HistoryConfig history = getThisHistoryConfigAndInit(selectedTableName);
+		HistoryConfig history = getThisHistoryConfigAndInit(databaseConfig, tableName != null ? tableName : selectedTableName);
 		// 数据库属性
 		DatabaseContent databaseContent = new DatabaseContent();
-		ConverterUtil.databaseConfigToContent(selectedDatabaseConfig, databaseContent);
+		ConverterUtil.databaseConfigToContent(databaseConfig, databaseContent);
 		content.setDatabase(databaseContent);
 		// 实体类属性
-		EntityConfig ec = getThisHistoryConfigAndInit(selectedTableName).getEntityConfig();
-		String className = txtEntityName.getText();
-		EntityContent entityContent = new EntityContent(txtEntityPackage.getText(), txtEntityName.getText(), txtTableName.getText());
+		EntityConfig ec = getThisHistoryConfigAndInit(databaseConfig, tableName != null ? tableName : selectedTableName).getEntityConfig();
+		String className = tableName != null ? entityNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtEntityName.getText();
+		String entityName = tableName != null ? entityNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtEntityName.getText();
+		EntityContent entityContent = new EntityContent(txtEntityPackage.getText(), entityName, txtTableName.getText());
 		ConverterUtil.entityConfigToContent(ec, entityContent);
 		content.setEntity(entityContent);
 		// Service属性
 		ServiceConfig sc = history.getServiceConfig();
-		ServiceContent serviceContent = new ServiceContent(txtServicePackage.getText(), txtServiceName.getText());
+		String serviceName = tableName != null ? serviceNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtServiceName.getText();
+		ServiceContent serviceContent = new ServiceContent(txtServicePackage.getText(), serviceName);
 		ConverterUtil.serviceConfigToContent(sc, serviceContent, className);
 		content.setService(serviceContent);
 		// ServiceImpl属性
 		ServiceImplConfig sci = history.getServiceImplConfig();
-		ServiceImplContent serviceImplContent = new ServiceImplContent(txtServiceImplPackage.getText(), txtServiceImplName.getText());
+		String serviceNameImplName = tableName != null
+				? serviceImplNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName))
+				: txtServiceImplName.getText();
+		ServiceImplContent serviceImplContent = new ServiceImplContent(txtServiceImplPackage.getText(), serviceNameImplName);
 		ConverterUtil.serviceImplConfigToContent(sci, serviceImplContent, className);
 		content.setServiceImpl(serviceImplContent);
 		// SQL属性
+		String sqlName = tableName != null ? sqlNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtSqlName.getText();
 		SqlConfig sql = history.getSqlConfig();
-		SQLContent sqlContent = new SQLContent(txtSqlPackage.getText(), txtSqlName.getText());
+		SQLContent sqlContent = new SQLContent(txtSqlPackage.getText(), sqlName);
 		ConverterUtil.SqlConfigToContent(sql, sqlContent, className);
 		content.setSql(sqlContent);
 		// Router属性
+		String routerName = tableName != null ? routerNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtRouterName.getText();
 		RouterConfig router = history.getRouterConfig();
-		RouterContent routerContent = new RouterContent(txtRouterPackage.getText(), txtRouterName.getText());
+		RouterContent routerContent = new RouterContent(txtRouterPackage.getText(), routerName);
 		ConverterUtil.routerConfigToContent(router, routerContent, className);
 		content.setRouter(routerContent);
 		// 单元测试 属性
+		String testName = tableName != null ? unitTestPlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtUnitTestName.getText();
 		UnitTestConfig unit = history.getUnitTestConfig();
-		UnitTestContent unitTestContent = new UnitTestContent(txtUnitTestPackage.getText(), txtUnitTestName.getText());
+		UnitTestContent unitTestContent = new UnitTestContent(txtUnitTestPackage.getText(), testName);
 		ConverterUtil.unitTestConfigToContent(unit, unitTestContent, className);
 		content.setUnitTest(unitTestContent);
 		// SqlAssist属性
@@ -871,15 +887,10 @@ public class IndexController extends BaseController {
 				@Override
 				protected Void call() throws Exception {
 					for (int i = 0; i < tables.size(); i++) {
-						updateProgress((i + 1), 1.0);
+						updateProgress(progIndex * (i + 1), 1.0);
 						updateMessage(runCreateTipsText + " {t} ...".replace("{t}", tables.get(i)));
-						try {
-							// TODO 执行创建所有
-							// runCreateAll(databaseConfig, tables.get(i));
-						} catch (Exception e) {
-							AlertUtil.showErrorAlert("全库生成失败:" + e);
-							LOG.error("执行全库创建-->失败:" + e);
-						}
+						createAllRun(databaseConfig, tables.get(i));
+						loadIndexConfigInfo(historyConfigName == null ? "default" : historyConfigName);
 					}
 					updateMessage("创建成功!");
 					LOG.debug("执行全库生成-->成功");
@@ -895,6 +906,138 @@ public class IndexController extends BaseController {
 		}
 	}
 
+	public void createAllRun(DatabaseConfig databaseConfig, String tableName) throws Exception {
+		HistoryConfig historyConfig = getThisHistoryConfigAndInit(databaseConfig, tableName);
+		GeneratorContent content = getGeneratorContent(databaseConfig, tableName);
+		// 项目生成的路径
+		String projectPath = txtProjectPath.getText();
+		String codeFormat = cboCodeFormat.getValue();
+		// 实体类的名字
+		String entityName = StrUtil.unlineToPascal(tableName);
+		// 生成实体类
+		try {
+			EntityConfig config = historyConfig.getEntityConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtEntityPackage.getText(),
+						entityNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成实体类-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成实体类-->失败:", e);
+		}
+		// 生成Service
+		try {
+			ServiceConfig config = historyConfig.getServiceConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServicePackage.getText(),
+						serviceNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成Service-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成Service-->失败:", e);
+		}
+		// 生成ServiceImpl
+		try {
+			ServiceImplConfig config = historyConfig.getServiceImplConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServiceImplPackage.getText(),
+						serviceImplNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成ServiceImpl-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成ServiceImpl-->失败:", e);
+		}
+		// 生成SQL
+		try {
+			SqlConfig config = historyConfig.getSqlConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlPackage.getText(),
+						sqlNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成SQL-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成SQL-->失败:", e);
+		}
+		// 生成Router
+		try {
+			RouterConfig config = historyConfig.getRouterConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtRouterPackage.getText(),
+						routerNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成Router-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成Router-->失败:", e);
+		}
+		// 生成单元测试
+		try {
+			UnitTestConfig config = historyConfig.getUnitTestConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtUnitTestPackage.getText(),
+						unitTestPlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成单元测试-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成单元测试-->失败:", e);
+		}
+		// 生成SqlAssist
+		try {
+			SqlAssistConfig config = historyConfig.getAssistConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAssistPackage.getText(),
+						txtAssistName.getText() + ".java", codeFormat, config.isOverrideFile());
+			}
+			CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_PROPERTY_VALUE, projectPath, txtAssistPackage.getText(),
+					Constant.SQL_PROPERTY_VALUE + ".java", codeFormat, config.isOverrideFile());
+			CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_WHERE_CONDITION, projectPath, txtAssistPackage.getText(),
+					Constant.SQL_WHERE_CONDITION + ".java", codeFormat, config.isOverrideFile());
+			LOG.debug("执行将" + tableName + "生成SqlAssist-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行将" + tableName + "生成SqlAssist-->失败:", e);
+		}
+		// 生成AbstractSQL
+		try {
+			AbstractSqlConfig config = historyConfig.getAbstractSqlConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				if (Constant.TEMPLATE_NAME_ABSTRACT_SQL.equals(config.getTemplateName())) {
+					config.setTemplateName(
+							Constant.TEMPLATE_NAME_ABSTRACT_SQL_PREFIX + databaseConfig.getDbType() + Constant.TEMPLATE_NAME_ABSTRACT_SQL_SUFFIX);
+				}
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAbstractSqlPackage.getText(),
+						txtAbstractSqlName.getText() + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行将" + tableName + "生成AbstractSQL-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行生成AbstractSQL-->失败:", e);
+		}
+		// 生成SqlAndParams
+		try {
+			SqlAndParamsConfig config = historyConfig.getSqlAndParamsConfig();
+			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlParamsPackage.getText(),
+						txtSqlParamsName.getText() + ".java", codeFormat, config.isOverrideFile());
+			}
+			LOG.debug("执行生成SqlAndParams-->成功!");
+		} catch (Exception e) {
+			LOG.error("执行生成SqlAndParams-->失败:", e);
+		}
+
+		CustomConfig config = historyConfig.getCustomConfig();
+		if (config.getTableItem() != null) {
+			for (TableAttributeKeyValueTemplate custom : config.getTableItem()) {
+				if (!StrUtil.isNullOrEmpty(custom.getTemplateValue())) {
+					try {
+						CreateFileUtil.createFile(content, custom.getTemplateValue(), projectPath, custom.getPackageName(),
+								custom.getClassName() + ".java", codeFormat, config.isOverrideFile());
+					} catch (Exception e) {
+						LOG.error("执行生成自定义生成包类-->失败:", e);
+					}
+				}
+			}
+		}
+
+	}
+
 	// ============================事件区域=================================
 	/**
 	 * 执行创建
@@ -903,7 +1046,6 @@ public class IndexController extends BaseController {
 	 */
 	public void onCreate(ActionEvent event) {
 		LOG.debug("执行创建...");
-		// TODO 编写创建的代码
 		try {
 			if (StrUtil.isNullOrEmpty(txtProjectPath.getText())) {
 				StringProperty property = Main.LANGUAGE.get(LanguageKey.TIPS_PATH_CANT_EMPTY);
@@ -925,8 +1067,8 @@ public class IndexController extends BaseController {
 					// 项目生成的路径
 					String projectPath = txtProjectPath.getText();
 					String codeFormat = cboCodeFormat.getValue();
-					GeneratorContent content = getGeneratorContent();
-					HistoryConfig historyConfig = getThisHistoryConfigAndInit(selectedTableName);
+					GeneratorContent content = getGeneratorContent(selectedDatabaseConfig, null);
+					HistoryConfig historyConfig = getThisHistoryConfigAndInit(selectedDatabaseConfig, selectedTableName);
 					// 生成实体类
 					try {
 						EntityConfig config = historyConfig.getEntityConfig();
@@ -1077,6 +1219,7 @@ public class IndexController extends BaseController {
 						}
 					}
 					updateProgress(9, 9);
+					loadIndexConfigInfo(historyConfigName == null ? "default" : historyConfigName);
 					updateMessage("创建成功!");
 					LOG.debug("执行创建-->成功!");
 					return null;

@@ -19,7 +19,7 @@ import io.vertx.ext.web.RoutingContext;
  *
  */
 public class ${content.router.className} {
-	private static final Logger LOG = LogManager.getLogger(RecordTimeLineRouter.class);
+	private final Logger LOG = LogManager.getLogger(this.getClass());
 
 	// TODO 如果你看到下面这两个变量,那么你应该把这两个变量抽到一个常量类里面才可以被重复使用
 	/** 数据返回类型 */
@@ -75,7 +75,7 @@ public class ${content.router.className} {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("params:\n" + params);
 		}
-		noticeService.${content.service.item.select.value!}(params, res -> {
+		${content.service.className?uncap_first}.${content.service.item.select.value!}(params, res -> {
 			rct.response().putHeader(CONTENT_TYPE, JSON_UTF8).end(res.result().toBuffer());
 		});
 	}
@@ -92,7 +92,7 @@ public class ${content.router.className} {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("params:\n" + params);
 		}
-		noticeService.${content.service.item.selectById.value!}(params, res -> {
+		${content.service.className?uncap_first}.${content.service.item.selectById.value!}(params, res -> {
 			rct.response().putHeader(CONTENT_TYPE, JSON_UTF8).end(res.result().toBuffer());
 		});
 	}
@@ -109,7 +109,7 @@ public class ${content.router.className} {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("params:\n" + params);
 		}
-		noticeService.${content.service.item.insertNotNull.value!}(params, res -> {
+		${content.service.className?uncap_first}.${content.service.item.insertNotNull.value!}(params, res -> {
 			rct.response().putHeader(CONTENT_TYPE, JSON_UTF8).end(res.result().toBuffer());
 		});
 	}
@@ -126,7 +126,7 @@ public class ${content.router.className} {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("params:\n" + params);
 		}
-		noticeService.${content.service.item.updateNotNull.value!}(params, res -> {
+		${content.service.className?uncap_first}.${content.service.item.updateNotNull.value!}(params, res -> {
 			rct.response().putHeader(CONTENT_TYPE, JSON_UTF8).end(res.result().toBuffer());
 		});
 	}
@@ -143,7 +143,7 @@ public class ${content.router.className} {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("params:\n" + params);
 		}
-		noticeService.${content.service.item.deleteById.value!}(params, res -> {
+		${content.service.className?uncap_first}.${content.service.item.deleteById.value!}(params, res -> {
 			rct.response().putHeader(CONTENT_TYPE, JSON_UTF8).end(res.result().toBuffer());
 		});
 	}

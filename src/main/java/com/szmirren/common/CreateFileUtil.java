@@ -51,7 +51,7 @@ public class CreateFileUtil {
 			}
 		}
 		Configuration config = new Configuration(Configuration.VERSION_2_3_23);
-		String tempPath = Thread.currentThread().getContextClassLoader().getResource(Constant.TEMPLATE_DIR_NAME).getFile();
+		String tempPath = Paths.get(Constant.TEMPLATE_DIR_NAME).toFile().getName();
 		config.setDirectoryForTemplateLoading(new File(tempPath));
 		config.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_23));
 		config.setDefaultEncoding("utf-8");

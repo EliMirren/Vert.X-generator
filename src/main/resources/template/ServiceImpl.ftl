@@ -38,7 +38,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 	public ${content.serviceImpl.className!}(${content.sql.className!} executeSQL, JDBCClient jdbcClient) {
 		super();
 		this.jdbcClient = jdbcClient;
-		this.${content.sql.className!} = executeSQL;
+		this.${content.sql.className?uncap_first} = executeSQL;
 	}
 	/**
 	 * 返回格式化
@@ -61,7 +61,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 	public void ${content.service.item.select.value!}(MultiMap params, Handler<AsyncResult<JsonObject>> handler) {
 		jdbcClient.getConnection(conn -> {
 			if (conn.succeeded()) {
-				${content.sql.className!}.selectAll(conn.result(), res -> {
+				${content.sql.className?uncap_first}.selectAll(conn.result(), res -> {
 					if (res.succeeded()) {
 						List<JsonObject> result = res.result() == null ? new ArrayList<>() : res.result();
 						if (LOG.isDebugEnabled()) {
@@ -89,7 +89,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 		}
 		jdbcClient.getConnection(conn -> {
 			if (conn.succeeded()) {
-				${content.sql.className!}.selectById(id, conn.result(), res -> {
+				${content.sql.className?uncap_first}.selectById(id, conn.result(), res -> {
 					if (res.succeeded()) {
 						JsonObject result = res.result() == null ? new JsonObject() : res.result();
 						if (LOG.isDebugEnabled()) {
@@ -119,7 +119,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 			</#if>
 			jdbcClient.getConnection(conn -> {
 				if (conn.succeeded()) {
-					${content.sql.className!}.insertNonEmpty(${content.entity.classNameLower!}, conn.result(), res -> {
+					${content.sql.className?uncap_first}.insertNonEmpty(${content.entity.classNameLower!}, conn.result(), res -> {
 						if (res.succeeded()) {
 							int result = res.result() == null ? 0 : res.result();
 							if (LOG.isDebugEnabled()) {
@@ -151,7 +151,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 			${content.entity.className!} ${content.entity.classNameLower!} = new ${content.entity.className!}(params);
 			jdbcClient.getConnection(conn -> {
 				if (conn.succeeded()) {
-					${content.sql.className!}.insertNonEmpty(${content.entity.classNameLower!}, conn.result(), res -> {
+					${content.sql.className?uncap_first}.insertNonEmpty(${content.entity.classNameLower!}, conn.result(), res -> {
 						if (res.succeeded()) {
 							int result = res.result() == null ? 0 : res.result();
 							if (LOG.isDebugEnabled()) {
@@ -186,7 +186,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 		}
 		jdbcClient.getConnection(conn -> {
 			if (conn.succeeded()) {
-				${content.sql.className!}.deleteById(id, conn.result(), res -> {
+				${content.sql.className?uncap_first}.deleteById(id, conn.result(), res -> {
 					if (res.succeeded()) {
 						int result = res.result() == null ? 0 : res.result();
 						if (LOG.isDebugEnabled()) {

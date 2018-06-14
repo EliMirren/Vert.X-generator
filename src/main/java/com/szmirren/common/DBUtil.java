@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.szmirren.models.DBType;
-import com.szmirren.models.DBTypeName;
 import com.szmirren.models.TableAttributeEntity;
 import com.szmirren.options.DatabaseConfig;
 
@@ -78,7 +77,7 @@ public class DBUtil {
 		Connection conn = getConnection(config);
 		List<String> tables = new ArrayList<>();
 		ResultSet rs;
-		if (config.getDbType().equalsIgnoreCase(DBTypeName.SQL_SERVER.getValue())) {
+		if (config.getDbType().equalsIgnoreCase(Constant.SQL_SERVER)) {
 			// 如果是sqlserver数据库通过查询获得所有表跟视图
 			String sql = "select name from sysobjects  where xtype='u' or xtype='v' ";
 			rs = conn.createStatement().executeQuery(sql);
@@ -90,7 +89,7 @@ public class DBUtil {
 			// 如果非sqlserver类型的数据库通过JDBC获得所有表跟视图
 			DatabaseMetaData md = conn.getMetaData();
 			String[] types = {"TABLE", "VIEW"};
-			if (config.getDbType().equalsIgnoreCase(DBTypeName.POSTGRE_SQL.getValue())) {
+			if (config.getDbType().equalsIgnoreCase(Constant.POSTGRE_SQL)) {
 				rs = md.getTables(null, null, null, types);
 			} else {
 				rs = md.getTables(null, config.getUserName().toUpperCase(), null, types);

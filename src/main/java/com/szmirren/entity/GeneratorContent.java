@@ -110,9 +110,9 @@ public class GeneratorContent {
 	}
 	@Override
 	public String toString() {
-		return "GeneratorContent [entity=" + entity + ", service=" + service + ", serviceImpl=" + serviceImpl + ", sql=" + sql + ", router="
-				+ router + ", unitTest=" + unitTest + ", sqlAssist=" + sqlAssist + ", abstractSql=" + abstractSql + ", sqlAndParams=" + sqlAndParams
-				+ ", custom=" + custom + ", customProperty=" + customProperty + "]";
+		return "GeneratorContent [entity=" + entity + ",\n service=" + service + ",\n serviceImpl=" + serviceImpl + ",\n sql=" + sql
+				+ ",\n router=" + router + ",\n unitTest=" + unitTest + ",\n sqlAssist=" + sqlAssist + ",\n abstractSql=" + abstractSql
+				+ ",\n sqlAndParams=" + sqlAndParams + ",\n custom=" + custom + ",\n customProperty=" + customProperty + "]";
 	}
 
 }

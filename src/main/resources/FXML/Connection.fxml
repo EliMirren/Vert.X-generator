@@ -11,10 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<AnchorPane minHeight="550.0" minWidth="550.0"
-	stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.szmirren.controller.ConnectionController">
+<AnchorPane minHeight="550.0" minWidth="550.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.ConnectionController">
 	<children>
 		<GridPane AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
 			<columnConstraints>
@@ -102,7 +99,7 @@
 				<TextField fx:id="txtDBName" prefHeight="30.0" prefWidth="250.0" promptText="数据库名称" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 				<TextField fx:id="txtUserName" prefHeight="30.0" prefWidth="250.0" promptText="用户名" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 				<PasswordField fx:id="txtUserPwd" prefHeight="30.0" prefWidth="250.0" promptText="请输入密码" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-				<ComboBox fx:id="cboDBType" prefHeight="30.0" prefWidth="250.0" promptText="请选择数据库类型" GridPane.columnIndex="1" GridPane.rowIndex="3">
+				<ComboBox fx:id="cboDBType" prefHeight="30.0" prefWidth="250.0" promptText="请输入或选择数据库类型" GridPane.columnIndex="1" GridPane.rowIndex="3">
 
 				</ComboBox>
 				<ComboBox fx:id="cboDBCoding" prefHeight="30.0" prefWidth="250.0" promptText="请选择字符编码格式" GridPane.columnIndex="1" GridPane.rowIndex="7">
@@ -110,7 +107,7 @@
 				</ComboBox>
 			</children>
 		</GridPane>
-		<Button fx:id="btnTestConn" contentDisplay="CENTER" layoutX="108.0" layoutY="492.0" mnemonicParsing="false" onAction="#testConnection" text="连接测试" AnchorPane.bottomAnchor="20.0">
+		<Button fx:id="btnTestConn" contentDisplay="CENTER" layoutX="100.0" layoutY="487.0" mnemonicParsing="false" onAction="#testConnection" text="连接测试" AnchorPane.bottomAnchor="20.0">
 			<font>
 				<Font size="20.0" />
 			</font>
@@ -122,7 +119,7 @@
 				<String fx:value="btn-executable" />
 			</styleClass>
 		</Button>
-		<Button fx:id="btnCancel" layoutX="369.0" layoutY="492.0" mnemonicParsing="false" onAction="#onCancel" text="取消" AnchorPane.bottomAnchor="20.0">
+		<Button fx:id="btnCancel" layoutX="360.0" layoutY="487.0" mnemonicParsing="false" onAction="#onCancel" text="取消" AnchorPane.bottomAnchor="20.0">
 			<font>
 				<Font size="20.0" />
 			</font>
@@ -134,7 +131,7 @@
 				<String fx:value="btn-default" />
 			</styleClass>
 		</Button>
-		<Button fx:id="btnSave" layoutX="236.0" layoutY="492.0" mnemonicParsing="false" onAction="#saveConnection" text="保存连接" textFill="WHITE" AnchorPane.bottomAnchor="20.0">
+		<Button fx:id="btnSave" layoutX="230.0" layoutY="487.0" mnemonicParsing="false" onAction="#saveConnection" text="保存连接" textFill="WHITE" AnchorPane.bottomAnchor="20.0">
 			<font>
 				<Font size="20.0" />
 			</font>

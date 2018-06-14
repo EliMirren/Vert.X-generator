@@ -9,6 +9,16 @@ import com.szmirren.Main;
  *
  */
 public interface Constant {
+	// 数据库名字
+	/** MySQL */
+	static final String MYSQL = "MySQL";
+	/** PostgreSQL */
+	static final String POSTGRE_SQL = "PostgreSQL";
+	/** SqlServer */
+	static final String SQL_SERVER = "SqlServer";
+	/** Oracle */
+	static final String ORACLE = "Oracle";
+
 	/** default */
 	static final String DEFAULT = "default";
 	/** language */
@@ -47,5 +57,4 @@ public interface Constant {
 	static final String SQL_WHERE_CONDITION = "SqlWhereCondition";
 	/** SqlWhereCondition模板的默认名字 */
 	static final String TEMPLATE_NAME_SQL_WHERE_CONDITION = "SqlWhereCondition.ftl";
-
 }

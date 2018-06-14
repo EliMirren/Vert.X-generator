@@ -9,8 +9,8 @@ import com.szmirren.Main;
 import com.szmirren.common.ConfigUtil;
 import com.szmirren.common.DBUtil;
 import com.szmirren.common.LanguageKey;
-import com.szmirren.models.DBTypeName;
 import com.szmirren.options.DatabaseConfig;
+import com.szmirren.spi.DatabaseTypeNames;
 import com.szmirren.view.AlertUtil;
 
 import javafx.event.ActionEvent;
@@ -84,6 +84,14 @@ public class UpdateConnection extends BaseController {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		btnTestConn.widthProperty().addListener(w -> {
+			double cw = btnTestConn.getLayoutX() + btnTestConn.getWidth() + 20;
+			btnSave.setLayoutX(cw);
+		});
+		btnSave.widthProperty().addListener(w -> {
+			double cw = btnSave.getLayoutX() + btnSave.getWidth() + 20;
+			btnCancel.setLayoutX(cw);
+		});
 		initLanguage();
 	}
 
@@ -91,7 +99,8 @@ public class UpdateConnection extends BaseController {
 		LOG.debug("初始化修改数据库连接窗口...");
 		DatabaseConfig config = indexController.getUpdateOfDatabaseConfig();
 		// 初始化下拉列表
-		cboDBType.getItems().addAll(DBTypeName.MYSQL.getValue(), DBTypeName.POSTGRE_SQL.getValue(), DBTypeName.ORACLE.getValue(), DBTypeName.SQL_SERVER.getValue());
+		cboDBType.setEditable(true);
+		cboDBType.getItems().addAll(DatabaseTypeNames.dbTypeNames());
 		cboDBType.setValue(config.getDbType());
 		cboDBCoding.setEditable(true);
 		cboDBCoding.getItems().addAll("utf8", "utf16", "utf32", "utf8mb4", "gb2312", "gbk", "ascii");
