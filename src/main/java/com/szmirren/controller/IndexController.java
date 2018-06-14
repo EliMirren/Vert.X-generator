@@ -417,7 +417,7 @@ public class IndexController extends BaseController {
 		}
 		txtAssistPackage.setText(config.getSqlAssistPackage());
 		txtAbstractSqlPackage.setText(config.getAbstractSqlPackage());
-		txtSqlParamsPackage.setText(config.getSqlAssistPackage());
+		txtSqlParamsPackage.setText(config.getSqlAndParamsPackage());
 		txtUnitTestPackage.setText(config.getUnitTestPackage());
 		if (txtUnitTestName.getText().contains("{c}")) {
 			txtUnitTestName.setText(config.getUnitTestName());
