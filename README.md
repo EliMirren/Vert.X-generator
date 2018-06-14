@@ -3,8 +3,7 @@
 Vert.X-generator是基于javafx8开发的图形界面Vert.x代码生成器,使用 <a target="_blank" href="https://freemarker.apache.org/">Apache FreeMarker</a> 
 作为代码文件的模板,用户可以一键将数据库中的表生成为任意风格的.java代码文件(比如经典的三层模型);<br>
 该工具支持所有实现JDBC规范的数据库;默认集成了Oracle , SqlServer , MySQL , PostgreSql数据库驱动jar包;<br>
-该工具主要面向Vert.x这个tool-kit <a href="http://vertx.io" target="_blank">http://vertx.io</a> 如果你的Spring用户欢迎你使用  
-<a href="https://github.com/EliMirren/Spring-generator" target="_blank">Spring-generator</a><br>
+该工具主要面向Vert.x这个tool-kit <a href="http://vertx.io" target="_blank">http://vertx.io</a> 如果你的Spring用户欢迎你使用 <a href="https://github.com/EliMirren/Spring-generator" target="_blank">Spring-generator</a><br>
 虽然它面向Vert.x,但它并不仅仅局限于生成Vert.x代码,它的使命是将数据库中表的属性提取为实体类属性,剩下的事情就取决你如何使用FreeMarker操作它<br>
 
 # 执行方法
