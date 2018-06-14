@@ -21,7 +21,7 @@ mvn jfx:jar
 [vertx-generator的模板仓库](https://github.com/EliMirren/Vert.X-generator-Template)<br/>
 
 # 工具主页<br/>
-![index](https://raw.githubusercontent.com/shenzhenMirren/MyGithubResources/master/image/vert.x-generator-index.png)
+![index](https://raw.githubusercontent.com/shenzhenMirren/MyGithubResources/master/image/vert.x-generator-index.png) 
 
 # 特色功能预览：<br/>
 <ol>
