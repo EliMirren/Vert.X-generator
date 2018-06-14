@@ -6,52 +6,67 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="315.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.AboutController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="348.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.szmirren.controller.AboutController">
 	<children>
-		<Label layoutX="163.0" layoutY="35.0" text="当前版本 :  VertX-generator - 1.0.3">
+		<Label layoutX="276.0" layoutY="28.0" text=" :  Vert.X-generator-2.0.0">
 			<font>
 				<Font size="20.0" />
 			</font>
 		</Label>
-		<Label layoutX="50.0" layoutY="87.0" text="使用说明 : ">
+		<Label fx:id="lblInstructions" layoutX="50.0" layoutY="87.0" text="使用说明 : " AnchorPane.leftAnchor="50.0">
 			<font>
 				<Font size="20.0" />
 			</font>
 		</Label>
-		<Label layoutX="50.0" layoutY="137.0" text="开源地址 : ">
+		<Label fx:id="lblProjectPath" layoutX="50.0" layoutY="134.0" text="开源地址 : " AnchorPane.leftAnchor="50.0">
 			<font>
 				<Font size="20.0" />
 			</font>
 		</Label>
-		<Label layoutX="50.0" layoutY="187.0" text="模板仓库 : ">
+		<Label fx:id="lblTemplatePath" layoutX="50.0" layoutY="182.0" text="模板仓库 : " AnchorPane.leftAnchor="50.0">
 			<font>
 				<Font size="20.0" />
 			</font>
 		</Label>
-		<Label layoutX="50.0" layoutY="237.0" text="QQ交流群: ">
+		<Label fx:id="lblTalkGroupInQQ" layoutX="50.0" layoutY="229.0" text="QQ交流群 : " AnchorPane.leftAnchor="50.0">
 			<font>
 				<Font size="20.0" />
 			</font>
 		</Label>
-		<TextField layoutX="154.0" layoutY="88.0" prefHeight="29.0" prefWidth="443.0" text="http://szmirren.com/">
+		<TextField fx:id="txtInstructions" layoutX="170.0" layoutY="88.0" prefHeight="29.0" prefWidth="443.0" text="http://szmirren.com/">
 			<font>
 				<Font size="14.0" />
 			</font>
 		</TextField>
-		<TextField layoutX="154.0" layoutY="138.0" prefHeight="29.0" prefWidth="443.0" text="https://github.com/shenzhenMirren/vertx-generator">
+		<TextField fx:id="txtProjectPath" layoutX="170.0" layoutY="135.0" prefHeight="29.0" prefWidth="443.0" text="https://github.com/EliMirren/Vert.X-generator">
 			<font>
 				<Font size="14.0" />
 			</font>
 		</TextField>
-		<TextField layoutX="154.0" layoutY="188.0" prefHeight="29.0" prefWidth="443.0" text="https://github.com/shenzhenMirren/vertx-generator-template">
+		<TextField fx:id="txtTemplatePath" layoutX="170.0" layoutY="183.0" prefHeight="29.0" prefWidth="443.0" text="https://github.com/EliMirren/Vert.X-generator-Template">
 			<font>
 				<Font size="14.0" />
 			</font>
 		</TextField>
-		<TextField layoutX="155.0" layoutY="238.0" prefHeight="29.0" prefWidth="443.0" text="99135252">
+		<TextField fx:id="txtTalkGroupInQQ" layoutX="170.0" layoutY="230.0" prefHeight="29.0" prefWidth="443.0" text="99135252">
 			<font>
 				<Font size="14.0" />
 			</font>
 		</TextField>
+      <Label fx:id="lblVersion" layoutX="190.0" layoutY="28.0" text="当前版本">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblAuthorsEmail" layoutX="50.0" layoutY="278.0" text="作者邮箱 : " AnchorPane.leftAnchor="50.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtAuthorsEmail" layoutX="170.0" layoutY="277.0" prefHeight="29.0" prefWidth="443.0" text="690389491@qq.com">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
 	</children>
 </AnchorPane>

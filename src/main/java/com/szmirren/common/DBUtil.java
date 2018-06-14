@@ -6,14 +6,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.szmirren.models.AttributeCVF;
 import com.szmirren.models.DBType;
-import com.szmirren.models.DBTypeName;
-import com.szmirren.models.DatabaseConfig;
+import com.szmirren.models.TableAttributeEntity;
+import com.szmirren.options.DatabaseConfig;
 
 /**
  * 数据库工具
@@ -77,7 +77,7 @@ public class DBUtil {
 		Connection conn = getConnection(config);
 		List<String> tables = new ArrayList<>();
 		ResultSet rs;
-		if (config.getDbType().equalsIgnoreCase(DBTypeName.SQL_SERVER.getValue())) {
+		if (config.getDbType().equalsIgnoreCase(Constant.SQL_SERVER)) {
 			// 如果是sqlserver数据库通过查询获得所有表跟视图
 			String sql = "select name from sysobjects  where xtype='u' or xtype='v' ";
 			rs = conn.createStatement().executeQuery(sql);
@@ -89,7 +89,7 @@ public class DBUtil {
 			// 如果非sqlserver类型的数据库通过JDBC获得所有表跟视图
 			DatabaseMetaData md = conn.getMetaData();
 			String[] types = {"TABLE", "VIEW"};
-			if (config.getDbType().equalsIgnoreCase(DBTypeName.POSTGRE_SQL.getValue())) {
+			if (config.getDbType().equalsIgnoreCase(Constant.POSTGRE_SQL)) {
 				rs = md.getTables(null, null, null, types);
 			} else {
 				rs = md.getTables(null, config.getUserName().toUpperCase(), null, types);
@@ -103,59 +103,39 @@ public class DBUtil {
 	}
 
 	/**
-	 * 获得所有列同时生成Attribute表模型
+	 * 获取表的列属性
 	 * 
 	 * @param config
+	 *          数据库配置文件
 	 * @param tableName
+	 *          表名
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<AttributeCVF> getTableColumns(DatabaseConfig config, String tableName) throws Exception {
+	public static List<TableAttributeEntity> getTableColumns(DatabaseConfig config, String tableName) throws Exception {
 		Connection conn = getConnection(config);
 		DatabaseMetaData md = conn.getMetaData();
 		ResultSet rs = md.getColumns(null, null, tableName, null);
-		Map<String, AttributeCVF> columnMap = new HashMap<>();
+		Map<String, TableAttributeEntity> columnMap = new HashMap<>();
 		while (rs.next()) {
-			AttributeCVF attribute = new AttributeCVF();
-			attribute.setConlumn(rs.getString("COLUMN_NAME"));
-			attribute.setComment(rs.getString("REMARKS"));
-			attribute.setJavaType(JavaType.jdbcTypeToJavaType(rs.getString("TYPE_NAME")));
-			attribute.setJdbcType(rs.getString("TYPE_NAME").toUpperCase());
-			attribute.setColumnSize(rs.getInt("COLUMN_SIZE"));
-			attribute.setColumnDefult(rs.getString("COLUMN_DEF"));
-			attribute.setNullable(rs.getInt("NULLABLE") == 0 ? false : true);
-			columnMap.put(rs.getString("COLUMN_NAME"), attribute);
+			TableAttributeEntity attr = new TableAttributeEntity();
+			attr.setTdColumnName(rs.getString("COLUMN_NAME"));
+			attr.setTdJdbcType(rs.getString("TYPE_NAME"));
+			attr.setTdJavaType(JavaType.jdbcTypeToJavaType(rs.getString("TYPE_NAME")));
+
+			attr.setColumnDef(rs.getString("COLUMN_DEF"));
+			attr.setRemarks(rs.getString("REMARKS"));
+			attr.setColumnSize(rs.getInt("COLUMN_SIZE"));
+			attr.setDecimalDigits(rs.getInt("DECIMAL_DIGITS"));
+			attr.setOrdinalPosition(rs.getInt("ORDINAL_POSITION"));
+			attr.setNullable(rs.getInt("NULLABLE") == 1 ? true : false);
+			columnMap.put(rs.getString("COLUMN_NAME"), attr);
 		}
 		if (columnMap.size() == 0) {
 			throw new NullPointerException("从表中获取字段失败!获取不到任何字段!");
 		}
-		List<AttributeCVF> result = new ArrayList<>(columnMap.values());
-		// 将主键放在第一位
-		String key = null;
-		key = getTablePrimaryKey(config, tableName);
-		if (key != null) {
-			boolean anyKeyInFrist = false;
-			if (result.size() > 0) {
-				if (result.get(0).getConlumn() != null) {
-					if (result.get(0).getConlumn().equals(key)) {
-						anyKeyInFrist = true;
-					}
-				}
-			}
-			if (!anyKeyInFrist) {
-				int keyIndex = 0;
-				for (int i = 0; i < result.size(); i++) {
-					if (result.get(i).getConlumn() != null) {
-						if (result.get(i).getConlumn().equals(key)) {
-							keyIndex = i;
-							break;
-						}
-					}
-				}
-				result.add(0, result.remove(keyIndex));
-			}
-		}
-
+		ArrayList<TableAttributeEntity> result = new ArrayList<>(columnMap.values());
+		Collections.sort(result);
 		return result;
 	}
 

@@ -25,16 +25,15 @@
 										</AnchorPane>
 										<AnchorPane minHeight="-Infinity" minWidth="-Infinity">
 											<children>
-												<StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+												<StackPane prefHeight="592.0" prefWidth="888.0" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 													<children>
 														<GridPane>
 															<columnConstraints>
-																<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="100.0" minWidth="0.0" prefWidth="35.0" />
-																<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="187.0" />
-																<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="205.0" />
-																<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="162.0" />
+																<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="187.0" />
+																<ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="205.0" />
+																<ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="162.0" />
 																<ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="221.0" />
-																<ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="64.0" />
+																<ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="64.0" />
 															</columnConstraints>
 															<rowConstraints>
 																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -49,9 +48,11 @@
 																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 															</rowConstraints>
 															<children>
-																<Button fx:id="btnSelectFile" mnemonicParsing="false" onAction="#selectFile" prefHeight="36.0" prefWidth="61.0" text="选 择" GridPane.columnIndex="4">
+																<Button fx:id="btnSelectFile" mnemonicParsing="false" onAction="#onSelectProjectPath" text="选 择" GridPane.columnIndex="3">
 																	<cursor>
 																		<Cursor fx:constant="HAND" />
 																	</cursor>
@@ -66,57 +67,57 @@
 																		<Insets left="10.0" />
 																	</GridPane.margin>
 																</Button>
-																<TextField fx:id="txtEntityName" disable="true" text="{c}" GridPane.columnIndex="4" GridPane.rowIndex="2">
+																<TextField fx:id="txtEntityName" text="{c}" GridPane.columnIndex="3" GridPane.rowIndex="2">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtDaoName" text="{c}DaoVerticle" GridPane.columnIndex="4" GridPane.rowIndex="3">
+																<TextField fx:id="txtServiceName" text="{c}Service" GridPane.columnIndex="3" GridPane.rowIndex="3">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtBizName" text="{c}BizVerticle" GridPane.columnIndex="4" GridPane.rowIndex="4">
+																<TextField fx:id="txtServiceImplName" text="{c}ServiceImpl" GridPane.columnIndex="3" GridPane.rowIndex="4">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtRouterName" text="{c}Router" GridPane.columnIndex="4" GridPane.rowIndex="5">
+																<TextField fx:id="txtRouterName" text="{c}Router" GridPane.columnIndex="3" GridPane.rowIndex="6">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtSqlName" text="{c}SQL" GridPane.columnIndex="4" GridPane.rowIndex="6">
+																<TextField fx:id="txtSqlName" text="{c}SQL" GridPane.columnIndex="3" GridPane.rowIndex="5">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtAssistName" disable="true" text="SqlAssit" GridPane.columnIndex="4" GridPane.rowIndex="7">
+																<TextField fx:id="txtAssistName" disable="true" text="SqlAssist" GridPane.columnIndex="3" GridPane.rowIndex="8">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtAbstractSqlName" disable="true" text="AbstractSQL" GridPane.columnIndex="4" GridPane.rowIndex="8">
+																<TextField fx:id="txtAbstractSqlName" disable="true" text="AbstractSQL" GridPane.columnIndex="3" GridPane.rowIndex="9">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtSqlParamsName" disable="true" text="SqlAndParams" GridPane.columnIndex="4" GridPane.rowIndex="9">
+																<TextField fx:id="txtSqlParamsName" disable="true" text="SqlAndParams" GridPane.columnIndex="3" GridPane.rowIndex="10">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtProjectPath" prefHeight="34.0" prefWidth="394.0" promptText="请输入或选择存放目录,例如:E:/temp-vertx" GridPane.columnIndex="2" GridPane.columnSpan="2">
+																<TextField fx:id="txtProjectPath" prefHeight="34.0" prefWidth="394.0" promptText="请输入或选择存放目录,例如:E:/temp-vertx" GridPane.columnIndex="1" GridPane.columnSpan="2">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtTableName" disable="true" prefHeight="29.0" prefWidth="256.0" promptText="双击左侧数据库表名加载" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
+																<TextField fx:id="txtTableName" disable="true" prefHeight="29.0" prefWidth="256.0" promptText="双击左侧数据库表名加载" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
 																	<font>
 																		<Font size="14.0" />
 																	</font>
 																</TextField>
-																<Label text="实体类名:" GridPane.columnIndex="3" GridPane.rowIndex="2">
+																<Label fx:id="lblEntityName" text="实体类名:" GridPane.columnIndex="2" GridPane.rowIndex="2">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
@@ -124,7 +125,7 @@
 																		<Insets right="3.0" />
 																	</GridPane.margin>
 																</Label>
-																<Label text="DaoVerticle类名:" GridPane.columnIndex="3" GridPane.rowIndex="3">
+																<Label fx:id="lblServiceName" text="Service接口名:" GridPane.columnIndex="2" GridPane.rowIndex="3">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
@@ -132,7 +133,7 @@
 																		<Insets right="3.0" />
 																	</GridPane.margin>
 																</Label>
-																<Label text="BizVerticle类名:" GridPane.columnIndex="3" GridPane.rowIndex="4">
+																<Label fx:id="lblServiceImplName" text="ServiceImpl类名:" GridPane.columnIndex="2" GridPane.rowIndex="4">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
@@ -140,7 +141,7 @@
 																		<Insets right="3.0" />
 																	</GridPane.margin>
 																</Label>
-																<Label text="Router类名:" GridPane.columnIndex="3" GridPane.rowIndex="5">
+																<Label fx:id="lblRouterName" text="Router类名:" GridPane.columnIndex="2" GridPane.rowIndex="6">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
@@ -148,7 +149,7 @@
 																		<Insets right="3.0" />
 																	</GridPane.margin>
 																</Label>
-																<Label text="SQL类名:" GridPane.columnIndex="3" GridPane.rowIndex="6">
+																<Label fx:id="lblSqlName" text="SQL类名:" GridPane.columnIndex="2" GridPane.rowIndex="5">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
@@ -156,20 +157,12 @@
 																		<Insets right="3.0" />
 																	</GridPane.margin>
 																</Label>
-																<Label text="SqlAssist类名:" GridPane.columnIndex="3" GridPane.rowIndex="7">
+																<Label fx:id="lblAssistName" text="SqlAssist类名:" GridPane.columnIndex="2" GridPane.rowIndex="8">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
 																</Label>
-																<Label text="AbstractSql类名:" GridPane.columnIndex="3" GridPane.rowIndex="8">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="SqlAParams类名:" GridPane.columnIndex="3" GridPane.rowIndex="9">
+																<Label fx:id="lblAbstractSqlName" text="AbstractSql类名:" GridPane.columnIndex="2" GridPane.rowIndex="9">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
@@ -177,178 +170,346 @@
 																		<Insets right="3.0" />
 																	</GridPane.margin>
 																</Label>
-																<TextField fx:id="txtEntityPackage" disable="true" text="com.entity" GridPane.columnIndex="2" GridPane.rowIndex="2">
+																<Label fx:id="lblSqlParamsName" text="SqlAParams类名:" GridPane.columnIndex="2" GridPane.rowIndex="10">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<TextField fx:id="txtEntityPackage" text="com.entity" GridPane.columnIndex="1" GridPane.rowIndex="2">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtDaoPackage" text="com.dao" GridPane.columnIndex="2" GridPane.rowIndex="3">
+																<TextField fx:id="txtServicePackage" text="com.service" GridPane.columnIndex="1" GridPane.rowIndex="3">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtBizPackage" text="com.service" GridPane.columnIndex="2" GridPane.rowIndex="4">
+																<TextField fx:id="txtServiceImplPackage" text="com.service.impl" GridPane.columnIndex="1" GridPane.rowIndex="4">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtRouterPackage" text="com.router" GridPane.columnIndex="2" GridPane.rowIndex="5">
+																<TextField fx:id="txtRouterPackage" text="com.router" GridPane.columnIndex="1" GridPane.rowIndex="6">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtSqlPackage" text="com.sql" GridPane.columnIndex="2" GridPane.rowIndex="6">
+																<TextField fx:id="txtSqlPackage" text="com.sql" GridPane.columnIndex="1" GridPane.rowIndex="5">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtAssistPackage" text="com.common" GridPane.columnIndex="2" GridPane.rowIndex="7">
+																<TextField fx:id="txtAssistPackage" text="com.common" GridPane.columnIndex="1" GridPane.rowIndex="8">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtAbstractSqlPackage" text="com.common" GridPane.columnIndex="2" GridPane.rowIndex="8">
+																<TextField fx:id="txtAbstractSqlPackage" text="com.common" GridPane.columnIndex="1" GridPane.rowIndex="9">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<TextField fx:id="txtSqlParamsPackage" text="com.common" GridPane.columnIndex="2" GridPane.rowIndex="9">
+																<TextField fx:id="txtSqlParamsPackage" text="com.common" GridPane.columnIndex="1" GridPane.rowIndex="10">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
 																</TextField>
-																<ComboBox fx:id="cboCodeFormat" prefHeight="23.0" prefWidth="126.0" GridPane.columnIndex="2" GridPane.rowIndex="10">
+																<ComboBox fx:id="cboCodeFormat" prefHeight="28.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="11">
 																	<GridPane.margin>
 																		<Insets right="50.0" />
 																	</GridPane.margin>
 																</ComboBox>
-																<Button fx:id="btnRunCreate" mnemonicParsing="false" onAction="#runCreate" text="执行创建" GridPane.columnIndex="3" GridPane.rowIndex="11">
-																	<cursor>
-																		<Cursor fx:constant="HAND" />
-																	</cursor>
+																<Label fx:id="lblProjectPath" contentDisplay="RIGHT" text="存放目录:">
 																	<font>
-																		<Font size="22.0" />
+																		<Font size="20.0" />
 																	</font>
-																	<styleClass>
-																		<String fx:value="btn-success" />
-																		<String fx:value="btn" />
-																	</styleClass>
+																</Label>
+																<Label fx:id="lblTableName" disable="true" text="数据库表名:" GridPane.rowIndex="1">
+																	<font>
+																		<Font size="16.0" />
+																	</font>
+																</Label>
+																<Label fx:id="lblEntityPackage" text="实体类包名:" GridPane.rowIndex="2">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
 																	<GridPane.margin>
-																		<Insets right="20.0" />
+																		<Insets right="3.0" />
 																	</GridPane.margin>
-																</Button>
-																<Button fx:id="btnSaveConfig" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#saveConfig" text="保存配置" GridPane.columnIndex="4" GridPane.rowIndex="11">
+																</Label>
+																<Label fx:id="lblServicePackage" text="Service包名:" GridPane.rowIndex="3">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<Label fx:id="lblServiceImplPackage" text="ServiceImpl包名:" GridPane.rowIndex="4">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<Label fx:id="lblRouterPackage" text="Router包名:" GridPane.rowIndex="6">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<Label fx:id="lblSqlPackage" text="SQL包名:" GridPane.rowIndex="5">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<Label fx:id="lblAssistPackage" text="SqlAssist包名:" GridPane.rowIndex="8">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																</Label>
+																<Label fx:id="lblAbstractSqlPackage" text="AbstractSql包名:" GridPane.rowIndex="9">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<Label fx:id="lblSqlParamsPackage" text="SqlAndParams包名:" GridPane.rowIndex="10">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<GridPane.margin>
+																		<Insets right="3.0" />
+																	</GridPane.margin>
+																</Label>
+																<Label fx:id="lblCodeFormat" text="文件编码格式: " GridPane.columnIndex="2" GridPane.rowIndex="11">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																</Label>
+																<Button fx:id="btnSetEntity" mnemonicParsing="false" onAction="#onSetEntity" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="2">
 																	<cursor>
 																		<Cursor fx:constant="HAND" />
 																	</cursor>
 																	<font>
-																		<Font size="22.0" />
+																		<Font size="15.0" />
 																	</font>
 																	<styleClass>
 																		<String fx:value="btn" />
 																		<String fx:value="btn-default" />
 																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetService" mnemonicParsing="false" onAction="#onSetService" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="3">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetServiceImpl" mnemonicParsing="false" onAction="#onSetServiceImpl" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="4">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetRouter" mnemonicParsing="false" onAction="#onSetRouter" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="6">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetSql" mnemonicParsing="false" onAction="#onSetSQL" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="5">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Label fx:id="lblSetCustom" text="自定义包名与类: " GridPane.rowIndex="11">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																</Label>
+																<Label fx:id="lblSetCustomProperty" text="自定义属性: " GridPane.rowIndex="12">
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																</Label>
+																<Button fx:id="btnSetAssist" mnemonicParsing="false" onAction="#onSetSqlAssist" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="8">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetSqlAndParams" mnemonicParsing="false" onAction="#onSetSqlAndParams" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="10">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetAbstractSql" mnemonicParsing="false" onAction="#onSetAbstractSQL" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="9">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets left="5.0" />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetCustomProperty" mnemonicParsing="false" onAction="#onSetCustomProperty" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="1" GridPane.rowIndex="12">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSetCustom" mnemonicParsing="false" onAction="#onSetCustom" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="1" GridPane.rowIndex="11">
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<font>
+																		<Font size="15.0" />
+																	</font>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-default" />
+																	</styleClass>
+																	<GridPane.margin>
+																		<Insets />
+																	</GridPane.margin>
+																</Button>
+																<Button fx:id="btnSaveConfig" mnemonicParsing="false" onAction="#onSaveConfig" text="保存配置" GridPane.columnIndex="3" GridPane.rowIndex="13">
+																	<styleClass>
+																		<String fx:value="btn-default" />
+																		<String fx:value="btn" />
+																	</styleClass>
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
 																	<GridPane.margin>
 																		<Insets left="20.0" />
 																	</GridPane.margin>
 																</Button>
-																<Label contentDisplay="RIGHT" text="存放目录:" GridPane.columnIndex="1">
+																<Button fx:id="btnRunCreate" mnemonicParsing="false" onAction="#onCreate" text="执行创建" GridPane.columnIndex="2" GridPane.rowIndex="13">
+																	<GridPane.margin>
+																		<Insets right="20.0" />
+																	</GridPane.margin>
+																	<cursor>
+																		<Cursor fx:constant="HAND" />
+																	</cursor>
+																	<styleClass>
+																		<String fx:value="btn" />
+																		<String fx:value="btn-success" />
+																	</styleClass>
+																	<font>
+																		<Font size="20.0" />
+																	</font>
+																</Button>
+																<Label fx:id="lblUnitTestPackage" text="单元测试包名:" GridPane.rowIndex="7">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
 																</Label>
-																<Label disable="true" text="数据库表名:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+																<TextField fx:id="txtUnitTestPackage" text="com.test" GridPane.columnIndex="1" GridPane.rowIndex="7">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
-																</Label>
-																<Label text="实体类包名:" GridPane.columnIndex="1" GridPane.rowIndex="2">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="DaoVerticle包名:" GridPane.columnIndex="1" GridPane.rowIndex="3">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="BizVerticle包名:" GridPane.columnIndex="1" GridPane.rowIndex="4">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="Router包名:" GridPane.columnIndex="1" GridPane.rowIndex="5">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="SQL包名:" GridPane.columnIndex="1" GridPane.rowIndex="6">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="SqlAssist包名:" GridPane.columnIndex="1" GridPane.rowIndex="7">
+																</TextField>
+																<Label fx:id="lblUnitTestName" text="单元测试类名:" GridPane.columnIndex="2" GridPane.rowIndex="7">
 																	<font>
 																		<Font size="20.0" />
 																	</font>
 																</Label>
-																<Label text="AbstractSql包名:" GridPane.columnIndex="1" GridPane.rowIndex="8">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="SqlAndParams包名:" GridPane.columnIndex="1" GridPane.rowIndex="9">
-																	<font>
-																		<Font size="20.0" />
-																	</font>
-																	<GridPane.margin>
-																		<Insets right="3.0" />
-																	</GridPane.margin>
-																</Label>
-																<Label text="文件编码格式:" GridPane.columnIndex="1" GridPane.rowIndex="10">
+																<TextField fx:id="txtUnitTestName" text="{c}Test" GridPane.columnIndex="3" GridPane.rowIndex="7">
 																	<font>
 																		<Font size="16.0" />
 																	</font>
-																</Label>
-																<CheckBox fx:id="chkCreateEntity" mnemonicParsing="false" onAction="#onCreateEntity" selected="true" GridPane.rowIndex="2">
-																	<font>
-																		<Font size="16.0" />
-																	</font>
-																</CheckBox>
-																<CheckBox fx:id="chkCreateDao" mnemonicParsing="false" onAction="#onCreateDao" GridPane.rowIndex="3">
-																	<font>
-																		<Font size="16.0" />
-																	</font>
-																</CheckBox>
-																<CheckBox fx:id="chkCreateBiz" mnemonicParsing="false" onAction="#onCreateBiz" GridPane.rowIndex="4">
-																	<font>
-																		<Font size="16.0" />
-																	</font>
-																</CheckBox>
-																<CheckBox fx:id="chkCreateRouter" mnemonicParsing="false" onAction="#onCreateRouter" selected="true" GridPane.rowIndex="5">
-																	<font>
-																		<Font size="16.0" />
-																	</font>
-																</CheckBox>
-																<Button fx:id="btnSetEntity" mnemonicParsing="false" onAction="#onEntity" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="5" GridPane.rowIndex="2">
+																</TextField>
+																<Button fx:id="btnSetUnitTest" mnemonicParsing="false" onAction="#onSetUnitTest" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="4" GridPane.rowIndex="7">
 																	<cursor>
 																		<Cursor fx:constant="HAND" />
 																	</cursor>
@@ -363,77 +524,6 @@
 																		<Insets left="5.0" />
 																	</GridPane.margin>
 																</Button>
-																<Button fx:id="btnSetDao" mnemonicParsing="false" onAction="#onSetDao" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="5" GridPane.rowIndex="3">
-																	<cursor>
-																		<Cursor fx:constant="HAND" />
-																	</cursor>
-																	<font>
-																		<Font size="15.0" />
-																	</font>
-																	<styleClass>
-																		<String fx:value="btn" />
-																		<String fx:value="btn-default" />
-																	</styleClass>
-																	<GridPane.margin>
-																		<Insets left="5.0" />
-																	</GridPane.margin>
-																</Button>
-																<Button fx:id="btnSetBiz" mnemonicParsing="false" onAction="#onSetBiz" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="5" GridPane.rowIndex="4">
-																	<cursor>
-																		<Cursor fx:constant="HAND" />
-																	</cursor>
-																	<font>
-																		<Font size="15.0" />
-																	</font>
-																	<styleClass>
-																		<String fx:value="btn" />
-																		<String fx:value="btn-default" />
-																	</styleClass>
-																	<GridPane.margin>
-																		<Insets left="5.0" />
-																	</GridPane.margin>
-																</Button>
-																<Button fx:id="btnSetRouter" mnemonicParsing="false" onAction="#onSetRouter" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="5" GridPane.rowIndex="5">
-																	<cursor>
-																		<Cursor fx:constant="HAND" />
-																	</cursor>
-																	<font>
-																		<Font size="15.0" />
-																	</font>
-																	<styleClass>
-																		<String fx:value="btn" />
-																		<String fx:value="btn-default" />
-																	</styleClass>
-																	<GridPane.margin>
-																		<Insets left="5.0" />
-																	</GridPane.margin>
-																</Button>
-																<Button fx:id="btnSetSql" mnemonicParsing="false" onAction="#onSetSQL" prefHeight="24.0" prefWidth="61.0" text="设置" GridPane.columnIndex="5" GridPane.rowIndex="6">
-																	<cursor>
-																		<Cursor fx:constant="HAND" />
-																	</cursor>
-																	<font>
-																		<Font size="15.0" />
-																	</font>
-																	<styleClass>
-																		<String fx:value="btn" />
-																		<String fx:value="btn-default" />
-																	</styleClass>
-																	<GridPane.margin>
-																		<Insets left="5.0" />
-																	</GridPane.margin>
-																</Button>
-																<CheckBox fx:id="chkJsonKeyIsCamel" mnemonicParsing="false" text="JsonObject属性驼峰命名" visible="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11">
-																	<font>
-																		<Font size="16.0" />
-																	</font>
-																	<tooltip>
-																		<Tooltip text="将表中列名带下划线的改为驼峰命名后作为JsonObject的key" />
-																	</tooltip>
-																	<GridPane.margin>
-																		<Insets right="81.0" />
-																	</GridPane.margin>
-																</CheckBox>
 															</children>
 															<padding>
 																<Insets left="5.0" right="5.0" />
@@ -442,7 +532,7 @@
 													</children>
 												</StackPane>
 												<ProgressBar fx:id="probCreateAll" layoutX="5.0" layoutY="600.0" progress="0.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="200.0" />
-												<Label fx:id="lblRunCreateAll" layoutX="4.0" layoutY="577.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="5.0">
+												<Label fx:id="lblRunCreateAllTips" layoutX="4.0" layoutY="577.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="5.0">
 													<font>
 														<Font size="16.0" />
 													</font>
@@ -472,7 +562,7 @@
 												<Font size="14.0" />
 											</font>
 										</Label>
-										<Label fx:id="lblSetTemplate" contentDisplay="TOP" layoutX="241.0" layoutY="9.0" text="模板设置">
+										<Label fx:id="lblInstructions" contentDisplay="TOP" layoutX="245.0" layoutY="9.0" text="使用说明">
 											<cursor>
 												<Cursor fx:constant="HAND" />
 											</cursor>
@@ -480,7 +570,7 @@
 												<Font size="14.0" />
 											</font>
 										</Label>
-										<Label fx:id="lblInstructions" contentDisplay="TOP" layoutX="330.0" layoutY="9.0" text="使用说明">
+										<Label fx:id="lblSetting" contentDisplay="TOP" layoutX="337.0" layoutY="9.0" text="设置">
 											<cursor>
 												<Cursor fx:constant="HAND" />
 											</cursor>
