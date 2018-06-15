@@ -5,7 +5,9 @@ Vert.X-generator是基于javafx8开发的图形界面Vert.x代码生成器,使�
 该工具支持所有实现JDBC规范的数据库;默认集成了Oracle , SqlServer , MySQL , PostgreSql数据库驱动jar包;<br>
 该工具主要面向Vert.x这个tool-kit <a href="http://vertx.io" target="_blank">http://vertx.io</a> 如果你的Spring用户欢迎你使用 <a href="https://github.com/EliMirren/Spring-generator" target="_blank">Spring-generator</a><br>
 虽然它面向Vert.x,但它并不仅仅局限于生成Vert.x代码,它的使命是将数据库中表的属性提取为实体类属性,剩下的事情就取决你如何使用FreeMarker操作它<br>
-
+```html
+Vert.x-generator不是框架它不会影响任何现有的结构,Vert.x-generator只是一个生成工具,不拘于语言,只取决于你怎么使用FreeMarker编写模板,Assist是一个非常好用的帮助工具能做动态查询
+``` 
 # 执行方法
 执行方式在项目根目录执行mvn jfx:jar进行打包;jar打包为jar包native打包为系统安装软件;<br/>
 该软件基于jdk1.8.66开发,测试环境1.8.121,已知最低要求特性为1.8.40,理论上大于1.8.40就可以运行;没有1.8环境的可以自己下载一个jre包并编写执行脚本运行就可以,可以参考文档说明<br/>
