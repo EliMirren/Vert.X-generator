@@ -19,6 +19,8 @@ public interface LanguageKey {
 	static final String INDEX_TIPS_SELECT_TABLE_NAME = "index.selectTableTips";
 	/** 首页-提示先选择表名或者全库生成 */
 	static final String INDEX_TIPS_CREATE_TABLE = "index.createTableTips";
+	/** 首页-配置文件的配置信息表格提示 */
+	static final String HISTORY_CONFIG_TABLE_TIPS = "historyConfig.tableTips";
 	// ========================通用区域===============================
 	/** 通用设置按钮 */
 	static final String COMMON_BTN_SET = "common.btnSet";

@@ -548,7 +548,7 @@ public class IndexController extends BaseController {
 						Optional.ofNullable(ConfigUtil.getServiceImplConfig(Constant.DEFAULT)).orElse(new ServiceImplConfig().initDefaultValue()));
 			}
 			if (config.getSqlConfig() == null) {
-				config.setSqlConfig(Optional.ofNullable(ConfigUtil.getSQLConfig(Constant.DEFAULT)).orElse(new SqlConfig()));
+				config.setSqlConfig(Optional.ofNullable(ConfigUtil.getSQLConfig(Constant.DEFAULT)).orElse(new SqlConfig().initDefaultValue()));
 			}
 			if (config.getRouterConfig() == null) {
 				config.setRouterConfig(
@@ -919,7 +919,7 @@ public class IndexController extends BaseController {
 			EntityConfig config = historyConfig.getEntityConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtEntityPackage.getText(),
-						entityNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+						entityNamePlace.replace("{c}", entityName) + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成实体类-->成功!");
 		} catch (Exception e) {
@@ -930,7 +930,7 @@ public class IndexController extends BaseController {
 			ServiceConfig config = historyConfig.getServiceConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServicePackage.getText(),
-						serviceNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+						serviceNamePlace.replace("{c}", entityName) + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成Service-->成功!");
 		} catch (Exception e) {
@@ -941,7 +941,7 @@ public class IndexController extends BaseController {
 			ServiceImplConfig config = historyConfig.getServiceImplConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServiceImplPackage.getText(),
-						serviceImplNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+						serviceImplNamePlace.replace("{c}", entityName) + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成ServiceImpl-->成功!");
 		} catch (Exception e) {
@@ -952,7 +952,7 @@ public class IndexController extends BaseController {
 			SqlConfig config = historyConfig.getSqlConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlPackage.getText(),
-						sqlNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+						sqlNamePlace.replace("{c}", entityName) + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成SQL-->成功!");
 		} catch (Exception e) {
@@ -963,7 +963,7 @@ public class IndexController extends BaseController {
 			RouterConfig config = historyConfig.getRouterConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtRouterPackage.getText(),
-						routerNamePlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+						routerNamePlace.replace("{c}", entityName) + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成Router-->成功!");
 		} catch (Exception e) {
@@ -974,7 +974,7 @@ public class IndexController extends BaseController {
 			UnitTestConfig config = historyConfig.getUnitTestConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtUnitTestPackage.getText(),
-						unitTestPlace.replace("{c}", entityName) + ".java", codeFormat, config.isOverrideFile());
+						unitTestPlace.replace("{c}", entityName) + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成单元测试-->成功!");
 		} catch (Exception e) {
@@ -985,12 +985,12 @@ public class IndexController extends BaseController {
 			SqlAssistConfig config = historyConfig.getAssistConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAssistPackage.getText(),
-						txtAssistName.getText() + ".java", codeFormat, config.isOverrideFile());
+						txtAssistName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_PROPERTY_VALUE, projectPath, txtAssistPackage.getText(),
-					Constant.SQL_PROPERTY_VALUE + ".java", codeFormat, config.isOverrideFile());
+					Constant.SQL_PROPERTY_VALUE + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_WHERE_CONDITION, projectPath, txtAssistPackage.getText(),
-					Constant.SQL_WHERE_CONDITION + ".java", codeFormat, config.isOverrideFile());
+					Constant.SQL_WHERE_CONDITION + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			LOG.debug("执行将" + tableName + "生成SqlAssist-->成功!");
 		} catch (Exception e) {
 			LOG.error("执行将" + tableName + "生成SqlAssist-->失败:", e);
@@ -1004,7 +1004,7 @@ public class IndexController extends BaseController {
 							Constant.TEMPLATE_NAME_ABSTRACT_SQL_PREFIX + databaseConfig.getDbType() + Constant.TEMPLATE_NAME_ABSTRACT_SQL_SUFFIX);
 				}
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAbstractSqlPackage.getText(),
-						txtAbstractSqlName.getText() + ".java", codeFormat, config.isOverrideFile());
+						txtAbstractSqlName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行将" + tableName + "生成AbstractSQL-->成功!");
 		} catch (Exception e) {
@@ -1015,7 +1015,7 @@ public class IndexController extends BaseController {
 			SqlAndParamsConfig config = historyConfig.getSqlAndParamsConfig();
 			if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 				CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlParamsPackage.getText(),
-						txtSqlParamsName.getText() + ".java", codeFormat, config.isOverrideFile());
+						txtSqlParamsName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 			}
 			LOG.debug("执行生成SqlAndParams-->成功!");
 		} catch (Exception e) {
@@ -1028,7 +1028,7 @@ public class IndexController extends BaseController {
 				if (!StrUtil.isNullOrEmpty(custom.getTemplateValue())) {
 					try {
 						CreateFileUtil.createFile(content, custom.getTemplateValue(), projectPath, custom.getPackageName(),
-								custom.getClassName() + ".java", codeFormat, config.isOverrideFile());
+								custom.getClassName() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 					} catch (Exception e) {
 						LOG.error("执行生成自定义生成包类-->失败:", e);
 					}
@@ -1075,7 +1075,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtEntityName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtEntityPackage.getText(),
-									txtEntityName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtEntityName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成实体类-->成功!");
 					} catch (Exception e) {
@@ -1089,7 +1089,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtServiceName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServicePackage.getText(),
-									txtServiceName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtServiceName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成Service-->成功!");
 					} catch (Exception e) {
@@ -1103,7 +1103,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtServiceImplName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServiceImplPackage.getText(),
-									txtServiceImplName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtServiceImplName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成ServiceImpl-->成功!");
 					} catch (Exception e) {
@@ -1117,7 +1117,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtSqlName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlPackage.getText(),
-									txtSqlName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtSqlName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成SQL-->成功!");
 					} catch (Exception e) {
@@ -1131,7 +1131,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtRouterName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtRouterPackage.getText(),
-									txtRouterName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtRouterName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成Router-->成功!");
 					} catch (Exception e) {
@@ -1145,7 +1145,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtUnitTestName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtUnitTestPackage.getText(),
-									txtUnitTestName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtUnitTestName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成单元测试-->成功!");
 					} catch (Exception e) {
@@ -1159,12 +1159,12 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtAssistName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAssistPackage.getText(),
-									txtAssistName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtAssistName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_PROPERTY_VALUE, projectPath, txtAssistPackage.getText(),
-								Constant.SQL_PROPERTY_VALUE + ".java", codeFormat, config.isOverrideFile());
+								Constant.SQL_PROPERTY_VALUE + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						CreateFileUtil.createFile(content, Constant.TEMPLATE_NAME_SQL_WHERE_CONDITION, projectPath, txtAssistPackage.getText(),
-								Constant.SQL_WHERE_CONDITION + ".java", codeFormat, config.isOverrideFile());
+								Constant.SQL_WHERE_CONDITION + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						LOG.debug("执行生成SqlAssist-->成功!");
 					} catch (Exception e) {
 						updateMessage("执行生成SqlAssist:" + txtAssistName.getText() + "失败:" + e);
@@ -1181,7 +1181,7 @@ public class IndexController extends BaseController {
 							}
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtAbstractSqlName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAbstractSqlPackage.getText(),
-									txtAbstractSqlName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtAbstractSqlName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成AbstractSQL-->成功!");
 					} catch (Exception e) {
@@ -1195,7 +1195,7 @@ public class IndexController extends BaseController {
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtSqlParamsName.getText() + ""));
 							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlParamsPackage.getText(),
-									txtSqlParamsName.getText() + ".java", codeFormat, config.isOverrideFile());
+									txtSqlParamsName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成SqlAndParams-->成功!");
 					} catch (Exception e) {
@@ -1210,7 +1210,7 @@ public class IndexController extends BaseController {
 								try {
 									updateMessage(runCreateTipsText + " {t} ...".replace("{t}", custom.getClassName() + ""));
 									CreateFileUtil.createFile(content, custom.getTemplateValue(), projectPath, custom.getPackageName(),
-											custom.getClassName() + ".java", codeFormat, config.isOverrideFile());
+											custom.getClassName() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 								} catch (Exception e) {
 									updateMessage("执行生成自定义生成包类:" + custom.getClassName() + "失败:" + e);
 									LOG.error("执行生成自定义生成包类-->失败:", e);

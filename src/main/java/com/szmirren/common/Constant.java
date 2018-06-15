@@ -18,7 +18,8 @@ public interface Constant {
 	static final String SQL_SERVER = "SqlServer";
 	/** Oracle */
 	static final String ORACLE = "Oracle";
-
+	/** java的后缀名.java */
+	static final String JAVA_SUFFIX = ".java";
 	/** default */
 	static final String DEFAULT = "default";
 	/** language */
