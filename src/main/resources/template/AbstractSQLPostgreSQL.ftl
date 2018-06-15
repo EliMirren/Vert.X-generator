@@ -420,7 +420,7 @@ public abstract class AbstractSQLPostgreSQL<T> {
 						sql.append(" LIMIT ?");
 						params.add(assist.getRowSize());
 					} else {
-						sql.append(" LIMIT ?,?");
+						sql.append(" LIMIT ? , OFFSET ?");
 						params.add(assist.getStartRow()).add(assist.getRowSize());
 					}
 				}
