@@ -13,22 +13,23 @@ import io.vertx.core.json.JsonObject;
  *
  */
 public class SqlAssist {
-	// 去重
+	/** 去重 */
 	private String distinct;
-	// 自定义排序
+	/** 自定义排序 */
 	private String order;
-	// 数据分页开始行
+	/** 数据分页开始行 */
 	private Integer startRow;
-	// 每次取多少行数据
+	/** 每次取多少行数据 */
 	private Integer rowSize;
-	// 设置自定义返回列
+	/** 设置自定义返回列 */
 	private String resultColumn;
-	// 条件集
+	/** 条件集 */
 	private List<SqlWhereCondition<?>> condition = null;
-	// 自定义属性
+	/** 自定义属性 */
 	private Object custom;
-	// 是否优化分页
+	/** 是否优化分页 */
 	private boolean optimizePage = false;
+
 	/**
 	 * 初始化
 	 */
@@ -55,6 +56,7 @@ public class SqlAssist {
 	public String toJsonStr() {
 		return toJson().toString();
 	}
+
 	/**
 	 * 将当前对象装换为JsonObject
 	 * 
@@ -90,6 +92,7 @@ public class SqlAssist {
 		}
 		return json;
 	}
+
 	/**
 	 * 将JsonObject对象装换为SqlAssist
 	 * 
@@ -153,6 +156,7 @@ public class SqlAssist {
 		}
 		return this;
 	}
+
 	/**
 	 * 添加查询条件,该方法一般用于初始化,因为会将现有的条件集清空,既this.condition=conditions
 	 * 
@@ -166,179 +170,299 @@ public class SqlAssist {
 	}
 
 	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) = 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andEq(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " = ? ", req);
+	public <T> SqlAssist andEq(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " = ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 = 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) = 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orEq(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " = ? ", req);
+	public <T> SqlAssist orEq(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " = ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) <>(不等于) 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andNeq(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " <> ? ", req);
+	public <T> SqlAssist andNeq(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " <> ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 <>(不等于) 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) <>(不等于) 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orNeq(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " <> ? ", req);
+	public <T> SqlAssist orNeq(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " <> ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 < 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) < 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andLt(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " < ? ", req);
+	public <T> SqlAssist andLt(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " < ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 < 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) < 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orLt(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " < ? ", req);
+	public <T> SqlAssist orLt(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " < ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) <= 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andLte(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " <= ? ", req);
+	public <T> SqlAssist andLte(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " <= ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 <= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) <= 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orLte(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " <= ? ", req);
+	public <T> SqlAssist orLte(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " <= ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) > 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andGt(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " > ? ", req);
+	public <T> SqlAssist andGt(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " > ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 > 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) > 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orGt(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " > ? ", req);
+	public <T> SqlAssist orGt(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " > ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) >= 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andGte(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " >= ? ", req);
+	public <T> SqlAssist andGte(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " >= ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 >= 参数(条件)2 ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) >= 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orGte(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " >= ? ", req);
+	public <T> SqlAssist orGte(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " >= ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) like 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> andLike(String column, T req) {
-		return new SqlWhereCondition<T>("and " + column + " like ? ", req);
+	public <T> SqlAssist andLike(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " like ? ", value));
+		return this;
 	}
 
 	/**
-	 * 参数(列名)1 like '参数(条件)2' ;如果表中存在相同列名,使用表名.列名,如果不存在相同列名可以直接列名
+	 * 参数1(列名) like 参数2(条件值)
 	 * 
 	 * @param column
-	 * @param req
+	 *          列名
+	 * @param value
+	 *          参数值
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<T> orLike(String column, T req) {
-		return new SqlWhereCondition<T>("or " + column + " like ? ", req);
+	public <T> SqlAssist orLike(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " like ? ", value));
+		return this;
 	}
+
+	/**
+	 * 参数1(列名) in (参数2(条件值))
+	 * 
+	 * @param column
+	 *          列名
+	 * @param value
+	 *          参数值
+	 * @return
+	 */
+	public <T> SqlAssist andIn(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("and " + column + " in (?)", value));
+		return this;
+	}
+
+	/**
+	 * 参数1(列名) in (参数2(条件值),参数2(条件值)...)
+	 * 
+	 * @param column
+	 *          列名
+	 * @param values
+	 *          参数值,如果是list可以toArray
+	 * @return
+	 */
+	public <T> SqlAssist andIn(String column, Object... values) {
+		StringBuilder sql = new StringBuilder("and " + column + " in (");
+		for (int i = 0; i < values.length; i++) {
+			if (i == 0) {
+				sql.append(" ? ");
+			} else {
+				sql.append(", ? ");
+			}
+		}
+		sql.append(")");
+		setConditions(new SqlWhereCondition<T>(sql.toString(), values));
+		return this;
+	}
+
+	/**
+	 * 参数1(列名) in (参数2(条件值))
+	 * 
+	 * @param column
+	 *          列名
+	 * @param value
+	 *          参数值
+	 * @return
+	 */
+	public <T> SqlAssist orIn(String column, T value) {
+		setConditions(new SqlWhereCondition<T>("or " + column + " in (?)", value));
+		return this;
+	}
+
+	/**
+	 * 参数1(列名) in (参数2(条件值),参数2(条件值)...)
+	 * 
+	 * @param column
+	 *          列名
+	 * @param values
+	 *          参数值,如果是list可以toArray
+	 * @return
+	 */
+	public <T> SqlAssist orIn(String column, Object... values) {
+		StringBuilder sql = new StringBuilder("or " + column + " in (");
+		for (int i = 0; i < values.length; i++) {
+			if (i == 0) {
+				sql.append(" ? ");
+			} else {
+				sql.append(", ? ");
+			}
+		}
+		sql.append(")");
+		setConditions(new SqlWhereCondition<T>(sql.toString(), values));
+		return this;
+	}
+
 	/**
 	 * 自定义查询条件 :<br>
-	 * 查询示例Assist.customRequire("[and/or] id in(?,?,?)",1,2,3);<br>
+	 * 查询示例:assist.customCondition("[and/or] id in(?,?,?)",1,2,3);<br>
 	 * 
 	 * @param prefix
 	 * @param value
 	 * @return
 	 */
-	public static <T> SqlWhereCondition<?> customCondition(String prefix, T value) {
-		return new SqlWhereCondition<Object>(prefix, value);
+	public <T> SqlAssist customCondition(String prefix, T value) {
+		setConditions(new SqlWhereCondition<Object>(prefix, value));
+		return this;
 	}
+
 	/**
 	 * 自定义查询条件 :<br>
-	 * 查询示例Assist.customRequire("[and/or] id in(?,?,?)",1,2,3);<br>
+	 * 查询示例:assist.customCondition("[and/or] id in(?,?,?)",1,2,3);<br>
 	 * 
 	 * @param prefix
 	 * @param value
 	 * @return
 	 */
-	public static SqlWhereCondition<?> customCondition(String prefix, Object... value) {
-		return new SqlWhereCondition<Object>(prefix, value);
+	public <T> SqlAssist customCondition(String prefix, Object... value) {
+		setConditions(new SqlWhereCondition<Object>(prefix, value));
+		return this;
 	}
 
 	/**
@@ -394,6 +518,7 @@ public class SqlAssist {
 		this.order = order;
 		return this;
 	}
+
 	/**
 	 * 获得排序
 	 * 
@@ -402,6 +527,7 @@ public class SqlAssist {
 	public String getOrder() {
 		return order;
 	}
+
 	/**
 	 * 获得是否去重
 	 * 
@@ -423,6 +549,7 @@ public class SqlAssist {
 		}
 		return this;
 	}
+
 	/**
 	 * 设置一个现有的去除方案,该方法一般用于初始化,因为会将现有的distinct清除,既distinct=传入的distinct
 	 * 
@@ -510,6 +637,7 @@ public class SqlAssist {
 	public Object getCustom() {
 		return custom;
 	}
+
 	/**
 	 * 设置自定义属性
 	 * 
@@ -530,6 +658,7 @@ public class SqlAssist {
 	public boolean isOptimizePage() {
 		return optimizePage;
 	}
+
 	/**
 	 * 是否设置优化分页,以MySQL为例子,使用内联id进行查询
 	 * 
@@ -544,9 +673,11 @@ public class SqlAssist {
 
 	@Override
 	public String toString() {
-		return "SqlAssist [distinct=" + distinct + ", order=" + order + ", startRow=" + startRow + ", rowSize=" + rowSize + ", resultColumn="
-				+ resultColumn + ", condition=" + condition + ", custom=" + custom + ", optimizePage=" + optimizePage + "]";
+		return "SqlAssist [distinct=" + distinct + ", order=" + order + ", startRow=" + startRow + ", rowSize=" + rowSize + ", resultColumn=" + resultColumn + ", condition=" + condition + ", custom="
+				+ custom + ", optimizePage=" + optimizePage + "]";
 	}
+
+}
 
 
 }
