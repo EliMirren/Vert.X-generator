@@ -807,7 +807,7 @@ public class IndexController extends BaseController {
 		EntityConfig ec = getThisHistoryConfigAndInit(databaseConfig, tableName != null ? tableName : selectedTableName).getEntityConfig();
 		String className = tableName != null ? entityNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtEntityName.getText();
 		String entityName = tableName != null ? entityNamePlace.replace("{c}", StrUtil.unlineToPascal(tableName)) : txtEntityName.getText();
-		EntityContent entityContent = new EntityContent(txtEntityPackage.getText(), entityName, txtTableName.getText());
+		EntityContent entityContent = new EntityContent(txtEntityPackage.getText(), entityName, tableName);
 		ConverterUtil.entityConfigToContent(ec, entityContent);
 		content.setEntity(entityContent);
 		// Service属性
@@ -1067,7 +1067,7 @@ public class IndexController extends BaseController {
 					// 项目生成的路径
 					String projectPath = txtProjectPath.getText();
 					String codeFormat = cboCodeFormat.getValue();
-					GeneratorContent content = getGeneratorContent(selectedDatabaseConfig, null);
+					GeneratorContent content = getGeneratorContent(selectedDatabaseConfig, txtTableName.getText());
 					HistoryConfig historyConfig = getThisHistoryConfigAndInit(selectedDatabaseConfig, selectedTableName);
 					// 生成实体类
 					try {
