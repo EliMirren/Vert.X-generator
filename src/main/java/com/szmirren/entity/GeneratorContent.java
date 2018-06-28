@@ -12,6 +12,8 @@ public class GeneratorContent {
 	private DatabaseContent database;
 	/** 实体类配置信息 */
 	private EntityContent entity;
+	/** 数据库表的属性 */
+	private TableContent table;
 	/** 实体类配置信息 */
 	private ServiceContent service;
 	/** 实体类配置信息 */
@@ -35,6 +37,14 @@ public class GeneratorContent {
 
 	public EntityContent getEntity() {
 		return entity;
+	}
+
+	public TableContent getTable() {
+		return table;
+	}
+
+	public void setTable(TableContent table) {
+		this.table = table;
 	}
 
 	public DatabaseContent getDatabase() {
@@ -110,9 +120,9 @@ public class GeneratorContent {
 	}
 	@Override
 	public String toString() {
-		return "GeneratorContent [entity=" + entity + ",\n service=" + service + ",\n serviceImpl=" + serviceImpl + ",\n sql=" + sql
-				+ ",\n router=" + router + ",\n unitTest=" + unitTest + ",\n sqlAssist=" + sqlAssist + ",\n abstractSql=" + abstractSql
-				+ ",\n sqlAndParams=" + sqlAndParams + ",\n custom=" + custom + ",\n customProperty=" + customProperty + "]";
+		return "GeneratorContent [database=" + database + ", entity=" + entity + ", table=" + table + ", service=" + service + ", serviceImpl="
+				+ serviceImpl + ", sql=" + sql + ", router=" + router + ", unitTest=" + unitTest + ", sqlAssist=" + sqlAssist + ", abstractSql="
+				+ abstractSql + ", sqlAndParams=" + sqlAndParams + ", custom=" + custom + ", customProperty=" + customProperty + "]";
 	}
 
 }
