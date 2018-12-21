@@ -151,7 +151,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 			${content.entity.className!} ${content.entity.classNameLower!} = new ${content.entity.className!}(params);
 			jdbcClient.getConnection(conn -> {
 				if (conn.succeeded()) {
-					${content.sql.className?uncap_first}.insertNonEmpty(${content.entity.classNameLower!}, conn.result(), res -> {
+					${content.sql.className?uncap_first}.updateNonEmptyById(${content.entity.classNameLower!}, conn.result(), res -> {
 						if (res.succeeded()) {
 							int result = res.result() == null ? 0 : res.result();
 							if (LOG.isDebugEnabled()) {
