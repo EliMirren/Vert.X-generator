@@ -86,6 +86,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 		if (id == null || "".equals(id)) {
 			// TODO 这里也可以做一个工具后用工具验证
 			handler.handle(resultFormat(412, "id不能为空"));
+			return;
 		}
 		jdbcClient.getConnection(conn -> {
 			if (conn.succeeded()) {
@@ -115,6 +116,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 			<#if content.entity.cantNullAttrs?exists>
 			if(<#list content.entity.cantNullAttrs as item>${content.entity.classNameLower!}.${item.fget}() == null <#if item?has_next>||</#if> </#list>){
 				handler.handle(resultFormat(412, "存在空值"));
+				return;
 			}
 			</#if>
 			jdbcClient.getConnection(conn -> {
@@ -183,6 +185,7 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 		if (id == null || "".equals(id)) {
 			// TODO 这里也可以做一个工具后用工具验证
 			handler.handle(resultFormat(412, "id不能为空"));
+			return;
 		}
 		jdbcClient.getConnection(conn -> {
 			if (conn.succeeded()) {
