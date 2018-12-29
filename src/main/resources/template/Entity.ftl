@@ -62,11 +62,17 @@ public class ${content.entity.className} {
 		this();
 		<#list content.entity.attrs as item> 
 		<#if item.javaType  ==  "Integer" || item.javaType  ==  "int">
-		this.${item.fset}(new Integer(params.get("${item.field}")));
+		if(params.get("${item.field}"!=null){
+			this.${item.fset}(new Integer(params.get("${item.field}")));
+		}
 		<#elseif item.javaType  ==  "Long" || item.javaType  ==  "long">
-		this.${item.fset}(new Long(params.get("${item.field}")));
+		if(params.get("${item.field}"!=null){
+			this.${item.fset}(new Long(params.get("${item.field}")));
+		}
 		<#elseif item.javaType  ==  "Double" || item.javaType  ==  "double">
-		this.${item.fset}(new Double(params.get("${item.field}")));
+		if(params.get("${item.field}"!=null){
+			this.${item.fset}(new Double(params.get("${item.field}")));
+		}
 		<#elseif item.javaType  ==  "JsonObject">
 		this.${item.fset}(new JsonObject((params.get("${item.field}"))));
 		<#else>
